@@ -113,10 +113,32 @@ export default function ContactForm({
       )}
 
       <div className="sm:col-span-2">
+        <label className="flex cursor-pointer items-start gap-2.5 text-xs leading-relaxed text-slate-600">
+          <input
+            type="checkbox"
+            name="consent"
+            required
+            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-slate-300 text-navy-700 focus:ring-2 focus:ring-navy-500"
+          />
+          <span>
+            Declaro ser o responsável legal pela criança e autorizo a Clínica KidSaber a usar os
+            dados informados para retornar este contato, conforme a{" "}
+            <a href="/privacidade" target="_blank" className="font-medium text-navy-600 underline underline-offset-2">
+              Política de Privacidade
+            </a>{" "}
+            e os{" "}
+            <a href="/termos" target="_blank" className="font-medium text-navy-600 underline underline-offset-2">
+              Termos de Uso
+            </a>.
+          </span>
+        </label>
+      </div>
+
+      <div className="sm:col-span-2">
         <SubmitButton />
         <p className="mt-3 text-xs text-slate-500">
-          Seus dados são usados apenas para retornar o contato e ficam registrados no sistema
-          interno da clínica.
+          Não envie dados de saúde detalhados por aqui. Este canal não é monitorado em tempo
+          integral e não substitui atendimento de urgência.
         </p>
       </div>
     </form>

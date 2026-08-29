@@ -37,3 +37,40 @@ body {
 .label {
   @apply mb-1.5 block text-sm font-medium text-slate-700;
 }
+
+/* Tipografia das páginas de conteúdo legal (termos, privacidade) */
+.legal {
+  @apply text-slate-700;
+}
+
+.legal h2 {
+  @apply mt-10 mb-3 text-xl font-bold text-navy-800;
+}
+
+.legal h3 {
+  @apply mt-6 mb-2 text-base font-bold text-navy-700;
+}
+
+.legal p {
+  @apply mb-4 leading-relaxed;
+}
+
+.legal ul {
+  @apply mb-4 space-y-2 pl-5;
+}
+
+.legal li {
+  @apply list-disc leading-relaxed marker:text-teal-500;
+}
+
+.legal a {
+  @apply font-medium text-navy-600 underline underline-offset-2 hover:text-navy-800;
+}
+
+.legal strong {
+  @apply font-semibold text-navy-800;
+}
+
+.legal .pending {
+  @apply rounded bg-gold-50 px-1.5 py-0.5 font-semibold text-gold-800;
+}

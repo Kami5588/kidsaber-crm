@@ -8,6 +8,8 @@ import { authOptions } from "@/lib/auth";
 import { listUnits } from "@/lib/units";
 import { SPECIALTIES } from "@/lib/entities";
 import ContactForm from "@/components/ContactForm";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title: "Clínica KidSaber · Desenvolvimento infantil com cuidado de verdade",
@@ -75,34 +77,7 @@ export default async function LandingPage() {
 
   return (
     <div className="bg-white">
-      {/* ---------- Cabeçalho ---------- */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3.5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 text-lg font-extrabold text-navy-900">
-              KS
-            </span>
-            <span>
-              <span className="block text-sm font-bold leading-tight text-navy-800">Clínica KidSaber</span>
-              <span className="block text-xs leading-tight text-teal-600">Desenvolvimento infantil</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-7 text-sm font-medium text-slate-600 md:flex">
-            <a href="#especialidades" className="transition hover:text-navy-700">Especialidades</a>
-            <a href="#como-funciona" className="transition hover:text-navy-700">Como funciona</a>
-            <a href="#unidades" className="transition hover:text-navy-700">Unidades</a>
-            <a href="#contato" className="transition hover:text-navy-700">Contato</a>
-          </nav>
-
-          <Link
-            href={session ? "/dashboard" : "/login"}
-            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-navy-700 transition hover:bg-slate-50"
-          >
-            {session ? "Ir para o painel" : "Área restrita"}
-          </Link>
-        </div>
-      </header>
+      <SiteHeader isLoggedIn={!!session} />
 
       {/* ---------- Hero ---------- */}
       <section
@@ -308,33 +283,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- Rodapé ---------- */}
-      <footer className="bg-navy-800 py-12 text-teal-100/80">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 text-lg font-extrabold text-navy-900">
-                KS
-              </span>
-              <span>
-                <span className="block text-sm font-bold text-white">Clínica KidSaber</span>
-                <span className="block text-xs">Desenvolvimento infantil</span>
-              </span>
-            </div>
-
-            <nav className="flex flex-wrap gap-6 text-sm">
-              <a href="#especialidades" className="transition hover:text-white">Especialidades</a>
-              <a href="#unidades" className="transition hover:text-white">Unidades</a>
-              <a href="#contato" className="transition hover:text-white">Contato</a>
-              <Link href="/login" className="transition hover:text-white">Área restrita</Link>
-            </nav>
-          </div>
-
-          <p className="mt-8 border-t border-white/10 pt-6 text-xs">
-            © {new Date().getFullYear()} Clínica KidSaber. Todos os direitos reservados.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

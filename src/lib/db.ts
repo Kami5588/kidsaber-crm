@@ -13,8 +13,6 @@ const dataDir = process.env.DATA_DIR
   ? path.resolve(process.env.DATA_DIR)
   : path.join(process.cwd(), "data");
 
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-
 const dbPath = path.join(dataDir, "kidsaber.db");
 
 declare global {
@@ -22,6 +20,8 @@ declare global {
 }
 
 function createConnection() {
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
   let database: DatabaseSync | undefined;
   let lastErr: unknown;
   for (let attempt = 0; attempt < 10 && !database; attempt++) {
@@ -29,6 +29,10 @@ function createConnection() {
       database = new DatabaseSync(dbPath);
     } catch (err) {
       lastErr = err;
+      // Espera crescente entre as tentativas. Sem isso as 10 tentativas
+      // aconteciam no mesmo instante e nenhuma dava tempo do outro processo
+      // liberar o arquivo.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50 * (attempt + 1));
     }
   }
   if (!database) throw lastErr;
@@ -73,10 +77,29 @@ export const UNIT_SCOPED_TABLES = [
   "Interaction",
 ] as const;
 
-export const db = global.__kidsaberDb ?? createConnection();
-if (process.env.NODE_ENV !== "production") {
-  global.__kidsaberDb = db;
+function getDb(): DatabaseSync {
+  if (!global.__kidsaberDb) {
+    global.__kidsaberDb = createConnection();
+  }
+  return global.__kidsaberDb;
 }
+
+/**
+ * Conexão preguiçosa.
+ *
+ * Abrir o banco no import fazia o `next build` falhar com "database is
+ * locked": o Next carrega os módulos das páginas em vários workers paralelos e
+ * todos tentavam abrir e inicializar o mesmo arquivo ao mesmo tempo. Com o
+ * proxy, o arquivo só é tocado quando alguém realmente executa uma consulta —
+ * o que nunca acontece durante a compilação.
+ */
+export const db: DatabaseSync = new Proxy({} as DatabaseSync, {
+  get(_target, prop, receiver) {
+    const real = getDb() as any;
+    const value = Reflect.get(real, prop, receiver);
+    return typeof value === "function" ? value.bind(real) : value;
+  },
+});
 
 export function newId(): string { return crypto.randomUUID(); }
 export function nowIso(): string { return new Date().toISOString(); }

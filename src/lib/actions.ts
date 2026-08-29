@@ -90,6 +90,11 @@ const contactSchema = z.object({
   message: z.string().trim().min(5, "Conte um pouco sobre o que você precisa.").max(2000),
   // Campo isca: fica escondido no formulário, então só um robô preenche.
   website: z.string().max(0).optional(),
+  // LGPD art. 14: consentimento específico e destacado, validado também aqui —
+  // o required do HTML sozinho é contornável.
+  consent: z
+    .string()
+    .refine((v) => v === "on", "É necessário concordar com a Política de Privacidade para enviar."),
 });
 
 export type ContactState = { ok: boolean; error?: string };
@@ -106,6 +111,7 @@ export async function submitContact(
     interestedSpecialty: formData.get("interestedSpecialty") ?? "",
     message: formData.get("message") ?? "",
     website: formData.get("website") ?? "",
+    consent: formData.get("consent") ?? "",
   });
 
   if (!parsed.success) {
