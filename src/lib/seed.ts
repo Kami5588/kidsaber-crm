@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { db, nowIso } from "./db";
-import { insertRow, rawAll } from "./orm";
+import { insertRow, rawAll, rawGet } from "./orm";
+import { generatePassword } from "./users";
 
 /** Contato geral da clínica, usado enquanto cada unidade não tem o seu. */
 const TELEFONE_GERAL = "(44) 99840-0554";
@@ -56,6 +57,43 @@ export function ensureUnits(): Record<string, string> {
 
   console.log("Unidades criadas: Mundo Novo (sede), Guaíra, Terra Roxa.");
   return { mundoNovo, guaira, terraRoxa };
+}
+
+/**
+ * Conta de administração principal da clínica.
+ *
+ * Roda separada do seed de demonstração porque precisa existir também em bases
+ * que já têm dados. Se a conta já existe, nada é alterado — a senha em uso não
+ * é sobrescrita a cada reinício.
+ */
+export function ensureOwnerAdmin(): void {
+  const email = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
+  if (!email) return;
+
+  if (rawGet("SELECT id FROM User WHERE lower(email) = ?", [email])) return;
+
+  const password = process.env.ADMIN_PASSWORD?.trim() || generatePassword();
+  const generated = !process.env.ADMIN_PASSWORD?.trim();
+
+  insertRow(
+    "User",
+    {
+      name: process.env.ADMIN_NAME?.trim() || "Administração KidSaber",
+      email,
+      passwordHash: bcrypt.hashSync(password, 10),
+      role: "ADMIN",
+      title: null,
+      jobTitle: "Administradora",
+      active: 1,
+      // Senha definida por quem instalou não precisa de troca forçada;
+      // senha gerada aqui, sim.
+      mustChangePassword: generated ? 1 : 0,
+    },
+    { withTimestamps: true }
+  );
+
+  console.log("Administrador principal criado:", email);
+  if (generated) console.log("Senha inicial gerada:", password);
 }
 
 export function ensureSeeded() {
@@ -172,6 +210,7 @@ export function ensureSeeded() {
   const patientTs = { withTimestamps: true, timestampFields: ["createdAt", "updatedAt"] };
 
   const patEnzo = insertRow("Patient", {
+    careStage: "Em atendimento",
     unitId: sede,
     fullName: "Enzo Ferreira",
     birthDate: "2019-03-14",
@@ -183,6 +222,7 @@ export function ensureSeeded() {
   }, patientTs);
 
   const patHelena = insertRow("Patient", {
+    careStage: "Em atendimento",
     unitId: sede,
     fullName: "Helena Ferraz",
     birthDate: "2021-11-30",
@@ -193,6 +233,7 @@ export function ensureSeeded() {
   }, patientTs);
 
   const patMiguel = insertRow("Patient", {
+    careStage: "Plano terapêutico",
     unitId: sede,
     fullName: "Miguel Barbosa",
     birthDate: "2017-06-08",
@@ -203,6 +244,7 @@ export function ensureSeeded() {
   }, patientTs);
 
   const patAlice = insertRow("Patient", {
+    careStage: "Avaliação",
     unitId: guaira,
     fullName: "Alice Lima",
     birthDate: "2020-07-02",
@@ -212,6 +254,7 @@ export function ensureSeeded() {
   }, patientTs);
 
   const patTheo = insertRow("Patient", {
+    careStage: "Em atendimento",
     unitId: guaira,
     fullName: "Théo Ribeiro",
     birthDate: "2019-09-21",
@@ -222,6 +265,7 @@ export function ensureSeeded() {
   }, patientTs);
 
   const patLaura = insertRow("Patient", {
+    careStage: "Reavaliação",
     unitId: terraRoxa,
     fullName: "Laura Nogueira",
     birthDate: "2018-02-17",
@@ -232,6 +276,7 @@ export function ensureSeeded() {
   }, patientTs);
 
   const patDavi = insertRow("Patient", {
+    careStage: "Triagem",
     unitId: terraRoxa,
     fullName: "Davi Antunes",
     birthDate: "2020-01-09",
@@ -446,6 +491,41 @@ export function ensureSeeded() {
     patientId: patLaura, rating: 8,
     surveyDate: now.toISOString().slice(0, 10),
   });
+
+  // ---------- Conta de profissional, para demonstrar o acesso restrito ----------
+  // Vinculada ao cadastro da Dra. Camila: ao entrar com ela, o sistema mostra
+  // apenas os pacientes que ela atende.
+  insertRow(
+    "User",
+    {
+      name: "Camila Rocha",
+      email: "camila@clinickidsaber.com.br",
+      passwordHash,
+      role: "PROFISSIONAL",
+      professionalId: profAba,
+      title: "Dra.",
+      jobTitle: "Analista do Comportamento (ABA)",
+      unitId: sede,
+      active: 1,
+      mustChangePassword: 0,
+    },
+    { withTimestamps: true }
+  );
+
+  insertRow(
+    "User",
+    {
+      name: "Recepção Mundo Novo",
+      email: "recepcao@clinickidsaber.com.br",
+      passwordHash,
+      role: "RECEPCAO",
+      jobTitle: "Recepcionista",
+      unitId: sede,
+      active: 1,
+      mustChangePassword: 0,
+    },
+    { withTimestamps: true }
+  );
 
   console.log("Seed concluído com sucesso.");
   console.log("Login: admin@clinickidsaber.com.br / senha: kidsaber123");

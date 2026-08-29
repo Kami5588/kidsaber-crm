@@ -63,6 +63,28 @@ function runMigrations(database: DatabaseSync) {
   for (const table of UNIT_SCOPED_TABLES) {
     addColumn(table, "unitId", "TEXT");
   }
+
+  // Perfis de acesso e identificação do usuário
+  addColumn("User", "professionalId", "TEXT");
+  addColumn("User", "title", "TEXT");          // tratamento: Dra., Dr., Prof.ª...
+  addColumn("User", "jobTitle", "TEXT");       // cargo exibido: Fonoaudióloga...
+  addColumn("User", "active", "INTEGER NOT NULL DEFAULT 1");
+  addColumn("User", "mustChangePassword", "INTEGER NOT NULL DEFAULT 0");
+  addColumn("User", "unitId", "TEXT");
+
+  // Nomenclatura também no cadastro do profissional
+  addColumn("Professional", "title", "TEXT");
+  addColumn("Professional", "jobTitle", "TEXT");
+
+  // Etapa do atendimento
+  addColumn("Patient", "careStage", "TEXT");
+
+  // Arquivos anexados de verdade (e não só um link colado)
+  addColumn("Document", "storedName", "TEXT");
+  addColumn("Document", "originalName", "TEXT");
+  addColumn("Document", "mimeType", "TEXT");
+  addColumn("Document", "sizeBytes", "INTEGER");
+  addColumn("Document", "unitId", "TEXT");
 }
 
 /** Tabelas cujos registros pertencem a uma unidade da clínica. */

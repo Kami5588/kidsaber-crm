@@ -7,6 +7,8 @@ import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ALL_UNITS, getActiveUnit, getActiveUnitId, listUnits } from "@/lib/units";
+import { canAccessPage, getCurrentUser } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 const brl = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -47,6 +49,12 @@ function fmtDate(iso?: string) {
 }
 
 export default async function DashboardPage() {
+  // O painel geral mostra a rede inteira. Quem só pode ver os próprios
+  // pacientes vai direto para a área dele.
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+  if (!canAccessPage(user.role, "/dashboard")) redirect("/meus-pacientes");
+
   const activeUnitId = getActiveUnitId();
   const activeUnit = getActiveUnit();
   const isAll = activeUnitId === ALL_UNITS;

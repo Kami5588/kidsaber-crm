@@ -6,10 +6,15 @@ import { listAll } from "@/lib/orm";
 import { createEntity } from "@/lib/actions";
 import EntityForm, { RelationOption } from "@/components/EntityForm";
 import { ALL_UNITS, getActiveUnitId } from "@/lib/units";
+import { canAccessEntity, getCurrentUser } from "@/lib/permissions";
 
 export default async function NewEntityPage({ params }: { params: { entity: string } }) {
 const entity = getEntity(params.entity);
 if (!entity) notFound();
+
+const user = await getCurrentUser();
+if (!user || !canAccessEntity(user.role, params.entity)) notFound();
+
 
 const relationOptions: Record<string, RelationOption[]> = {};
 for (const f of entity.fields) {

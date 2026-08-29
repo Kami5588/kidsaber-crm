@@ -6,16 +6,24 @@ import { getById, listAll } from "@/lib/orm";
 import { updateEntity } from "@/lib/actions";
 import EntityForm, { RelationOption } from "@/components/EntityForm";
 import { logAccess } from "@/lib/audit";
+import { canAccessEntity, canAccessPatient, getCurrentUser } from "@/lib/permissions";
 
 export default async function EditEntityPage({ params }: { params: { entity: string; id: string } }) {
 const entity = getEntity(params.entity);
 if (!entity) notFound();
+
+const user = await getCurrentUser();
+if (!user || !canAccessEntity(user.role, params.entity)) notFound();
+
 
 const record = getById(entity.table, params.id);
 if (!record) notFound();
 
 // Abrir a ficha de um paciente ou de uma sessão é acesso a dado sensível de
 // saúde: fica registrado na trilha de auditoria.
+// Abrir a ficha de um paciente de outro profissional não é permitido.
+if (entity.table === "Patient" && !canAccessPatient(user, params.id)) notFound();
+
 if (entity.table === "Patient" || entity.table === "Session") {
 await logAccess({ action: "VISUALIZAR", entity: entity.table, entityId: params.id });
 }

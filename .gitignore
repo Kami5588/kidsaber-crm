@@ -19,3 +19,6 @@ data
 
 # Config local do ambiente de desenvolvimento
 .claude
+
+# Arquivos temporarios com segredos
+senha-admin-TEMP.txt

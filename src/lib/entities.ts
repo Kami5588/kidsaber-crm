@@ -1,3 +1,5 @@
+import { CARE_STAGES } from "./care-stage-constants";
+
 /** Especialidades efetivamente atendidas pela clínica. */
 export const SPECIALTIES = [
   "Intervenção Comportamental ABA",
@@ -77,6 +79,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
       { name: "birthDate", label: "Data de nascimento", type: "date", required: true, showInTable: true },
       { name: "gender", label: "Gênero", type: "select", options: ["Masculino", "Feminino", "Outro"] },
       { name: "status", label: "Status", type: "select", options: ["Ativo", "Inativo", "Em avaliação"], default: "Ativo", showInTable: true },
+      { name: "careStage", label: "Etapa do atendimento", type: "select", options: [...CARE_STAGES], default: "Triagem", showInTable: true },
       { name: "specialties", label: "Especialidades em acompanhamento", type: "multiselect", options: SPECIALTIES },
       { name: "diagnoses", label: "Diagnósticos", type: "textarea", colSpan2: true },
       { name: "cpf", label: "CPF", type: "text" },

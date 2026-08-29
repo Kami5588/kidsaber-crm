@@ -8,12 +8,13 @@ export const config = {
    *   termos, privacidade   -> páginas legais
    *   api/auth              -> rotas do NextAuth
    *   _next/*               -> assets gerados pelo build
-   *   arquivos com extensão -> tudo que mora em /public (logo, ícones, imagens)
+   *   imagens e ícones      -> arquivos de /public (logo, favicon)
    *
-   * A última regra importa: sem ela, a logo da landing era redirecionada para o
-   * login e o site aparecia sem imagem nenhuma para quem não estava logado.
+   * A lista de extensões cobre só o que existe em /public. Documentos como PDF
+   * ficam de fora de propósito: os laudos são servidos por /api/documentos,
+   * que exige sessão e confere permissão antes de devolver o arquivo.
    */
   matcher: [
-    "/((?!$|login|termos|privacidade|api/auth|_next/static|_next/image|.*\.(?:png|jpg|jpeg|gif|svg|webp|ico|avif|pdf|txt|xml|webmanifest)$).*)",
+    "/((?!$|login|termos|privacidade|api/auth|_next/static|_next/image|.*\.(?:png|jpg|jpeg|gif|svg|webp|ico|avif)$).*)",
   ],
 };

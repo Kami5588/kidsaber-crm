@@ -257,3 +257,35 @@ CREATE TABLE IF NOT EXISTS LoginAttempt (
 );
 
 CREATE INDEX IF NOT EXISTS idx_login_identifier ON LoginAttempt(identifier, createdAt DESC);
+
+-- ============================================================
+-- Perfis de acesso, arquivos e acompanhamento do atendimento
+-- ============================================================
+
+-- Compartilhamento de documento entre profissionais (encaminhamento).
+CREATE TABLE IF NOT EXISTS DocumentShare (
+  id TEXT PRIMARY KEY,
+  documentId TEXT NOT NULL,
+  professionalId TEXT NOT NULL,
+  sharedById TEXT,
+  note TEXT,
+  createdAt TEXT NOT NULL,
+  UNIQUE(documentId, professionalId)
+);
+
+CREATE INDEX IF NOT EXISTS idx_share_doc ON DocumentShare(documentId);
+CREATE INDEX IF NOT EXISTS idx_share_prof ON DocumentShare(professionalId);
+
+-- Histórico das etapas do atendimento de cada paciente.
+CREATE TABLE IF NOT EXISTS CareStageHistory (
+  id TEXT PRIMARY KEY,
+  patientId TEXT NOT NULL,
+  fromStage TEXT,
+  toStage TEXT NOT NULL,
+  note TEXT,
+  changedById TEXT,
+  changedByName TEXT,
+  createdAt TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_stage_patient ON CareStageHistory(patientId, createdAt DESC);

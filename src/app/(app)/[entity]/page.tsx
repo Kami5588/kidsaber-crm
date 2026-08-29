@@ -5,6 +5,7 @@ import { ENTITIES, getEntity } from "@/lib/entities";
 import { listAll } from "@/lib/orm";
 import { UNIT_SCOPED_TABLES } from "@/lib/db";
 import { ALL_UNITS, getActiveUnitId, unitFilter } from "@/lib/units";
+import { canAccessEntity, getCurrentUser, patientScope } from "@/lib/permissions";
 import { deleteEntity } from "@/lib/actions";
 import DeleteButton from "@/components/DeleteButton";
 import { format, parseISO } from "date-fns";
@@ -57,9 +58,21 @@ params, searchParams,
 const entity = getEntity(params.entity);
 if (!entity) notFound();
 
+const user = await getCurrentUser();
+if (!user || !canAccessEntity(user.role, params.entity)) notFound();
+
 const q = searchParams.q?.trim();
 const clauses: string[] = [];
 const queryParams: any[] = [];
+
+// Profissional só enxerga os próprios pacientes, mesmo digitando a URL direto.
+if (entity.table === "Patient") {
+const scope = patientScope(user, "Patient");
+if (scope.sql !== "1=1") {
+clauses.push(scope.sql.replace(/Patient.id/g, "id"));
+queryParams.push(...scope.params);
+}
+}
 
 // A busca é um OR entre vários campos, então precisa de parênteses para não
 // se misturar com o AND do filtro de unidade.
