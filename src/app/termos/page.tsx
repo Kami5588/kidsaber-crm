@@ -4,6 +4,7 @@ import { FileText, AlertTriangle } from "lucide-react";
 import { authOptions } from "@/lib/auth";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import { EMAIL, PHONE_DISPLAY } from "@/lib/clinic";
 
 export const metadata = {
   title: "Termos de Uso · Clínica KidSaber",
@@ -137,16 +138,15 @@ export default async function TermosPage() {
           <h2>10. Legislação aplicável e foro</h2>
           <p>
             Estes termos são regidos pela legislação brasileira. Fica eleito o foro da comarca de{" "}
-            <Pend>[PREENCHER: comarca]</Pend>, no estado do Paraná, para dirimir controvérsias
-            decorrentes destes termos, com renúncia a qualquer outro, por mais privilegiado que
-            seja.
+            <Pend>[PREENCHER: comarca da sede]</Pend> para dirimir controvérsias decorrentes
+            destes termos, com renúncia a qualquer outro, por mais privilegiado que seja.
           </p>
 
           <h2>11. Contato</h2>
           <p>
             Dúvidas sobre estes termos podem ser encaminhadas para{" "}
-            <Pend>[PREENCHER: e-mail de contato]</Pend> ou pelos telefones das unidades informados
-            na <Link href="/#unidades">página inicial</Link>.
+            <a href={`mailto:${EMAIL}`}>{EMAIL}</a> ou pelo telefone {PHONE_DISPLAY}. Os
+            endereços das unidades estão na <Link href="/#unidades">página inicial</Link>.
           </p>
 
           <p className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-500">

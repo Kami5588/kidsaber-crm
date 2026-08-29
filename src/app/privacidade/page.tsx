@@ -49,8 +49,8 @@ export default async function PrivacidadePage() {
           <p>
             O controlador dos dados pessoais tratados por meio deste site e do sistema interno de
             gestão é a <strong>Clínica KidSaber</strong>, inscrita no CNPJ sob o
-            n.º <Pend>[PREENCHER: CNPJ]</Pend>, com sede em <Pend>[PREENCHER: endereço completo da matriz]</Pend>,
-            no município de Marechal Cândido Rondon, Paraná.
+            n.º <Pend>[PREENCHER: CNPJ]</Pend>, com sede em <Pend>[PREENCHER: endereço completo da sede]</Pend>,
+            no município de Mundo Novo, Mato Grosso do Sul, e filiais em Guaíra e Terra Roxa, no Paraná.
           </p>
           <p>
             Para tratar de qualquer assunto relacionado a esta política ou aos seus dados pessoais,

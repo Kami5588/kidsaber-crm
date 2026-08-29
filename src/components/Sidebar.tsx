@@ -6,6 +6,7 @@ import { LayoutDashboard, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
 import { getIcon } from "@/lib/icon-map";
+import { BrandMascot } from "./BrandMark";
 
 const GROUPS: { label: string; items: string[] }[] = [
   { label: "Atendimento", items: ["pacientes", "responsaveis", "profissionais", "sessoes"] },
@@ -19,14 +20,12 @@ export default function Sidebar({ userName }: { userName?: string | null }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-64 flex-shrink-0 flex-col bg-navy-800 text-white">
+    <aside className="flex h-full w-64 flex-shrink-0 flex-col bg-brand-hero text-white">
       <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 text-navy-900 font-extrabold text-lg">
-          KS
-        </div>
+        <BrandMascot className="h-11 w-11" />
         <div>
-          <p className="text-sm font-bold leading-tight">KidSaber</p>
-          <p className="text-xs text-teal-200 leading-tight">Connect CRM</p>
+          <p className="text-sm font-extrabold leading-tight">KidSaber</p>
+          <p className="text-xs leading-tight text-teal-200">Connect CRM</p>
         </div>
       </div>
 

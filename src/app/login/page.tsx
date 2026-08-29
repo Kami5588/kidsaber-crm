@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandMark";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,12 +28,10 @@ export default function LoginPage() {
                                                               }
 
                                                                 return (
-                                                                    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-navy-800 via-navy-700 to-teal-600 px-4 py-12">
+                                                                    <div className="flex min-h-screen items-center justify-center bg-brand-hero px-4 py-12">
                                                                           <div className="w-full max-w-md">
                                                                                   <div className="mb-8 flex flex-col items-center text-center">
-                                                                                            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gold-500 shadow-lg">
-                                                                                                        <LogIn className="h-8 w-8 text-navy-900" />
-                                                                                                                  </div>
+                                                                                            <BrandLogo priority width={260} height={260} className="mb-3 h-auto w-40 drop-shadow-2xl" />
                                                                                                                             <h1 className="text-3xl font-bold text-white">KidSaber Connect</h1>
                                                                                                                                       <p className="mt-2 text-teal-100">Entre para acessar o sistema da clínica</p>
                                                                                                                                               </div>

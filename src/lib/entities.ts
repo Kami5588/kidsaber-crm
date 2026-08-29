@@ -1,10 +1,11 @@
+/** Especialidades efetivamente atendidas pela clínica. */
 export const SPECIALTIES = [
-  "Fonoaudiologia",
-  "Psicologia",
+  "Intervenção Comportamental ABA",
+  "Modelo Denver (ESDM)",
   "Terapia Ocupacional",
-  "Fisioterapia",
-  "Neurologia",
+  "Fonoaudiologia",
   "Psicopedagogia",
+  "Psicologia",
 ];
 
 export type FieldType =
