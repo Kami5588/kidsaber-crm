@@ -70,7 +70,28 @@ export function ensureOwnerAdmin(): void {
   const email = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
   if (!email) return;
 
-  if (rawGet("SELECT id FROM User WHERE lower(email) = ?", [email])) return;
+  const existing = rawGet("SELECT id FROM User WHERE lower(email) = ?", [email]);
+
+  if (existing) {
+    // Recuperação de acesso: com ADMIN_PASSWORD_RESET ligado, a senha da conta
+    // principal volta a ser a de ADMIN_PASSWORD. Serve para quando a senha se
+    // perde e não há outro administrador para redefini-la pela tela.
+    const reset = (process.env.ADMIN_PASSWORD_RESET ?? "").trim().toLowerCase();
+    const novaSenha = process.env.ADMIN_PASSWORD?.trim();
+
+    if ((reset === "1" || reset === "true") && novaSenha) {
+      updateRow("User", existing.id as string, {
+        passwordHash: bcrypt.hashSync(novaSenha, 10),
+        active: 1,
+        mustChangePassword: 0,
+      });
+      // Zera o bloqueio por tentativas, senão a conta seguiria travada.
+      rawAll("DELETE FROM LoginAttempt WHERE identifier = ?", [email]);
+      console.log("Senha do administrador principal redefinida:", email);
+      console.log("Remova ADMIN_PASSWORD_RESET das variáveis apos entrar.");
+    }
+    return;
+  }
 
   const password = process.env.ADMIN_PASSWORD?.trim() || generatePassword();
   const generated = !process.env.ADMIN_PASSWORD?.trim();
