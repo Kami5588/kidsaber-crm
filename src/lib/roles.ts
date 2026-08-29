@@ -52,6 +52,7 @@ const ENTITY_ACCESS: Record<Role, string[] | "*"> = {
 const PAGE_ACCESS: Record<string, Role[]> = {
   "/dashboard": ["ADMIN", "RECEPCAO"],
   "/meus-pacientes": ["PROFISSIONAL", "ADMIN"],
+  "/relatorios": ["ADMIN", "RECEPCAO"],
   "/usuarios": ["ADMIN"],
   "/auditoria": ["ADMIN"],
   "/lgpd": ["ADMIN"],

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake,
-  KeyRound, LifeBuoy, CalendarDays, Menu, X,
+  KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
@@ -134,11 +134,21 @@ export default function Sidebar({
 
           <Link
             href="/agenda"
-            className={`mb-4 ${linkClass(pathname?.startsWith("/agenda") ?? false)}`}
+            className={`mb-2 ${linkClass(pathname?.startsWith("/agenda") ?? false)}`}
           >
             <CalendarDays className="h-4 w-4" />
             Agenda
           </Link>
+
+          {canAccessPage(role, "/relatorios") && (
+            <Link
+              href="/relatorios"
+              className={`mb-4 ${linkClass(pathname?.startsWith("/relatorios") ?? false)}`}
+            >
+              <BarChart3 className="h-4 w-4" />
+              Relatórios
+            </Link>
+          )}
 
           {visibleGroups.map((group) => (
             <div key={group.label} className="mb-4">
