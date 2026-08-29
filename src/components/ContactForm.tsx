@@ -64,7 +64,7 @@ export default function ContactForm({
 
       <div>
         <label htmlFor="phone" className="label">Telefone / WhatsApp</label>
-        <input id="phone" name="phone" className="input" placeholder="(45) 90000-0000" />
+        <input id="phone" name="phone" className="input" placeholder="(67) 99999-9999" />
       </div>
 
       <div className="sm:col-span-2">

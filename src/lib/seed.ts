@@ -122,6 +122,19 @@ const UNIT_CONTACTS: Record<string, { address: string; phone: string }> = {
  * prevalece.
  */
 export function ensureUnitContacts(): void {
+  // Correção pontual: enquanto o telefone de Terra Roxa era desconhecido, a
+  // unidade ficou com o número de Guaíra. Como o campo não está vazio, a regra
+  // geral abaixo não o alcança — por isso o conserto explícito, restrito a
+  // esse valor exato para não tocar em nada que a clínica tenha editado.
+  const terraRoxa = rawGet(
+    "SELECT id, phone FROM Unit WHERE name = ? AND phone = ?",
+    ["Terra Roxa", "(44) 99135-2175"]
+  );
+  if (terraRoxa) {
+    updateRow("Unit", terraRoxa.id as string, { phone: "(44) 99125-4410" });
+    console.log("Telefone de Terra Roxa corrigido.");
+  }
+
   for (const unit of rawAll("SELECT id, name, address, phone FROM Unit")) {
     const known = UNIT_CONTACTS[unit.name as string];
     if (!known) continue;
