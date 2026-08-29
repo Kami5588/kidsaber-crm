@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { db, nowIso } from "./db";
-import { insertRow, rawAll, rawGet } from "./orm";
+import { insertRow, rawAll, rawGet, updateRow } from "./orm";
 import { generatePassword } from "./users";
 
 /** Contato geral, usado por profissionais que atendem em mais de uma unidade. */
@@ -48,9 +48,8 @@ export function ensureUnits(): Record<string, string> {
     name: "Terra Roxa",
     city: "Terra Roxa",
     state: "PR",
-    // Endereço ainda não confirmado; preencher na tela de Unidades.
-    address: "",
-    phone: "(44) 99135-2175",
+    address: "Av. Pres. Castelo Branco, 165 - Centro, CEP 85990-000",
+    phone: "(44) 99125-4410",
     email: EMAIL_GERAL,
     isMain: 0,
     status: "Ativo",
@@ -95,6 +94,47 @@ export function ensureOwnerAdmin(): void {
 
   console.log("Administrador principal criado:", email);
   if (generated) console.log("Senha inicial gerada:", password);
+}
+
+
+/** Endereço e telefone oficiais de cada unidade, conferidos com a clínica. */
+const UNIT_CONTACTS: Record<string, { address: string; phone: string }> = {
+  "Mundo Novo": {
+    address: "Rua Voluntários da Pátria, 343 - Centro, CEP 79980-000",
+    phone: "(67) 99244-4152",
+  },
+  "Guaíra": {
+    address: "Rua Professor Galvoso, 813 - Centro, CEP 85980-085",
+    phone: "(44) 99135-2175",
+  },
+  "Terra Roxa": {
+    address: "Av. Pres. Castelo Branco, 165 - Centro, CEP 85990-000",
+    phone: "(44) 99125-4410",
+  },
+};
+
+/**
+ * Completa endereço e telefone das unidades que ainda estão em branco.
+ *
+ * O ensureUnits só age em banco vazio, então bases já em produção nunca
+ * receberiam esses dados. Aqui o preenchimento é feito campo a campo e apenas
+ * quando o valor está vazio: se a clínica editou algo pela tela, a edição dela
+ * prevalece.
+ */
+export function ensureUnitContacts(): void {
+  for (const unit of rawAll("SELECT id, name, address, phone FROM Unit")) {
+    const known = UNIT_CONTACTS[unit.name as string];
+    if (!known) continue;
+
+    const patch: Record<string, string> = {};
+    if (!String(unit.address ?? "").trim()) patch.address = known.address;
+    if (!String(unit.phone ?? "").trim()) patch.phone = known.phone;
+
+    if (Object.keys(patch).length > 0) {
+      updateRow("Unit", unit.id as string, patch);
+      console.log("Contato preenchido na unidade:", unit.name);
+    }
+  }
 }
 
 export function ensureSeeded() {
