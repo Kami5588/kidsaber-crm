@@ -171,6 +171,89 @@ export function ensureUnitContacts(): void {
   }
 }
 
+/**
+ * Histórico de atendimentos para demonstração.
+ *
+ * Dez semanas de sessões já encerradas. Sem histórico, o painel de faltas e os
+ * relatórios nascem vazios e não há o que mostrar à clínica. O padrão de cada
+ * criança é fixo de propósito: a demonstração precisa ser sempre a mesma.
+ *
+ * Roda junto do seed inicial e, numa base que já existe, só com a variável
+ * SEED_DEMO_HISTORY ligada — são dados inventados, e não devem entrar sozinhos
+ * numa base com atendimento real.
+ */
+export function ensureDemoHistory(): void {
+  // Idempotente: se já há falta lançada, o histórico já foi criado (ou a
+  // clínica começou a usar de verdade, e aí não se mexe).
+  const jaTem = rawGet("SELECT id FROM Session WHERE status = 'Falta' LIMIT 1");
+  if (jaTem) return;
+
+  const now = new Date();
+
+  // R = realizada, F = falta (não avisou), C = cancelada (avisou antes).
+  const roteiro = [
+    { paciente: "Enzo Ferreira", specialty: "Intervenção Comportamental ABA", diaSemana: 1, hora: 9, semanas: "RRRRRCRRRR" },
+    { paciente: "Helena Ferraz", specialty: "Modelo Denver (ESDM)", diaSemana: 2, hora: 14, semanas: "RRFRRRFRRR" },
+    // Miguel é o caso que a recepção precisa enxergar: sexta no fim da tarde,
+    // faltas se acumulando.
+    { paciente: "Miguel Barbosa", specialty: "Intervenção Comportamental ABA", diaSemana: 5, hora: 17, semanas: "RFFRFRFRRF" },
+    { paciente: "Théo Ribeiro", specialty: "Fonoaudiologia", diaSemana: 2, hora: 8, semanas: "RRRCRRRRRR" },
+    { paciente: "Alice Lima", specialty: "Terapia Ocupacional", diaSemana: 5, hora: 16, semanas: "RRFRCRFRRR" },
+    { paciente: "Laura Nogueira", specialty: "Psicopedagogia", diaSemana: 4, hora: 13, semanas: "RRRRRRRRRR" },
+    { paciente: "Davi Antunes", specialty: "Psicologia", diaSemana: 1, hora: 9, semanas: "RRRFRRCRFR" },
+  ];
+
+  /** Data do atendimento fixo da criança, N semanas atrás. Sempre no passado. */
+  const semanaAtras = (semanas: number, diaSemana: number, hora: number) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - semanas * 7);
+    d.setDate(d.getDate() - ((d.getDay() - diaSemana + 7) % 7));
+    d.setHours(hora, 0, 0, 0);
+    return d.toISOString();
+  };
+
+  const SITUACAO: Record<string, string> = {
+    R: "Realizada",
+    F: "Falta",
+    C: "Cancelada",
+  };
+
+  for (const linha of roteiro) {
+    const paciente = rawGet("SELECT id, unitId FROM Patient WHERE fullName = ?", [linha.paciente]);
+    if (!paciente) continue;
+
+    const profissional = rawGet(
+      "SELECT id FROM Professional WHERE specialty = ? LIMIT 1",
+      [linha.specialty]
+    );
+
+    const marcas = linha.semanas.split("");
+    marcas.forEach((marca, i) => {
+      // O primeiro caractere é a semana mais antiga.
+      const status = SITUACAO[marca];
+
+      insertRow("Session", {
+        unitId: paciente.unitId ?? null,
+        patientId: paciente.id,
+        professionalId: profissional?.id ?? null,
+        specialty: linha.specialty,
+        sessionDate: semanaAtras(marcas.length - i, linha.diaSemana, linha.hora),
+        status,
+        evolutionText:
+          status === "Realizada"
+            ? "Sessão realizada conforme o plano terapêutico; sem intercorrências."
+            : null,
+        notesInternal:
+          status === "Falta"
+            ? "Família não compareceu e não avisou. Horário perdido."
+            : status === "Cancelada"
+              ? "Responsável avisou com antecedência; horário reaproveitado."
+              : null,
+      });
+    });
+  }
+}
+
 export function ensureSeeded() {
   const units = ensureUnits();
   const sede = units.mundoNovo ?? units["Mundo Novo"];
@@ -428,80 +511,7 @@ export function ensureSeeded() {
     specialty: "Psicologia", sessionDate: day(6, 9), status: "Agendada",
   });
 
-  // ---------- Histórico de atendimentos ----------
-  // Dez semanas de sessões já encerradas. Sem histórico, o painel de faltas e os
-  // relatórios nascem vazios e não há o que mostrar à clínica. O padrão de cada
-  // criança é fixo de propósito: a demonstração precisa ser sempre a mesma.
-  //
-  // R = realizada, F = falta (não avisou), C = cancelada (avisou antes).
-  const HISTORICO_ATENDIMENTO = [
-    { unitId: sede, patientId: patEnzo, professionalId: profAba,
-      specialty: "Intervenção Comportamental ABA", diaSemana: 1, hora: 9,
-      semanas: "RRRRRCRRRR" },
-    { unitId: sede, patientId: patHelena, professionalId: profDenver,
-      specialty: "Modelo Denver (ESDM)", diaSemana: 2, hora: 14,
-      semanas: "RRFRRRFRRR" },
-    // Miguel é o caso que a recepção precisa enxergar: sexta no fim da tarde,
-    // faltas se acumulando.
-    { unitId: sede, patientId: patMiguel, professionalId: profAba,
-      specialty: "Intervenção Comportamental ABA", diaSemana: 5, hora: 17,
-      semanas: "RFFRFRFRRF" },
-    { unitId: guaira, patientId: patTheo, professionalId: profFono,
-      specialty: "Fonoaudiologia", diaSemana: 2, hora: 8,
-      semanas: "RRRCRRRRRR" },
-    { unitId: guaira, patientId: patAlice, professionalId: profTo,
-      specialty: "Terapia Ocupacional", diaSemana: 5, hora: 16,
-      semanas: "RRFRCRFRRR" },
-    { unitId: terraRoxa, patientId: patLaura, professionalId: profPsicoped,
-      specialty: "Psicopedagogia", diaSemana: 4, hora: 13,
-      semanas: "RRRRRRRRRR" },
-    { unitId: terraRoxa, patientId: patDavi, professionalId: profPsi,
-      specialty: "Psicologia", diaSemana: 1, hora: 9,
-      semanas: "RRRFRRCRFR" },
-  ];
-
-  /** Data do atendimento fixo da criança, N semanas atrás. Sempre no passado. */
-  const semanaAtras = (semanas: number, diaSemana: number, hora: number) => {
-    const d = new Date(now);
-    d.setDate(d.getDate() - semanas * 7);
-    d.setDate(d.getDate() - ((d.getDay() - diaSemana + 7) % 7));
-    d.setHours(hora, 0, 0, 0);
-    return d.toISOString();
-  };
-
-  const SITUACAO: Record<string, string> = {
-    R: "Realizada",
-    F: "Falta",
-    C: "Cancelada",
-  };
-
-  for (const linha of HISTORICO_ATENDIMENTO) {
-    const marcas = linha.semanas.split("");
-    marcas.forEach((marca, i) => {
-      // O primeiro caractere é a semana mais antiga.
-      const semanas = marcas.length - i;
-      const status = SITUACAO[marca];
-
-      insertRow("Session", {
-        unitId: linha.unitId,
-        patientId: linha.patientId,
-        professionalId: linha.professionalId,
-        specialty: linha.specialty,
-        sessionDate: semanaAtras(semanas, linha.diaSemana, linha.hora),
-        status,
-        evolutionText:
-          status === "Realizada"
-            ? "Sessão realizada conforme o plano terapêutico; sem intercorrências."
-            : null,
-        notesInternal:
-          status === "Falta"
-            ? "Família não compareceu e não avisou. Horário perdido."
-            : status === "Cancelada"
-              ? "Responsável avisou com antecedência; horário reaproveitado."
-              : null,
-      });
-    });
-  }
+  ensureDemoHistory();
 
   // ---------- Tabela de serviços ----------
   insertRow("ServiceItem", { name: "Sessão de Intervenção ABA", specialty: "Intervenção Comportamental ABA", price: 190, sessionDuration: 50, active: 1 });
