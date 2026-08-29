@@ -119,7 +119,7 @@ export default async function AuditoriaPage({
             name="q"
             defaultValue={searchParams.q}
             placeholder="Filtrar por e-mail..."
-            className="input w-64 pl-9"
+            className="input input-with-icon w-64"
           />
         </div>
         <select name="acao" defaultValue={searchParams.acao ?? ""} className="input w-56">

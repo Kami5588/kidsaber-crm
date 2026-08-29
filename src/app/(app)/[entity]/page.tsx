@@ -122,7 +122,7 @@ return (
 {entity.searchFields.length > 0 && (
 <form className="relative">
 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-<input type="text" name="q" defaultValue={q} placeholder="Buscar..." className="input w-56 pl-9" />
+<input type="text" name="q" defaultValue={q} placeholder="Buscar..." className="input input-with-icon w-56" />
 </form>
 )}
 <Link href={`/${entity.key}/novo`} className="btn-primary">

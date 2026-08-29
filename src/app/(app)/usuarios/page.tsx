@@ -3,6 +3,9 @@ import { ShieldCheck } from "lucide-react";
 import { getCurrentUser, ROLES } from "@/lib/permissions";
 import { listLinkableProfessionals, listUsers } from "@/lib/users";
 import UsersPanel from "@/components/UsersPanel";
+import AccessRequestsPanel from "@/components/AccessRequestsPanel";
+import { listAccessRequests } from "@/lib/access-requests";
+import { googleEnabled } from "@/lib/auth";
 
 export const metadata = { title: "Contas de acesso · KidSaber Connect" };
 
@@ -26,6 +29,7 @@ export default async function UsuariosPage() {
 
   const users = listUsers();
   const professionals = listLinkableProfessionals();
+  const requests = listAccessRequests();
 
   return (
     <div>
@@ -44,6 +48,28 @@ export default async function UsuariosPage() {
           </div>
         ))}
       </div>
+
+      {googleEnabled && (
+        <div className="mb-6">
+          <AccessRequestsPanel
+            requests={requests.map((r) => ({
+              id: r.id,
+              email: r.email,
+              name: r.name,
+              picture: r.picture,
+              status: r.status,
+              reviewedByName: r.reviewedByName,
+              reviewedAt: r.reviewedAt,
+              createdAt: r.createdAt,
+            }))}
+            professionals={professionals.map((p) => ({
+              id: p.id as string,
+              fullName: p.fullName as string,
+              specialty: (p.specialty as string) ?? null,
+            }))}
+          />
+        </div>
+      )}
 
       <UsersPanel
         users={users.map((u) => ({

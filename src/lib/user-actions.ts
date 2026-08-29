@@ -4,10 +4,12 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { logAccess } from "./audit";
 import { getCurrentUser, type Role } from "./permissions";
+import { getAccessRequest, markReviewed } from "./access-requests";
 import {
   countActiveAdmins,
   createUser,
   generatePassword,
+  getUserByEmail,
   getUserById,
   setPassword,
   updateUser,
@@ -224,5 +226,104 @@ export async function changeOwnPasswordAction(
     return { ok: true, message: "Senha alterada com sucesso." };
   } catch (err: any) {
     return { ok: false, error: err?.message ?? "Não foi possível alterar a senha." };
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * Pedidos de acesso vindos do login com Google
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Libera o acesso de quem entrou com Google, criando a conta com o perfil que
+ * a direção escolher. Sem senha: a pessoa continua entrando pelo Google.
+ */
+export async function approveAccessAction(
+  _prev: UserFormState,
+  formData: FormData
+): Promise<UserFormState> {
+  try {
+    const admin = await requireAdmin();
+
+    const requestId = String(formData.get("requestId") ?? "");
+    const request = getAccessRequest(requestId);
+    if (!request) return { ok: false, error: "Pedido não encontrado." };
+    if (request.status === "APROVADO") return { ok: false, error: "Este pedido já foi aprovado." };
+
+    const role = String(formData.get("role") ?? "PROFISSIONAL") as Role;
+    const professionalId = String(formData.get("professionalId") ?? "");
+    const name = String(formData.get("name") ?? request.name ?? request.email).trim();
+
+    if (role === "PROFISSIONAL" && !professionalId) {
+      return {
+        ok: false,
+        error: "Vincule a conta a um profissional: é esse vínculo que define quais pacientes ela vê.",
+      };
+    }
+
+    if (getUserByEmail(request.email)) {
+      markReviewed(requestId, "APROVADO", { id: admin.id, name: admin.displayName });
+      return { ok: false, error: "Já existe uma conta com este e-mail. O pedido foi encerrado." };
+    }
+
+    // Senha aleatória que ninguém usa: quem entra pelo Google não passa pelo
+    // formulário de senha. Deixar o campo vazio abriria uma conta sem
+    // credencial nenhuma.
+    const id = createUser({
+      name,
+      email: request.email,
+      password: generatePassword(),
+      role,
+      professionalId: professionalId || null,
+      title: String(formData.get("title") ?? "") || null,
+      jobTitle: String(formData.get("jobTitle") ?? "") || null,
+      mustChangePassword: false,
+    });
+
+    markReviewed(requestId, "APROVADO", { id: admin.id, name: admin.displayName });
+
+    await logAccess({
+      action: "CRIAR",
+      entity: "User",
+      entityId: id,
+      detail: `Acesso liberado para ${request.email} com perfil ${role}, a partir do login com Google.`,
+    });
+
+    revalidatePath("/usuarios");
+    return { ok: true, message: `Acesso liberado para ${name}. Ela já pode entrar com o Google.` };
+  } catch (err: any) {
+    return { ok: false, error: err?.message ?? "Não foi possível liberar o acesso." };
+  }
+}
+
+/** Recusa o pedido. A pessoa pode tentar de novo, e o pedido volta à fila. */
+export async function rejectAccessAction(
+  _prev: UserFormState,
+  formData: FormData
+): Promise<UserFormState> {
+  try {
+    const admin = await requireAdmin();
+
+    const requestId = String(formData.get("requestId") ?? "");
+    const request = getAccessRequest(requestId);
+    if (!request) return { ok: false, error: "Pedido não encontrado." };
+
+    markReviewed(
+      requestId,
+      "RECUSADO",
+      { id: admin.id, name: admin.displayName },
+      String(formData.get("note") ?? "") || null
+    );
+
+    await logAccess({
+      action: "EDITAR",
+      entity: "AccessRequest",
+      entityId: requestId,
+      detail: `Pedido de acesso de ${request.email} recusado.`,
+    });
+
+    revalidatePath("/usuarios");
+    return { ok: true, message: `Pedido de ${request.email} recusado.` };
+  } catch (err: any) {
+    return { ok: false, error: err?.message ?? "Não foi possível recusar o pedido." };
   }
 }

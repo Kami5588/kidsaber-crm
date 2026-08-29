@@ -289,3 +289,24 @@ CREATE TABLE IF NOT EXISTS CareStageHistory (
 );
 
 CREATE INDEX IF NOT EXISTS idx_stage_patient ON CareStageHistory(patientId, createdAt DESC);
+
+-- ============================================================
+-- Entrada com conta Google, mediante aprovação da direção
+-- ============================================================
+
+-- Quem entrou com o Google mas ainda não tem acesso liberado.
+-- A direção revisa cada pedido antes de a pessoa ver qualquer prontuário.
+CREATE TABLE IF NOT EXISTS AccessRequest (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT,
+  picture TEXT,
+  status TEXT NOT NULL DEFAULT 'PENDENTE',
+  reviewedById TEXT,
+  reviewedByName TEXT,
+  reviewedAt TEXT,
+  note TEXT,
+  createdAt TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_access_status ON AccessRequest(status, createdAt DESC);

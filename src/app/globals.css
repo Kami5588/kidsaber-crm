@@ -34,6 +34,10 @@ body {
   @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-navy-500 focus:outline-none focus:ring-2 focus:ring-navy-100;
 }
 
+.input-with-icon {
+  @apply pl-11;
+}
+
 .label {
   @apply mb-1.5 block text-sm font-medium text-slate-700;
 }

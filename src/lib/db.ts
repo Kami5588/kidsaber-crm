@@ -79,6 +79,11 @@ function runMigrations(database: DatabaseSync) {
   // Etapa do atendimento
   addColumn("Patient", "careStage", "TEXT");
 
+  // Login por conta Google
+  addColumn("User", "authProvider", "TEXT");   // "credentials" ou "google"
+  addColumn("User", "picture", "TEXT");
+  addColumn("User", "lastLoginAt", "TEXT");
+
   // Arquivos anexados de verdade (e não só um link colado)
   addColumn("Document", "storedName", "TEXT");
   addColumn("Document", "originalName", "TEXT");

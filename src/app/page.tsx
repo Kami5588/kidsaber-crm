@@ -4,6 +4,7 @@ import {
   Brain, BookOpen, HandHeart, Puzzle, Sparkles, MessageSquare,
   MapPin, Phone, Mail, ArrowRight, CalendarCheck, ClipboardCheck,
   Users2, ShieldCheck, HeartHandshake, Clock, MessageCircle,
+  Heart, Briefcase, CheckCircle2, LogIn,
 } from "lucide-react";
 import { authOptions } from "@/lib/auth";
 import { listUnits } from "@/lib/units";
@@ -228,6 +229,114 @@ export default async function LandingPage() {
               Falar no WhatsApp
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* ---------- Dois caminhos: família ou equipe ---------- */}
+      <section id="acesso" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="text-sm font-bold uppercase tracking-wider text-teal-600">
+            Por onde você entra
+          </span>
+          <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
+            Você é da família ou da equipe?
+          </h2>
+          <p className="mt-4 text-slate-600">
+            O site atende as famílias que procuram a clínica. A equipe entra no sistema interno,
+            onde ficam a agenda e os prontuários.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          {/* Famílias */}
+          <article className="group relative overflow-hidden rounded-3xl border-2 border-gold-200 bg-gold-50/60 p-8 transition hover:-translate-y-1 hover:border-gold-400 hover:shadow-lg">
+            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-sun text-navy-900 shadow-sm">
+              <Heart className="h-7 w-7" />
+            </span>
+
+            <h3 className="mt-5 text-2xl font-extrabold text-navy-800">
+              Sou pai, mãe ou responsável
+            </h3>
+            <p className="mt-3 leading-relaxed text-slate-600">
+              Quer saber se a KidSaber pode ajudar sua filha ou seu filho? Fale com a nossa equipe
+              e agende uma avaliação. Não é preciso ter cadastro.
+            </p>
+
+            <ul className="mt-6 space-y-2.5 text-sm text-slate-600">
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-gold-600" />
+                Atendimento em Mundo Novo, Guaíra e Terra Roxa
+              </li>
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-gold-600" />
+                Retorno pelo WhatsApp ou telefone
+              </li>
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-gold-600" />
+                Orientação sobre a especialidade indicada
+              </li>
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#contato" className="btn-gold">
+                <CalendarCheck className="h-4 w-4" /> Agendar avaliação
+              </a>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border-2 border-gold-300 bg-white px-4 py-2.5 text-sm font-bold text-navy-700 transition hover:border-gold-500"
+              >
+                <MessageCircle className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
+          </article>
+
+          {/* Equipe */}
+          <article className="group relative overflow-hidden rounded-3xl border-2 border-navy-200 bg-navy-50/60 p-8 transition hover:-translate-y-1 hover:border-navy-400 hover:shadow-lg">
+            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-sky text-white shadow-sm">
+              <Briefcase className="h-7 w-7" />
+            </span>
+
+            <h3 className="mt-5 text-2xl font-extrabold text-navy-800">
+              Sou da equipe KidSaber
+            </h3>
+            <p className="mt-3 leading-relaxed text-slate-600">
+              Profissionais, coordenação e recepção entram no KidSaber Connect, o sistema interno
+              da clínica. O acesso é liberado pela direção.
+            </p>
+
+            <ul className="mt-6 space-y-2.5 text-sm text-slate-600">
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" />
+                Agenda e registro de evolução das sessões
+              </li>
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" />
+                Laudos e encaminhamentos entre especialidades
+              </li>
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" />
+                Cada profissional vê apenas os próprios pacientes
+              </li>
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href={session ? "/dashboard" : "/login"}
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-sky px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5"
+              >
+                <LogIn className="h-4 w-4" />
+                {session ? "Ir para o painel" : "Entrar no sistema"}
+              </Link>
+            </div>
+
+            <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-slate-500">
+              <ShieldCheck className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-teal-500" />
+              Primeiro acesso? Entre com a conta Google da clínica: a direção libera o seu perfil
+              antes do primeiro uso.
+            </p>
+          </article>
         </div>
       </section>
 

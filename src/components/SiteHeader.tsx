@@ -11,6 +11,7 @@ const LINKS = [
   { hash: "#como-funciona", label: "Como funciona" },
   { hash: "#unidades", label: "Unidades" },
   { hash: "#contato", label: "Contato" },
+  { hash: "#acesso", label: "Acesso" },
 ];
 
 /**
