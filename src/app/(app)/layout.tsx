@@ -28,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="z-40 flex-shrink-0 border-b border-slate-200 bg-white">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3 pl-20 lg:pl-6">
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-slate-800">
                 {showUnitSwitcher
@@ -47,7 +47,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </div>
 
             {showUnitSwitcher && (
-              <div className="w-72 flex-shrink-0">
+              <div className="w-44 flex-shrink-0 sm:w-72">
                 <UnitSwitcher units={units} activeUnitId={activeUnitId} />
               </div>
             )}
