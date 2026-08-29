@@ -22,3 +22,6 @@ data
 
 # Arquivos temporarios com segredos
 senha-admin-TEMP.txt
+
+# Cache do TypeScript, gerado localmente.
+tsconfig.tsbuildinfo
