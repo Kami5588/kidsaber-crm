@@ -52,6 +52,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "Users",
     searchFields: ["fullName", "diagnoses", "cpf"],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "fullName", label: "Nome completo", type: "text", required: true, showInTable: true },
       { name: "birthDate", label: "Data de nascimento", type: "date", required: true, showInTable: true },
       { name: "gender", label: "Gênero", type: "select", options: ["Masculino", "Feminino", "Outro"] },
@@ -93,6 +94,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "Stethoscope",
     searchFields: ["fullName", "email", "specialty"],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "fullName", label: "Nome completo", type: "text", required: true, showInTable: true },
       { name: "email", label: "E-mail", type: "email", required: true, showInTable: true },
       { name: "phone", label: "Telefone", type: "text" },
@@ -111,6 +113,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "CalendarClock",
     searchFields: [],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "patientId", label: "Paciente", type: "select", relation: "pacientes", required: true, showInTable: true },
       { name: "professionalId", label: "Profissional", type: "select", relation: "profissionais", required: true, showInTable: true },
       { name: "specialty", label: "Especialidade", type: "select", options: SPECIALTIES, required: true, showInTable: true },
@@ -132,6 +135,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "Megaphone",
     searchFields: ["name", "email", "phone"],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "name", label: "Nome", type: "text", required: true, showInTable: true },
       { name: "email", label: "E-mail", type: "email", required: true, showInTable: true },
       { name: "phone", label: "Telefone", type: "text" },
@@ -190,6 +194,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "Wallet",
     searchFields: [],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "patientId", label: "Paciente", type: "select", relation: "pacientes", required: true, showInTable: true },
       { name: "amount", label: "Valor total (R$)", type: "number", required: true, showInTable: true },
       { name: "discount", label: "Desconto (R$)", type: "number", default: 0 },
@@ -212,6 +217,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "ListChecks",
     searchFields: ["title", "description"],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "title", label: "Título", type: "text", required: true, showInTable: true },
       { name: "status", label: "Status", type: "select", options: ["Pendente", "Em andamento", "Concluída", "Cancelada"], default: "Pendente", showInTable: true },
       { name: "priority", label: "Prioridade", type: "select", options: ["Baixa", "Media", "Alta", "Urgente"], default: "Media", showInTable: true },
@@ -231,6 +237,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "MessagesSquare",
     searchFields: ["summary"],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "channel", label: "Canal", type: "select", options: ["WhatsApp", "Telefone", "E-mail", "Presencial", "Instagram", "Site"], required: true, showInTable: true },
       { name: "contactType", label: "Tipo de contato", type: "select", options: ["Lead", "Paciente", "Responsavel"], showInTable: true },
       { name: "interactionDate", label: "Data/hora", type: "datetime", required: true, showInTable: true },
@@ -251,6 +258,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
     icon: "Hourglass",
     searchFields: ["name", "phone"],
     fields: [
+      { name: "unitId", label: "Unidade", type: "select", relation: "unidades", showInTable: true },
       { name: "name", label: "Nome", type: "text", required: true, showInTable: true },
       { name: "phone", label: "Telefone", type: "text", required: true, showInTable: true },
       { name: "email", label: "E-mail", type: "email" },

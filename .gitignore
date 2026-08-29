@@ -1,1 +1,21 @@
 node_modules
+.next
+out
+build
+
+# Variáveis de ambiente (contêm segredos)
+.env
+.env.local
+.env*.local
+
+# Banco SQLite local e artefatos do WAL
+data
+*.db
+*.db-shm
+*.db-wal
+
+.DS_Store
+*.log
+
+# Config local do ambiente de desenvolvimento
+.claude

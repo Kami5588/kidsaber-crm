@@ -12,13 +12,14 @@ const GROUPS: { label: string; items: string[] }[] = [
   { label: "CRM & Relacionamento", items: ["leads", "interacoes", "lista-espera", "tarefas"] },
   { label: "Financeiro", items: ["financeiro", "convenios", "servicos"] },
   { label: "Outros", items: ["documentos", "satisfacao"] },
+  { label: "Administração", items: ["unidades"] },
 ];
 
 export default function Sidebar({ userName }: { userName?: string | null }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-64 flex-shrink-0 flex-col bg-navy-800 text-white">
+    <aside className="flex h-full w-64 flex-shrink-0 flex-col bg-navy-800 text-white">
       <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 text-navy-900 font-extrabold text-lg">
           KS

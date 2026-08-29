@@ -1,3 +1,16 @@
+CREATE TABLE IF NOT EXISTS Unit (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL DEFAULT 'PR',
+  address TEXT,
+  phone TEXT,
+  email TEXT,
+  isMain INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'Ativo',
+  createdAt TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS User (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -11,6 +24,7 @@ CREATE TABLE IF NOT EXISTS User (
 
 CREATE TABLE IF NOT EXISTS Patient (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   fullName TEXT NOT NULL,
   birthDate TEXT NOT NULL,
   gender TEXT,
@@ -50,6 +64,7 @@ CREATE TABLE IF NOT EXISTS PatientResponsible (
 
 CREATE TABLE IF NOT EXISTS Professional (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   fullName TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT,
@@ -71,6 +86,7 @@ CREATE TABLE IF NOT EXISTS PatientProfessional (
 
 CREATE TABLE IF NOT EXISTS Session (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   patientId TEXT NOT NULL,
   professionalId TEXT NOT NULL,
   specialty TEXT NOT NULL,
@@ -86,6 +102,7 @@ CREATE TABLE IF NOT EXISTS Session (
 
 CREATE TABLE IF NOT EXISTS Lead (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT,
@@ -127,6 +144,7 @@ CREATE TABLE IF NOT EXISTS ServiceItem (
 
 CREATE TABLE IF NOT EXISTS Invoice (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   patientId TEXT NOT NULL,
   responsibleId TEXT,
   referenceMonth TEXT,
@@ -143,6 +161,7 @@ CREATE TABLE IF NOT EXISTS Invoice (
 
 CREATE TABLE IF NOT EXISTS Task (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   title TEXT NOT NULL,
   description TEXT,
   assignedToId TEXT,
@@ -156,6 +175,7 @@ CREATE TABLE IF NOT EXISTS Task (
 
 CREATE TABLE IF NOT EXISTS Interaction (
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   contactType TEXT,
   relatedLeadId TEXT,
   relatedPatientId TEXT,
@@ -172,6 +192,7 @@ CREATE TABLE IF NOT EXISTS Interaction (
 CREATE TABLE IF NOT EXISTS Waitlist (
   createdAt TEXT NOT NULL,
   id TEXT PRIMARY KEY,
+  unitId TEXT,
   name TEXT NOT NULL,
   phone TEXT NOT NULL,
   email TEXT,

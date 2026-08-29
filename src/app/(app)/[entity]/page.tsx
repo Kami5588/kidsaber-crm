@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { Plus, Pencil, Search } from "lucide-react";
 import { ENTITIES, getEntity } from "@/lib/entities";
 import { listAll } from "@/lib/orm";
+import { UNIT_SCOPED_TABLES } from "@/lib/db";
+import { ALL_UNITS, getActiveUnitId, unitFilter } from "@/lib/units";
 import { deleteEntity } from "@/lib/actions";
 import DeleteButton from "@/components/DeleteButton";
 import { format, parseISO } from "date-fns";
@@ -35,6 +37,13 @@ Novo: "bg-gold-50 text-gold-800",
 Aguardando: "bg-gold-50 text-gold-800",
 Agendada: "bg-navy-50 text-navy-700",
 Inativo: "bg-slate-100 text-slate-600",
+"Em avaliação": "bg-navy-50 text-navy-700",
+"Relatório pendente": "bg-gold-50 text-gold-800",
+Contatado: "bg-navy-50 text-navy-700",
+Urgente: "bg-coral-50 text-coral-700",
+Alta: "bg-coral-50 text-coral-700",
+Media: "bg-gold-50 text-gold-800",
+Baixa: "bg-slate-100 text-slate-600",
 Cancelada: "bg-coral-50 text-coral-700",
 Cancelado: "bg-coral-50 text-coral-700",
 Atrasado: "bg-coral-50 text-coral-700",
@@ -49,13 +58,27 @@ const entity = getEntity(params.entity);
 if (!entity) notFound();
 
 const q = searchParams.q?.trim();
-let where: string | undefined;
-let queryParams: any[] = [];
+const clauses: string[] = [];
+const queryParams: any[] = [];
+
+// A busca é um OR entre vários campos, então precisa de parênteses para não
+// se misturar com o AND do filtro de unidade.
 if (q && entity.searchFields.length > 0) {
-where = entity.searchFields.map((f) => `${f} LIKE ?`).join(" OR ");
-queryParams = entity.searchFields.map(() => `%${q}%`);
+clauses.push("(" + entity.searchFields.map((f) => `${f} LIKE ?`).join(" OR ") + ")");
+queryParams.push(...entity.searchFields.map(() => `%${q}%`));
 }
 
+const activeUnitId = getActiveUnitId();
+const isUnitScoped = (UNIT_SCOPED_TABLES as readonly string[]).includes(entity.table);
+if (isUnitScoped) {
+const uf = unitFilter();
+if (uf.sql !== "1=1") {
+clauses.push(uf.sql);
+queryParams.push(...uf.params);
+}
+}
+
+const where = clauses.length > 0 ? clauses.join(" AND ") : undefined;
 const rows = listAll(entity.table, { where, params: queryParams });
 
 const relationFields = entity.fields.filter((f) => f.relation);
@@ -67,7 +90,9 @@ const relRows = listAll(relEntity.table);
 relationLabels[rf.name] = Object.fromEntries(relRows.map((r) => [r.id, r[relEntity.displayField]]));
 }
 
-const columns = entity.fields.filter((f) => f.showInTable);
+const columns = entity.fields.filter(
+(f) => f.showInTable && !(f.name === "unitId" && activeUnitId !== ALL_UNITS)
+);
 const boundDelete = async (id: string) => {
 "use server";
 await deleteEntity(entity!.key, id);
