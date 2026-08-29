@@ -143,7 +143,7 @@ export const ENTITIES: Record<string, EntityConfig> = {
       { name: "specialty", label: "Especialidade", type: "select", options: SPECIALTIES, required: true, showInTable: true },
       { name: "sessionDate", label: "Data e hora", type: "datetime", required: true, showInTable: true },
       { name: "durationMinutes", label: "Duração (min)", type: "number", default: 50 },
-      { name: "status", label: "Status", type: "select", options: ["Agendada", "Realizada", "Relatório pendente", "Cancelada"], default: "Agendada", showInTable: true },
+      { name: "status", label: "Status", type: "select", options: ["Agendada", "Realizada", "Relatório pendente", "Cancelada", "Falta"], default: "Agendada", showInTable: true },
       { name: "goals", label: "Objetivos trabalhados", type: "textarea", colSpan2: true },
       { name: "evolutionText", label: "Relatório de evolução", type: "textarea", colSpan2: true },
       { name: "nextSteps", label: "Próximos passos", type: "textarea", colSpan2: true },

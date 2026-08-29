@@ -11,6 +11,8 @@ import { rawAll, rawGet } from "./orm";
 export interface MonthTotals {
   atendimentosRealizados: number;
   atendimentosCancelados: number;
+  /** Não compareceu e não avisou — horário perdido. */
+  atendimentosFaltas: number;
   atendimentosAgendados: number;
   comparecimento: number | null;
   pacientesAtivos: number;
@@ -57,17 +59,25 @@ export function monthTotals(month: string, unitId?: string | null): MonthTotals 
       AND s.status = 'Cancelada' AND ${s.sql}`,
     [start, end, ...s.params]
   );
+  const faltas = count(
+    `SELECT COUNT(*) c FROM Session s WHERE s.sessionDate >= ? AND s.sessionDate < ?
+      AND s.status = 'Falta' AND ${s.sql}`,
+    [start, end, ...s.params]
+  );
   const agendados = count(
     `SELECT COUNT(*) c FROM Session s WHERE s.sessionDate >= ? AND s.sessionDate < ?
       AND s.status = 'Agendada' AND ${s.sql}`,
     [start, end, ...s.params]
   );
 
-  const encerrados = realizados + cancelados;
+  // As faltas entram no denominador: sem elas o comparecimento sairia sempre em
+  // 100% e o relatório contradiria o painel de faltas.
+  const encerrados = realizados + cancelados + faltas;
 
   return {
     atendimentosRealizados: realizados,
     atendimentosCancelados: cancelados,
+    atendimentosFaltas: faltas,
     atendimentosAgendados: agendados,
     comparecimento: encerrados > 0 ? Math.round((realizados / encerrados) * 100) : null,
 
@@ -119,11 +129,14 @@ export function byUnit(month: string) {
          AND s.status IN ('Realizada','Relatório pendente')) AS atendimentos,
       (SELECT COUNT(*) FROM Session s WHERE s.unitId = u.id AND s.sessionDate >= ? AND s.sessionDate < ?
          AND s.status = 'Cancelada') AS cancelados,
+       (SELECT COUNT(*) FROM Session s WHERE s.unitId = u.id
+         AND s.sessionDate >= ? AND s.sessionDate < ?
+         AND s.status = 'Falta') AS faltas,
       (SELECT COALESCE(SUM(i.amount - i.discount),0) FROM Invoice i
          WHERE i.unitId = u.id AND i.referenceMonth = ? AND i.status = 'Pago') AS receita
      FROM Unit u WHERE u.status = 'Ativo'
      ORDER BY u.isMain DESC, u.name ASC`,
-    [start, end, start, end, month]
+    [start, end, start, end, start, end, month]
   );
 }
 
@@ -198,6 +211,7 @@ export function buildCsv(month: string, unitId?: string | null): string {
   linhas.push("Indicador;Valor");
   linhas.push(`Atendimentos realizados;${t.atendimentosRealizados}`);
   linhas.push(`Atendimentos cancelados;${t.atendimentosCancelados}`);
+  linhas.push(`Faltas (sem aviso);${t.atendimentosFaltas}`);
   linhas.push(`Atendimentos agendados;${t.atendimentosAgendados}`);
   linhas.push(`Taxa de comparecimento;${t.comparecimento === null ? "-" : t.comparecimento + "%"}`);
   linhas.push(`Pacientes ativos;${t.pacientesAtivos}`);
@@ -210,10 +224,10 @@ export function buildCsv(month: string, unitId?: string | null): string {
   linhas.push("");
 
   linhas.push("POR UNIDADE");
-  linhas.push("Unidade;Cidade;Pacientes ativos;Atendimentos;Cancelados;Receita recebida");
+  linhas.push("Unidade;Cidade;Pacientes ativos;Atendimentos;Cancelados;Faltas;Receita recebida");
   for (const u of unidades) {
     linhas.push(
-      [u.name, `${u.city}/${u.state}`, u.pacientesAtivos, u.atendimentos, u.cancelados, brl(Number(u.receita ?? 0))].join(";")
+      [u.name, `${u.city}/${u.state}`, u.pacientesAtivos, u.atendimentos, u.cancelados, u.faltas, brl(Number(u.receita ?? 0))].join(";")
     );
   }
   linhas.push("");

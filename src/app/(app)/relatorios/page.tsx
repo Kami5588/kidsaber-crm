@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
-  BarChart3, CalendarCheck, XCircle, Percent, Users, UserPlus,
+  BarChart3, CalendarCheck, XCircle, UserX, Percent, Users, UserPlus,
   Wallet, Clock, AlertTriangle, Megaphone, TrendingUp,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/permissions";
@@ -114,9 +114,10 @@ export default async function RelatoriosPage({
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400">
         Atendimento
       </h2>
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Stat icon={CalendarCheck} label="Atendimentos realizados" value={String(t.atendimentosRealizados)} tone="bg-teal-500 text-white" />
-        <Stat icon={XCircle} label="Cancelados" value={String(t.atendimentosCancelados)} tone="bg-coral-500 text-white" />
+        <Stat icon={XCircle} label="Cancelados" value={String(t.atendimentosCancelados)} tone="bg-gold-500 text-navy-900" hint="Avisados com antecedência" />
+        <Stat icon={UserX} label="Faltas" value={String(t.atendimentosFaltas)} tone="bg-coral-500 text-white" hint="Sem aviso · veja o painel de faltas" />
         <Stat
           icon={Percent}
           label="Taxa de comparecimento"
@@ -124,7 +125,7 @@ export default async function RelatoriosPage({
           tone="bg-navy-600 text-white"
           hint="Entre as sessões já encerradas"
         />
-        <Stat icon={Clock} label="Ainda agendados" value={String(t.atendimentosAgendados)} tone="bg-gold-500 text-navy-900" />
+        <Stat icon={Clock} label="Ainda agendados" value={String(t.atendimentosAgendados)} tone="bg-slate-700 text-white" />
       </div>
 
       {/* Pacientes */}
@@ -205,6 +206,7 @@ export default async function RelatoriosPage({
                 <th className="pb-2 pr-4 text-right">Pacientes ativos</th>
                 <th className="pb-2 pr-4 text-right">Atendimentos</th>
                 <th className="pb-2 pr-4 text-right">Cancelados</th>
+                <th className="pb-2 pr-4 text-right">Faltas</th>
                 <th className="pb-2 text-right">Recebido</th>
               </tr>
             </thead>
@@ -225,6 +227,7 @@ export default async function RelatoriosPage({
                   <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{u.pacientesAtivos}</td>
                   <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{u.atendimentos}</td>
                   <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{u.cancelados}</td>
+                  <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{u.faltas}</td>
                   <td className="py-3 text-right font-semibold tabular-nums text-navy-700">
                     {brl(Number(u.receita ?? 0))}
                   </td>

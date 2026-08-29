@@ -3,6 +3,7 @@ import Link from "next/link";
 import { KeyRound } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import UnitSwitcher from "@/components/UnitSwitcher";
+import QuickSearch from "@/components/QuickSearch";
 import { getActiveUnit, getActiveUnitId, listUnits } from "@/lib/units";
 import { getCurrentUser } from "@/lib/permissions";
 import { getUserById } from "@/lib/users";
@@ -46,11 +47,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               </p>
             </div>
 
-            {showUnitSwitcher && (
-              <div className="w-44 flex-shrink-0 sm:w-72">
-                <UnitSwitcher units={units} activeUnitId={activeUnitId} />
+            <div className="flex flex-1 items-center justify-end gap-3">
+              <div className="hidden min-w-0 max-w-xs flex-1 md:block">
+                <QuickSearch />
               </div>
-            )}
+
+              {showUnitSwitcher && (
+                <div className="w-44 flex-shrink-0 sm:w-72">
+                  <UnitSwitcher units={units} activeUnitId={activeUnitId} />
+                </div>
+              )}
+            </div>
           </div>
         </header>
 

@@ -50,6 +50,7 @@ Cancelado: "bg-coral-50 text-coral-700",
 Atrasado: "bg-coral-50 text-coral-700",
 Arquivado: "bg-slate-100 text-slate-600",
 Desistiu: "bg-coral-50 text-coral-700",
+Falta: "bg-coral-50 text-coral-700",
 };
 
 export default async function EntityListPage({

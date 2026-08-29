@@ -284,6 +284,14 @@ export function ensureSeeded() {
   // ---------- Pacientes ----------
   const patientTs = { withTimestamps: true, timestampFields: ["createdAt", "updatedAt"] };
 
+  // Datas fixas de nascimento quase nunca cairiam no mês corrente, e o painel
+  // de aniversariantes ficaria vazio em quase toda demonstração. Duas crianças
+  // passam a fazer aniversário no mês atual, seja ele qual for.
+  const hojeRef = new Date();
+  const mesAtual = String(hojeRef.getMonth() + 1).padStart(2, "0");
+  const aniversarioNoMes = (ano: number, dia: number) =>
+    `${ano}-${mesAtual}-${String(dia).padStart(2, "0")}`;
+
   const patEnzo = insertRow("Patient", {
     careStage: "Em atendimento",
     unitId: sede,
@@ -300,7 +308,7 @@ export function ensureSeeded() {
     careStage: "Em atendimento",
     unitId: sede,
     fullName: "Helena Ferraz",
-    birthDate: "2021-11-30",
+    birthDate: aniversarioNoMes(2021, 12),
     gender: "Feminino",
     status: "Ativo",
     specialties: "Modelo Denver (ESDM)",
@@ -332,7 +340,7 @@ export function ensureSeeded() {
     careStage: "Em atendimento",
     unitId: guaira,
     fullName: "Théo Ribeiro",
-    birthDate: "2019-09-21",
+    birthDate: aniversarioNoMes(2019, 24),
     gender: "Masculino",
     status: "Ativo",
     specialties: "Fonoaudiologia",
@@ -419,6 +427,81 @@ export function ensureSeeded() {
     unitId: terraRoxa, patientId: patDavi, professionalId: profPsi,
     specialty: "Psicologia", sessionDate: day(6, 9), status: "Agendada",
   });
+
+  // ---------- Histórico de atendimentos ----------
+  // Dez semanas de sessões já encerradas. Sem histórico, o painel de faltas e os
+  // relatórios nascem vazios e não há o que mostrar à clínica. O padrão de cada
+  // criança é fixo de propósito: a demonstração precisa ser sempre a mesma.
+  //
+  // R = realizada, F = falta (não avisou), C = cancelada (avisou antes).
+  const HISTORICO_ATENDIMENTO = [
+    { unitId: sede, patientId: patEnzo, professionalId: profAba,
+      specialty: "Intervenção Comportamental ABA", diaSemana: 1, hora: 9,
+      semanas: "RRRRRCRRRR" },
+    { unitId: sede, patientId: patHelena, professionalId: profDenver,
+      specialty: "Modelo Denver (ESDM)", diaSemana: 2, hora: 14,
+      semanas: "RRFRRRFRRR" },
+    // Miguel é o caso que a recepção precisa enxergar: sexta no fim da tarde,
+    // faltas se acumulando.
+    { unitId: sede, patientId: patMiguel, professionalId: profAba,
+      specialty: "Intervenção Comportamental ABA", diaSemana: 5, hora: 17,
+      semanas: "RFFRFRFRRF" },
+    { unitId: guaira, patientId: patTheo, professionalId: profFono,
+      specialty: "Fonoaudiologia", diaSemana: 2, hora: 8,
+      semanas: "RRRCRRRRRR" },
+    { unitId: guaira, patientId: patAlice, professionalId: profTo,
+      specialty: "Terapia Ocupacional", diaSemana: 5, hora: 16,
+      semanas: "RRFRCRFRRR" },
+    { unitId: terraRoxa, patientId: patLaura, professionalId: profPsicoped,
+      specialty: "Psicopedagogia", diaSemana: 4, hora: 13,
+      semanas: "RRRRRRRRRR" },
+    { unitId: terraRoxa, patientId: patDavi, professionalId: profPsi,
+      specialty: "Psicologia", diaSemana: 1, hora: 9,
+      semanas: "RRRFRRCRFR" },
+  ];
+
+  /** Data do atendimento fixo da criança, N semanas atrás. Sempre no passado. */
+  const semanaAtras = (semanas: number, diaSemana: number, hora: number) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - semanas * 7);
+    d.setDate(d.getDate() - ((d.getDay() - diaSemana + 7) % 7));
+    d.setHours(hora, 0, 0, 0);
+    return d.toISOString();
+  };
+
+  const SITUACAO: Record<string, string> = {
+    R: "Realizada",
+    F: "Falta",
+    C: "Cancelada",
+  };
+
+  for (const linha of HISTORICO_ATENDIMENTO) {
+    const marcas = linha.semanas.split("");
+    marcas.forEach((marca, i) => {
+      // O primeiro caractere é a semana mais antiga.
+      const semanas = marcas.length - i;
+      const status = SITUACAO[marca];
+
+      insertRow("Session", {
+        unitId: linha.unitId,
+        patientId: linha.patientId,
+        professionalId: linha.professionalId,
+        specialty: linha.specialty,
+        sessionDate: semanaAtras(semanas, linha.diaSemana, linha.hora),
+        status,
+        evolutionText:
+          status === "Realizada"
+            ? "Sessão realizada conforme o plano terapêutico; sem intercorrências."
+            : null,
+        notesInternal:
+          status === "Falta"
+            ? "Família não compareceu e não avisou. Horário perdido."
+            : status === "Cancelada"
+              ? "Responsável avisou com antecedência; horário reaproveitado."
+              : null,
+      });
+    });
+  }
 
   // ---------- Tabela de serviços ----------
   insertRow("ServiceItem", { name: "Sessão de Intervenção ABA", specialty: "Intervenção Comportamental ABA", price: 190, sessionDuration: 50, active: 1 });

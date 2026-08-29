@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake,
-  KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3,
+  KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3, UserX,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
@@ -138,6 +138,14 @@ export default function Sidebar({
           >
             <CalendarDays className="h-4 w-4" />
             Agenda
+          </Link>
+
+          <Link
+            href="/faltas"
+            className={`mb-2 ${linkClass(pathname?.startsWith("/faltas") ?? false)}`}
+          >
+            <UserX className="h-4 w-4" />
+            Faltas
           </Link>
 
           {canAccessPage(role, "/relatorios") && (

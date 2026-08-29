@@ -1,13 +1,14 @@
 import { count, rawAll, rawGet, sumWhere } from "@/lib/orm";
 import {
   Users, CalendarClock, Wallet, ListChecks, Hourglass, Smile, Megaphone,
-  TrendingUp, Building2, AlertTriangle,
+  TrendingUp, Building2, AlertTriangle, Cake, Phone,
 } from "lucide-react";
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ALL_UNITS, getActiveUnit, getActiveUnitId, listUnits } from "@/lib/units";
 import { canAccessPage, getCurrentUser } from "@/lib/permissions";
+import { monthBirthdays } from "@/lib/birthdays";
 import { redirect } from "next/navigation";
 
 const brl = (n: number) =>
@@ -147,6 +148,8 @@ export default async function DashboardPage() {
   // entram no comparativo - vale avisar em vez de deixar o numero sumir.
   const orphanPatients = isAll ? count("Patient", "unitId IS NULL") : 0;
 
+  const aniversariantes = monthBirthdays(user);
+
   return (
     <div>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
@@ -276,6 +279,56 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {aniversariantes.length > 0 && (
+        <div className="card mt-6 p-5">
+          <div className="mb-4 flex items-center gap-2">
+            <Cake className="h-5 w-5 text-coral-500" />
+            <h2 className="font-semibold text-slate-800">
+              Aniversariantes de {format(now, "MMMM", { locale: ptBR })}
+            </h2>
+          </div>
+
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {aniversariantes.map((a) => (
+              <li
+                key={a.id}
+                className={`flex items-center gap-3 rounded-xl border p-3 ${
+                  a.ehHoje ? "border-coral-300 bg-coral-50" : "border-slate-200"
+                }`}
+              >
+                <span
+                  className={`flex h-11 w-11 flex-shrink-0 flex-col items-center justify-center rounded-xl font-bold ${
+                    a.ehHoje ? "bg-coral-500 text-white" : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  <span className="text-base leading-none">{a.dia}</span>
+                  <span className="text-[9px] uppercase leading-none">
+                    {format(now, "MMM", { locale: ptBR })}
+                  </span>
+                </span>
+
+                <span className="min-w-0 flex-1">
+                  <Link
+                    href={`/pacientes/${a.id}`}
+                    className="block truncate text-sm font-semibold text-slate-800 hover:text-navy-600"
+                  >
+                    {a.fullName}
+                  </Link>
+                  <span className="block text-xs text-slate-500">
+                    faz {a.idadeQueFaz} anos{a.ehHoje ? " · é hoje!" : ""}
+                  </span>
+                  {a.telefone && (
+                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                      <Phone className="h-2.5 w-2.5" />
+                      {a.telefone}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="card mt-6 p-5">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-slate-800">Leads recentes</h2>
