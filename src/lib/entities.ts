@@ -8,6 +8,7 @@ export const SPECIALTIES = [
   "Fonoaudiologia",
   "Psicopedagogia",
   "Psicologia",
+  "Fisioterapia",
 ];
 
 export type FieldType =

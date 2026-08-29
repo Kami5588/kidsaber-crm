@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Plus, Pencil, Search } from "lucide-react";
+import { Plus, Pencil, Search, FolderOpen } from "lucide-react";
 import { ENTITIES, getEntity } from "@/lib/entities";
 import { listAll } from "@/lib/orm";
 import { UNIT_SCOPED_TABLES } from "@/lib/db";
@@ -169,8 +169,12 @@ display
 
 <td className="px-4 py-3">
 <div className="flex items-center justify-end gap-1">
-<Link href={`/${entity.key}/${row.id}`} className="rounded-lg p-1.5 text-navy-600 hover:bg-navy-50" title="Editar">
-<Pencil className="h-4 w-4" />
+<Link
+href={`/${entity.key}/${row.id}`}
+className="rounded-lg p-1.5 text-navy-600 hover:bg-navy-50"
+title={entity.table === "Patient" ? "Abrir ficha" : "Editar"}
+>
+{entity.table === "Patient" ? <FolderOpen className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
 </Link>
 <DeleteButton action={boundDelete.bind(null, row.id)} />
 </div>

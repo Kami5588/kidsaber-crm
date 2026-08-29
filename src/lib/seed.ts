@@ -3,8 +3,8 @@ import { db, nowIso } from "./db";
 import { insertRow, rawAll, rawGet } from "./orm";
 import { generatePassword } from "./users";
 
-/** Contato geral da clínica, usado enquanto cada unidade não tem o seu. */
-const TELEFONE_GERAL = "(44) 99840-0554";
+/** Contato geral, usado por profissionais que atendem em mais de uma unidade. */
+const TELEFONE_GERAL = "(67) 99244-4152";
 const EMAIL_GERAL = "contato@clinickidsaber.com.br";
 
 /**
@@ -28,8 +28,8 @@ export function ensureUnits(): Record<string, string> {
     name: "Mundo Novo",
     city: "Mundo Novo",
     state: "MS",
-    address: "",
-    phone: TELEFONE_GERAL,
+    address: "Rua Voluntários da Pátria, 343 - Centro, CEP 79980-000",
+    phone: "(67) 99244-4152",
     email: EMAIL_GERAL,
     isMain: 1,
     status: "Ativo",
@@ -38,8 +38,8 @@ export function ensureUnits(): Record<string, string> {
     name: "Guaíra",
     city: "Guaíra",
     state: "PR",
-    address: "",
-    phone: TELEFONE_GERAL,
+    address: "Rua Professor Galvoso, 813 - Centro, CEP 85980-085",
+    phone: "(44) 99135-2175",
     email: EMAIL_GERAL,
     isMain: 0,
     status: "Ativo",
@@ -48,8 +48,9 @@ export function ensureUnits(): Record<string, string> {
     name: "Terra Roxa",
     city: "Terra Roxa",
     state: "PR",
+    // Endereço ainda não confirmado; preencher na tela de Unidades.
     address: "",
-    phone: TELEFONE_GERAL,
+    phone: "(44) 99135-2175",
     email: EMAIL_GERAL,
     isMain: 0,
     status: "Ativo",

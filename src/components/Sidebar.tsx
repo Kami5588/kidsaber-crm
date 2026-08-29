@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake, KeyRound,
+  LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake, KeyRound, LifeBuoy,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
 import { getIcon } from "@/lib/icon-map";
 import { canAccessEntity, canAccessPage, type Role } from "@/lib/roles";
 import { BrandMascot } from "./BrandMark";
+import { SUPPORT_EMAIL } from "@/lib/clinic";
 
 const GROUPS: { label: string; items: string[] }[] = [
   { label: "Atendimento", items: ["pacientes", "responsaveis", "profissionais", "sessoes"] },
@@ -138,6 +139,13 @@ export default function Sidebar({
           <KeyRound className="h-4 w-4" />
           Minha conta
         </Link>
+        <a
+          href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Suporte KidSaber Connect")}`}
+          className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-teal-50 transition hover:bg-white/10"
+        >
+          <LifeBuoy className="h-4 w-4" />
+          Suporte
+        </a>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-coral-200 transition hover:bg-white/10"
