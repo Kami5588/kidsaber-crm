@@ -44,6 +44,25 @@ export interface EntityConfig {
 }
 
 export const ENTITIES: Record<string, EntityConfig> = {
+  unidades: {
+    key: "unidades",
+    table: "Unit",
+    label: "Unidades",
+    labelSingular: "Unidade",
+    displayField: "name",
+    icon: "Building2",
+    searchFields: ["name", "city"],
+    fields: [
+      { name: "name", label: "Nome da unidade", type: "text", required: true, showInTable: true },
+      { name: "city", label: "Cidade", type: "text", required: true, showInTable: true },
+      { name: "state", label: "Estado (UF)", type: "text", default: "PR", showInTable: true },
+      { name: "status", label: "Status", type: "select", options: ["Ativo", "Inativo"], default: "Ativo", showInTable: true },
+      { name: "phone", label: "Telefone", type: "text", showInTable: true },
+      { name: "email", label: "E-mail", type: "email" },
+      { name: "isMain", label: "Unidade sede", type: "checkbox", default: false },
+      { name: "address", label: "Endereço completo", type: "text", colSpan2: true },
+    ],
+  },
   pacientes: {
     key: "pacientes",
     table: "Patient",

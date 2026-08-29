@@ -156,6 +156,19 @@ export default async function PrivacidadePage() {
 
           <h2>7. Como protegemos os dados</h2>
           <ul>
+            <li>
+              <strong>Os dados de saúde são criptografados no banco</strong> (AES-256-GCM):
+              diagnósticos, evoluções das sessões, objetivos e notas internas ficam ilegíveis para
+              quem tiver acesso direto ao arquivo do banco
+            </li>
+            <li>
+              <strong>Todo acesso a prontuário é registrado</strong> em trilha de auditoria, com
+              usuário, data, hora e origem, mantida por 180 dias
+            </li>
+            <li>
+              O login bloqueia por 15 minutos após cinco tentativas erradas, o que inviabiliza
+              ataques de tentativa e erro
+            </li>
             <li>O sistema de gestão é de acesso restrito, protegido por login e senha individuais</li>
             <li>As senhas são armazenadas de forma criptografada e não podem ser lidas por ninguém</li>
             <li>O acesso às informações clínicas é limitado aos profissionais envolvidos no atendimento e à direção</li>

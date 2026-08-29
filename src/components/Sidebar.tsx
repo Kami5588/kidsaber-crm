@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut, ScrollText, ShieldCheck } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
 import { getIcon } from "@/lib/icon-map";
 import { BrandMascot } from "./BrandMark";
+
+const EXTRA_LINKS = [
+  { href: "/lgpd", label: "Direitos do titular", icon: ShieldCheck },
+  { href: "/auditoria", label: "Auditoria de acesso", icon: ScrollText },
+];
 
 const GROUPS: { label: string; items: string[] }[] = [
   { label: "Atendimento", items: ["pacientes", "responsaveis", "profissionais", "sessoes"] },
@@ -67,6 +72,28 @@ export default function Sidebar({ userName }: { userName?: string | null }) {
             </div>
           </div>
         ))}
+        <div className="mb-4">
+          <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-teal-300/80">
+            Proteção de dados
+          </p>
+          <div className="space-y-1">
+            {EXTRA_LINKS.map((l) => {
+              const active = pathname?.startsWith(l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                    active ? "bg-gold-500 text-navy-900" : "text-teal-50 hover:bg-white/10"
+                  }`}
+                >
+                  <l.icon className="h-4 w-4" />
+                  {l.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </nav>
 
       <div className="border-t border-white/10 px-4 py-4">

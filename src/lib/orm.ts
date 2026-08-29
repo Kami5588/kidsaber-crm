@@ -1,4 +1,5 @@
 import { db, newId, nowIso } from "./db";
+import { decryptByFieldName, decryptRow, encryptRow } from "./crypto";
 
 export type Row = Record<string, any>;
 
@@ -16,12 +17,13 @@ export function listAll(table: string, opts?: { orderBy?: string; where?: string
   if (opts?.where) sql += ` WHERE ${opts.where}`;
   sql += ` ORDER BY ${opts?.orderBy ?? "createdAt DESC"}`;
   const rows = db.prepare(sql).all(...(opts?.params ?? [])) as Row[];
-  return toPlainArray(rows);
+  return toPlainArray(rows).map((r) => decryptRow(table, r));
 }
 
 export function getById(table: string, id: string): Row | undefined {
   const row = db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(id) as Row | undefined;
-  return toPlain(row);
+  const plain = toPlain(row);
+  return plain ? decryptRow(table, plain) : plain;
 }
 
 export function count(table: string, where?: string, params: any[] = []): number {
@@ -38,7 +40,7 @@ export function sumWhere(table: string, column: string, where?: string, params: 
 
 export function insertRow(table: string, data: Row, opts?: { withTimestamps?: boolean; timestampFields?: string[] }): string {
   const id = data.id ?? newId();
-  const payload: Row = { ...data, id };
+  const payload: Row = encryptRow(table, { ...data, id });
   const withTs = opts?.withTimestamps ?? true;
   const tsFields = opts?.timestampFields ?? ["createdAt"];
   if (withTs) {
@@ -54,7 +56,7 @@ export function insertRow(table: string, data: Row, opts?: { withTimestamps?: bo
 }
 
 export function updateRow(table: string, id: string, data: Row, opts?: { touchUpdatedAt?: boolean }) {
-  const payload: Row = { ...data };
+  const payload: Row = encryptRow(table, { ...data });
   if (opts?.touchUpdatedAt) payload.updatedAt = nowIso();
   const cols = Object.keys(payload);
   if (cols.length === 0) return;
@@ -69,10 +71,11 @@ export function deleteRow(table: string, id: string) {
 
 export function rawAll(sql: string, params: any[] = []): Row[] {
   const rows = db.prepare(sql).all(...params) as Row[];
-  return toPlainArray(rows);
+  return toPlainArray(rows).map(decryptByFieldName);
 }
 
 export function rawGet(sql: string, params: any[] = []): Row | undefined {
   const row = db.prepare(sql).get(...params) as Row | undefined;
-  return toPlain(row);
+  const plain = toPlain(row);
+  return plain ? decryptByFieldName(plain) : plain;
 }

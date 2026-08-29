@@ -224,3 +224,36 @@ CREATE TABLE IF NOT EXISTS SatisfactionSurvey (
   comments TEXT,
   surveyDate TEXT NOT NULL
 );
+
+-- ============================================================
+-- LGPD: auditoria de acesso e proteção do login
+-- ============================================================
+
+-- Registro de quem acessou o quê. Exigido para demonstrar controle sobre
+-- dados sensíveis de saúde (LGPD art. 37 e 46).
+CREATE TABLE IF NOT EXISTS AuditLog (
+  id TEXT PRIMARY KEY,
+  userId TEXT,
+  userEmail TEXT,
+  action TEXT NOT NULL,
+  entity TEXT,
+  entityId TEXT,
+  detail TEXT,
+  ip TEXT,
+  userAgent TEXT,
+  createdAt TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_created ON AuditLog(createdAt DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_entity ON AuditLog(entity, entityId);
+
+-- Tentativas de login, para bloquear ataque de força bruta. Fica em tabela
+-- (e não em memória) para sobreviver a reinícios do container.
+CREATE TABLE IF NOT EXISTS LoginAttempt (
+  id TEXT PRIMARY KEY,
+  identifier TEXT NOT NULL,
+  success INTEGER NOT NULL DEFAULT 0,
+  createdAt TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_login_identifier ON LoginAttempt(identifier, createdAt DESC);

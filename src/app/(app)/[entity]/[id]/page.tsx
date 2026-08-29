@@ -5,6 +5,7 @@ import { ENTITIES, getEntity } from "@/lib/entities";
 import { getById, listAll } from "@/lib/orm";
 import { updateEntity } from "@/lib/actions";
 import EntityForm, { RelationOption } from "@/components/EntityForm";
+import { logAccess } from "@/lib/audit";
 
 export default async function EditEntityPage({ params }: { params: { entity: string; id: string } }) {
 const entity = getEntity(params.entity);
@@ -12,6 +13,12 @@ if (!entity) notFound();
 
 const record = getById(entity.table, params.id);
 if (!record) notFound();
+
+// Abrir a ficha de um paciente ou de uma sessão é acesso a dado sensível de
+// saúde: fica registrado na trilha de auditoria.
+if (entity.table === "Patient" || entity.table === "Session") {
+await logAccess({ action: "VISUALIZAR", entity: entity.table, entityId: params.id });
+}
 
 const relationOptions: Record<string, RelationOption[]> = {};
 for (const f of entity.fields) {

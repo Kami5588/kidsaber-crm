@@ -7,6 +7,7 @@ import { deleteRow, insertRow, updateRow } from "./orm";
 import { cookies } from "next/headers";
 import { UNIT_COOKIE } from "./unit-constants";
 import { z } from "zod";
+import { logAccess } from "./audit";
 
 function parseValue(type: string, raw: FormDataEntryValue | null, multi?: FormDataEntryValue[]) {
   if (type === "checkbox") return raw ? 1 : 0;
@@ -42,10 +43,11 @@ export async function createEntity(entityKey: string, formData: FormData) {
   if (!entity) throw new Error("Entidade inválida");
   const payload = buildPayload(entityKey, formData);
   const withTs = entity.table === "Patient";
-  insertRow(entity.table, payload, {
+  const newId = insertRow(entity.table, payload, {
     withTimestamps: true,
     timestampFields: withTs ? ["createdAt", "updatedAt"] : ["createdAt"],
   });
+  await logAccess({ action: "CRIAR", entity: entity.table, entityId: newId });
   revalidatePath(`/${entityKey}`);
   redirect(`/${entityKey}`);
 }
@@ -55,6 +57,7 @@ export async function updateEntity(entityKey: string, id: string, formData: Form
   if (!entity) throw new Error("Entidade inválida");
   const payload = buildPayload(entityKey, formData);
   updateRow(entity.table, id, payload, { touchUpdatedAt: entity.table === "Patient" });
+  await logAccess({ action: "EDITAR", entity: entity.table, entityId: id });
   revalidatePath(`/${entityKey}`);
   redirect(`/${entityKey}`);
 }
@@ -63,6 +66,7 @@ export async function deleteEntity(entityKey: string, id: string) {
   const entity = getEntity(entityKey);
   if (!entity) throw new Error("Entidade inválida");
   deleteRow(entity.table, id);
+  await logAccess({ action: "EXCLUIR", entity: entity.table, entityId: id });
   revalidatePath(`/${entityKey}`);
 }
 
