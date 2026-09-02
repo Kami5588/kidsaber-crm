@@ -125,13 +125,13 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
 
         {patient.diagnoses && (
           <div className="mt-5 rounded-xl bg-slate-50 p-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Diagnósticos</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Diagnósticos</p>
             <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{patient.diagnoses}</p>
           </div>
         )}
         {patient.notes && (
           <div className="mt-3 rounded-xl bg-slate-50 p-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Observações</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Observações</p>
             <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{patient.notes}</p>
           </div>
         )}
@@ -156,7 +156,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
             </div>
 
             {documents.length === 0 ? (
-              <p className="rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-400">
+              <p className="rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
                 Nenhum arquivo anexado a esta criança ainda.
               </p>
             ) : (
@@ -179,7 +179,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
                               <Eye className="h-3 w-3" /> visível ao responsável
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
                               <EyeOff className="h-3 w-3" /> uso interno
                             </span>
                           )}
@@ -237,7 +237,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
             </h2>
 
             {sessions.length === 0 ? (
-              <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-400">
+              <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
                 Nenhuma sessão registrada.
               </p>
             ) : (
@@ -285,20 +285,20 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               </p>
 
               {activity.length === 0 ? (
-                <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-400">
+                <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
                   Nenhum registro ainda.
                 </p>
               ) : (
                 <ul className="mt-5 space-y-2.5">
                   {activity.map((a) => (
                     <li key={a.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
-                      <span className="font-mono text-xs text-slate-400">{fmt(a.createdAt, true)}</span>
+                      <span className="font-mono text-xs text-slate-500">{fmt(a.createdAt, true)}</span>
                       <span className="font-medium text-slate-700">{a.userEmail ?? "—"}</span>
                       <span className="text-slate-500">
                         {ACTION_LABEL[a.action] ?? a.action}
                         {a.entity === "Document" ? " um arquivo" : ""}
                       </span>
-                      {a.detail && <span className="w-full text-xs text-slate-400">{a.detail}</span>}
+                      {a.detail && <span className="w-full text-xs text-slate-500">{a.detail}</span>}
                     </li>
                   ))}
                 </ul>
@@ -315,7 +315,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               Responsáveis
             </h2>
             {responsibles.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-400">Nenhum responsável vinculado.</p>
+              <p className="mt-3 text-sm text-slate-500">Nenhum responsável vinculado.</p>
             ) : (
               <ul className="mt-3 space-y-3">
                 {responsibles.map((r) => (
@@ -336,7 +336,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               Equipe que atende
             </h2>
             {team.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-400">Nenhum profissional vinculado.</p>
+              <p className="mt-3 text-sm text-slate-500">Nenhum profissional vinculado.</p>
             ) : (
               <ul className="mt-3 space-y-3">
                 {team.map((t) => (
@@ -355,7 +355,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               Histórico de etapas
             </h2>
             {stages.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-400">
+              <p className="mt-3 text-sm text-slate-500">
                 Nenhuma mudança registrada. A etapa atual é{" "}
                 <strong>{patient.careStage ?? "sem etapa"}</strong>.
               </p>

@@ -135,7 +135,7 @@ export default async function AgendaPage({
               >
                 <div className="mb-3 flex items-baseline justify-between gap-2">
                   <div>
-                    <p className={`text-xs font-bold uppercase ${isToday ? "text-navy-700" : "text-slate-400"}`}>
+                    <p className={`text-xs font-bold uppercase ${isToday ? "text-navy-700" : "text-slate-500"}`}>
                       {format(day, "EEE", { locale: ptBR })}
                     </p>
                     <p className={`text-lg font-bold ${isToday ? "text-navy-800" : "text-slate-700"}`}>
@@ -169,7 +169,7 @@ export default async function AgendaPage({
                           </p>
                           <p className="truncate text-[11px] text-slate-500">{s.specialty}</p>
                           {user.role !== "PROFISSIONAL" && s.professionalName && (
-                            <p className="truncate text-[11px] text-slate-400">{s.professionalName}</p>
+                            <p className="truncate text-[11px] text-slate-500">{s.professionalName}</p>
                           )}
                         </Link>
                       </li>
@@ -194,7 +194,7 @@ export default async function AgendaPage({
 
       {totals.total === 0 && (
         <div className="card mt-6 flex items-start gap-3 p-6">
-          <CalendarDays className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-400" />
+          <CalendarDays className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500" />
           <div>
             <p className="font-semibold text-slate-800">Nenhuma sessão nesta semana</p>
             <p className="mt-1 text-sm text-slate-600">

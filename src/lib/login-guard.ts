@@ -10,6 +10,21 @@ import { insertRow, rawAll, rawGet } from "./orm";
 export const MAX_ATTEMPTS = 5;
 export const WINDOW_MINUTES = 15;
 
+/**
+ * Teto por origem, além do teto por e-mail.
+ *
+ * Contar só por e-mail deixa passar o ataque mais comum: uma senha provável
+ * testada em muitas contas diferentes. Nenhum e-mail chega a cinco tentativas,
+ * e o bloqueio nunca dispara.
+ *
+ * O limite é bem mais folgado porque a clínica inteira sai por um mesmo IP:
+ * uma tarde de senhas esquecidas não pode trancar a recepção.
+ */
+export const MAX_ATTEMPTS_IP = 20;
+
+/** Prefixo que separa os contadores de origem dos de e-mail na mesma tabela. */
+const IP_PREFIX = "ip:";
+
 function windowStart(): string {
   return new Date(Date.now() - WINDOW_MINUTES * 60 * 1000).toISOString();
 }
@@ -26,12 +41,26 @@ export interface LoginGuardResult {
   retryInMinutes: number;
 }
 
-export function checkLogin(identifier: string): LoginGuardResult {
-  const failures = (rawGet(
+/** Falhas registradas para um identificador dentro da janela. */
+function countFailures(identifier: string): number {
+  return (rawGet(
     `SELECT COUNT(*) as c FROM LoginAttempt
      WHERE identifier = ? AND success = 0 AND createdAt >= ?`,
     [normalize(identifier), windowStart()]
   )?.c ?? 0) as number;
+}
+
+export function checkLogin(identifier: string, ip?: string | null): LoginGuardResult {
+  // A origem é conferida primeiro: de nada adianta avisar quantas tentativas
+  // restam para este e-mail se o endereço inteiro já estourou o teto.
+  if (ip) {
+    const porOrigem = countFailures(IP_PREFIX + ip);
+    if (porOrigem >= MAX_ATTEMPTS_IP) {
+      return { allowed: false, attemptsLeft: 0, retryInMinutes: WINDOW_MINUTES };
+    }
+  }
+
+  const failures = countFailures(identifier);
 
   if (failures >= MAX_ATTEMPTS) {
     const oldest = rawGet(
@@ -59,11 +88,17 @@ export function checkLogin(identifier: string): LoginGuardResult {
   };
 }
 
-export function recordAttempt(identifier: string, success: boolean): void {
+export function recordAttempt(identifier: string, success: boolean, ip?: string | null): void {
   insertRow("LoginAttempt", {
     identifier: normalize(identifier),
     success: success ? 1 : 0,
   });
+
+  // A falha também conta para a origem. O acerto, não: uma entrada legítima
+  // não deve limpar o rastro de quem estava tentando adivinhar do mesmo lugar.
+  if (ip && !success) {
+    insertRow("LoginAttempt", { identifier: normalize(IP_PREFIX + ip), success: 0 });
+  }
 
   // Entrada bem-sucedida zera o histórico de falhas: quem provou a identidade
   // não deve continuar carregando o contador de bloqueio.

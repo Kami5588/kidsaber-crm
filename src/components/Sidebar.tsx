@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake,
   KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3, UserX,
@@ -40,12 +40,27 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const botaoRef = useRef<HTMLButtonElement>(null);
 
   // Navegar fecha o menu: no celular ele cobre a tela inteira e ficaria por
   // cima da página recém-aberta.
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // Esc fecha o menu, como em qualquer painel sobreposto. Ao fechar, o foco
+  // volta ao botão que abriu; sem isso ele ficaria no menu invisível.
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        botaoRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   // Com o menu aberto, travar o fundo evita a página rolar por trás dele.
   useEffect(() => {
@@ -59,6 +74,12 @@ export default function Sidebar({
     `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
       active ? "bg-gold-500 text-navy-900" : "text-teal-50 hover:bg-white/10"
     }`;
+
+  /** Classe e marcação da página atual, juntas, para não esquecer uma delas. */
+  const navProps = (active: boolean, extra = "") => ({
+    className: extra ? `${extra} ${linkClass(active)}` : linkClass(active),
+    "aria-current": active ? ("page" as const) : undefined,
+  });
 
   const visibleGroups = GROUPS.map((g) => ({
     ...g,
@@ -74,9 +95,12 @@ export default function Sidebar({
     <>
       {/* Botão do menu, só no celular */}
       <button
+        ref={botaoRef}
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Abrir menu"
+        aria-expanded={open}
+        aria-controls="menu-principal"
         // z-50 para ficar acima do cabeçalho, que usa z-40; a barra lateral entra
         // depois no DOM e cobre o botão quando abre.
         className="fixed left-4 top-3.5 z-50 rounded-xl bg-brand-hero p-2.5 text-white shadow-lg lg:hidden"
@@ -94,8 +118,10 @@ export default function Sidebar({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-shrink-0 flex-col bg-brand-hero text-white transition-transform duration-200 lg:static lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
+        id="menu-principal"
+        aria-label="Menu principal"
+        className={`on-dark fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-shrink-0 flex-col bg-brand-hero text-white transition-transform duration-200 lg:visible lg:static lg:translate-x-0 ${
+          open ? "visible translate-x-0" : "invisible -translate-x-full"
         }`}
       >
         <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
@@ -116,7 +142,7 @@ export default function Sidebar({
 
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           {showDashboard && (
-            <Link href="/dashboard" className={`mb-2 ${linkClass(pathname === "/dashboard")}`}>
+            <Link href="/dashboard" {...navProps(pathname === "/dashboard", "mb-2")}>
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
             </Link>
@@ -125,7 +151,7 @@ export default function Sidebar({
           {showMyPatients && (
             <Link
               href="/meus-pacientes"
-              className={`mb-2 ${linkClass(pathname?.startsWith("/meus-pacientes") ?? false)}`}
+              {...navProps(pathname?.startsWith("/meus-pacientes") ?? false, "mb-2")}
             >
               <HeartHandshake className="h-4 w-4" />
               Meus pacientes
@@ -134,7 +160,7 @@ export default function Sidebar({
 
           <Link
             href="/agenda"
-            className={`mb-2 ${linkClass(pathname?.startsWith("/agenda") ?? false)}`}
+            {...navProps(pathname?.startsWith("/agenda") ?? false, "mb-2")}
           >
             <CalendarDays className="h-4 w-4" />
             Agenda
@@ -142,7 +168,7 @@ export default function Sidebar({
 
           <Link
             href="/faltas"
-            className={`mb-2 ${linkClass(pathname?.startsWith("/faltas") ?? false)}`}
+            {...navProps(pathname?.startsWith("/faltas") ?? false, "mb-2")}
           >
             <UserX className="h-4 w-4" />
             Faltas
@@ -151,7 +177,7 @@ export default function Sidebar({
           {canAccessPage(role, "/relatorios") && (
             <Link
               href="/relatorios"
-              className={`mb-4 ${linkClass(pathname?.startsWith("/relatorios") ?? false)}`}
+              {...navProps(pathname?.startsWith("/relatorios") ?? false, "mb-4")}
             >
               <BarChart3 className="h-4 w-4" />
               Relatórios
@@ -171,7 +197,7 @@ export default function Sidebar({
                     <Link
                       key={key}
                       href={`/${key}`}
-                      className={linkClass(pathname?.startsWith(`/${key}`) ?? false)}
+                      {...navProps(pathname?.startsWith(`/${key}`) ?? false)}
                     >
                       <Icon className="h-4 w-4" />
                       {entity.label}
@@ -189,7 +215,7 @@ export default function Sidebar({
               </p>
               <div className="space-y-1">
                 {protecao.map((l) => (
-                  <Link key={l.href} href={l.href} className={linkClass(pathname?.startsWith(l.href) ?? false)}>
+                  <Link key={l.href} href={l.href} {...navProps(pathname?.startsWith(l.href) ?? false)}>
                     <l.icon className="h-4 w-4" />
                     {l.label}
                   </Link>

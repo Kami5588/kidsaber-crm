@@ -90,16 +90,33 @@ export default function QuickSearch() {
     } else if (e.key === "Enter") {
       e.preventDefault();
       abrir(hits[cursor]);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setCursor(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setCursor(hits.length - 1);
     } else if (e.key === "Escape") {
       setOpen(false);
     }
   }
 
   const semResultado = open && term.trim().length >= 2 && !loading && hits.length === 0;
+  const listaAberta = open && (hits.length > 0 || semResultado);
+
+  // Lido em voz alta enquanto a pessoa digita, para a busca não ser um recurso
+  // exclusivo de quem enxerga a lista.
+  const anuncio = loading
+    ? "Buscando pacientes."
+    : semResultado
+      ? "Nenhum paciente encontrado."
+      : hits.length > 0
+        ? `${hits.length} ${hits.length === 1 ? "paciente encontrado" : "pacientes encontrados"}. Use as setas para escolher.`
+        : "";
 
   return (
     <div className="relative w-full" ref={boxRef}>
-      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
 
       <input
         ref={inputRef}
@@ -113,11 +130,19 @@ export default function QuickSearch() {
         onKeyDown={onKeyDown}
         placeholder="Buscar paciente..."
         aria-label="Buscar paciente por nome, CPF ou responsável"
+        role="combobox"
+        aria-expanded={listaAberta}
+        aria-controls="resultados-busca-paciente"
+        aria-autocomplete="list"
+        aria-activedescendant={
+          listaAberta && hits.length > 0 ? `resultado-paciente-${cursor}` : undefined
+        }
+        autoComplete="off"
         className="input input-with-icon pr-9"
       />
 
       {loading ? (
-        <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400" />
+        <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-500" />
       ) : term ? (
         <button
           type="button"
@@ -126,24 +151,31 @@ export default function QuickSearch() {
             inputRef.current?.focus();
           }}
           aria-label="Limpar busca"
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-slate-400 hover:bg-slate-100"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-slate-500 hover:bg-slate-100"
         >
           <X className="h-3.5 w-3.5" />
         </button>
       ) : null}
 
-      {(hits.length > 0 || semResultado) && open && (
+      <p aria-live="polite" className="sr-only">
+        {anuncio}
+      </p>
+
+      {listaAberta && (
         <div className="absolute right-0 z-50 mt-2 w-full min-w-[20rem] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
           {semResultado ? (
-            <p className="px-4 py-5 text-center text-sm text-slate-500">
+            <p id="resultados-busca-paciente" className="px-4 py-5 text-center text-sm text-slate-600">
               Nenhum paciente encontrado para “{term.trim()}”.
             </p>
           ) : (
-            <ul>
+            <ul id="resultados-busca-paciente" role="listbox" aria-label="Pacientes encontrados">
               {hits.map((h, i) => (
-                <li key={h.id}>
+                <li key={h.id} role="presentation">
                   <button
                     type="button"
+                    id={`resultado-paciente-${i}`}
+                    role="option"
+                    aria-selected={i === cursor}
                     onMouseEnter={() => setCursor(i)}
                     onClick={() => abrir(h)}
                     className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition ${

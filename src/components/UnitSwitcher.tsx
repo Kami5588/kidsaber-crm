@@ -63,7 +63,7 @@ export default function UnitSwitcher({
           {isAll ? <Layers className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[11px] font-medium uppercase tracking-wide text-slate-400">
+          <span className="block text-[11px] font-medium uppercase tracking-wide text-slate-500">
             Unidade
           </span>
           <span className="block truncate font-semibold text-slate-800">
@@ -71,7 +71,7 @@ export default function UnitSwitcher({
           </span>
         </span>
         <ChevronDown
-          className={`h-4 w-4 flex-shrink-0 text-slate-400 transition ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 flex-shrink-0 text-slate-500 transition ${open ? "rotate-180" : ""}`}
         />
       </button>
 

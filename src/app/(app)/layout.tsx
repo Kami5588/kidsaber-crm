@@ -28,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <Sidebar userName={user.displayName} role={user.role} jobTitle={user.jobTitle} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="z-40 flex-shrink-0 border-b border-slate-200 bg-white">
+        <header aria-label="Barra superior" className="z-40 flex-shrink-0 border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3 pl-20 lg:pl-6">
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-slate-800">
@@ -61,10 +61,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto">
+        <main id="conteudo" tabIndex={-1} className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-7xl px-6 py-8">
             {mustChangePassword && (
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-4">
+              <div
+                role="status"
+                className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-4"
+              >
                 <p className="flex items-center gap-2.5 text-sm text-gold-900">
                   <KeyRound className="h-4 w-4 flex-shrink-0" />
                   Sua senha ainda é a inicial. Defina uma senha pessoal antes de continuar usando o

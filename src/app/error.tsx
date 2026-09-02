@@ -45,7 +45,7 @@ export default function GlobalError({
         </div>
 
         {error.digest && (
-          <p className="mt-8 text-xs text-slate-400">
+          <p className="mt-8 text-xs text-slate-500">
             Código para suporte: <code className="font-mono">{error.digest}</code>
           </p>
         )}

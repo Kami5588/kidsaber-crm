@@ -31,7 +31,7 @@ body {
 }
 
 .input {
-  @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-navy-500 focus:outline-none focus:ring-2 focus:ring-navy-100;
+  @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-500 focus:border-navy-600 focus:outline-none focus:ring-2 focus:ring-navy-500;
 }
 
 .input-with-icon {
@@ -40,6 +40,55 @@ body {
 
 .label {
   @apply mb-1.5 block text-sm font-medium text-slate-700;
+}
+
+
+/**
+ * Acessibilidade
+ * -----------------------------------------------------------------------
+ * Quem usa o sistema de teclado — e na recepção isso acontece com o telefone
+ * na mão — precisa enxergar onde está. O anel abaixo vale para tudo que
+ * recebe foco e só aparece na navegação por teclado, sem sujar o clique
+ * do mouse.
+ */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid theme("colors.navy.600");
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Em fundo escuro (barra lateral, cabeçalho da landing) o azul some. */
+.on-dark :where(a, button, [tabindex]):focus-visible {
+  outline-color: theme("colors.gold.400");
+}
+
+/** Texto visível só para leitores de tela. */
+.sr-only-focusable {
+  @apply sr-only;
+}
+
+/* O link de pular navegação precisa aparecer quando recebe foco. */
+.sr-only-focusable:focus,
+.sr-only-focusable:focus-visible {
+  @apply not-sr-only fixed left-4 top-4 z-[100] rounded-xl bg-navy-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg;
+}
+
+/**
+ * Movimento reduzido.
+ *
+ * Parte do público da clínica tem sensibilidade a movimento; o sistema é usado
+ * pelas mesmas famílias. Quem pede menos animação no sistema operacional
+ * recebe as transições praticamente desligadas.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Tipografia das páginas de conteúdo legal (termos, privacidade) */

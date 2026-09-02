@@ -192,12 +192,12 @@ export default async function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-xs uppercase tracking-wide text-slate-400">
-                  <th className="pb-2 pr-4">Unidade</th>
-                  <th className="pb-2 pr-4 text-right">Pacientes ativos</th>
-                  <th className="pb-2 pr-4 text-right">Sessões 7 dias</th>
-                  <th className="pb-2 pr-4 text-right">Leads abertos</th>
-                  <th className="pb-2 text-right">Recebido no mês</th>
+                <tr className="text-xs uppercase tracking-wide text-slate-500">
+                  <th scope="col" className="pb-2 pr-4">Unidade</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Pacientes ativos</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Sessões 7 dias</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Leads abertos</th>
+                  <th scope="col" className="pb-2 text-right">Recebido no mês</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -243,7 +243,7 @@ export default async function DashboardPage() {
             <Link href="/sessoes" className="text-sm font-medium text-navy-600 hover:underline">Ver todas</Link>
           </div>
           <div className="divide-y divide-slate-100">
-            {upcomingSessions.length === 0 && <p className="py-6 text-sm text-slate-400">Nenhuma sessão agendada.</p>}
+            {upcomingSessions.length === 0 && <p className="py-6 text-sm text-slate-500">Nenhuma sessão agendada.</p>}
             {upcomingSessions.map((s) => (
               <div key={s.id} className="flex items-center justify-between gap-4 py-3">
                 <div className="min-w-0">
@@ -265,7 +265,7 @@ export default async function DashboardPage() {
             <Link href="/tarefas" className="text-sm font-medium text-navy-600 hover:underline">Ver todas</Link>
           </div>
           <div className="divide-y divide-slate-100">
-            {tasks.length === 0 && <p className="py-6 text-sm text-slate-400">Nenhuma tarefa pendente.</p>}
+            {tasks.length === 0 && <p className="py-6 text-sm text-slate-500">Nenhuma tarefa pendente.</p>}
             {tasks.map((t) => (
               <div key={t.id} className="py-3">
                 <p className="text-sm font-medium text-slate-800">{t.title}</p>
@@ -318,7 +318,7 @@ export default async function DashboardPage() {
                     faz {a.idadeQueFaz} anos{a.ehHoje ? " · é hoje!" : ""}
                   </span>
                   {a.telefone && (
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                    <span className="flex items-center gap-1 text-[11px] text-slate-500">
                       <Phone className="h-2.5 w-2.5" />
                       {a.telefone}
                     </span>
@@ -337,18 +337,18 @@ export default async function DashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="text-xs uppercase text-slate-400">
-                <th className="pb-2 pr-4">Nome</th>
-                <th className="pb-2 pr-4">Origem</th>
-                <th className="pb-2 pr-4">Especialidade</th>
-                {isAll && <th className="pb-2 pr-4">Unidade</th>}
-                <th className="pb-2">Status</th>
+              <tr className="text-xs uppercase text-slate-500">
+                <th scope="col" className="pb-2 pr-4">Nome</th>
+                <th scope="col" className="pb-2 pr-4">Origem</th>
+                <th scope="col" className="pb-2 pr-4">Especialidade</th>
+                {isAll && <th scope="col" className="pb-2 pr-4">Unidade</th>}
+                <th scope="col" className="pb-2">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {recentLeads.length === 0 && (
                 <tr>
-                  <td colSpan={isAll ? 5 : 4} className="py-6 text-center text-sm text-slate-400">
+                  <td colSpan={isAll ? 5 : 4} className="py-6 text-center text-sm text-slate-500">
                     Nenhum lead registrado.
                   </td>
                 </tr>

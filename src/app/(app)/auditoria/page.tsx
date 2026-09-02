@@ -113,7 +113,7 @@ export default async function AuditoriaPage({
 
       <form className="mb-5 flex flex-wrap items-end gap-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <input
             type="text"
             name="q"
@@ -134,19 +134,19 @@ export default async function AuditoriaPage({
       <div className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 bg-slate-50/60">
-            <tr className="text-xs uppercase tracking-wide text-slate-400">
-              <th className="whitespace-nowrap px-4 py-3">Data e hora</th>
-              <th className="whitespace-nowrap px-4 py-3">Usuário</th>
-              <th className="whitespace-nowrap px-4 py-3">Ação</th>
-              <th className="whitespace-nowrap px-4 py-3">Registro</th>
-              <th className="px-4 py-3">Detalhe</th>
-              <th className="whitespace-nowrap px-4 py-3">Origem</th>
+            <tr className="text-xs uppercase tracking-wide text-slate-500">
+              <th scope="col" className="whitespace-nowrap px-4 py-3">Data e hora</th>
+              <th scope="col" className="whitespace-nowrap px-4 py-3">Usuário</th>
+              <th scope="col" className="whitespace-nowrap px-4 py-3">Ação</th>
+              <th scope="col" className="whitespace-nowrap px-4 py-3">Registro</th>
+              <th scope="col" className="px-4 py-3">Detalhe</th>
+              <th scope="col" className="whitespace-nowrap px-4 py-3">Origem</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {rows.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400">
+                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-500">
                   Nenhum registro encontrado.
                 </td>
               </tr>
@@ -170,7 +170,7 @@ export default async function AuditoriaPage({
                   {r.entity ? `${r.entity}${r.entityId ? ` · ${String(r.entityId).slice(0, 8)}` : ""}` : "-"}
                 </td>
                 <td className="max-w-md px-4 py-3 text-slate-500">{r.detail ?? "-"}</td>
-                <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-400">
+                <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
                   {r.ip ?? "-"}
                 </td>
               </tr>

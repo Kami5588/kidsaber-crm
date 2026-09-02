@@ -10,6 +10,19 @@ import { recordAccessRequest } from "./access-requests";
 /** Mensagem única para senha errada e usuário inexistente. */
 const INVALID = "Credenciais inválidas.";
 
+/**
+ * Validade da sessão: uma jornada de trabalho.
+ *
+ * O padrão do NextAuth é trinta dias. Num computador de recepção, usado por
+ * várias pessoas, isso significa que quem sentar na cadeira no mês seguinte
+ * ainda encontra o prontuário aberto. Oito horas cobrem o expediente e obrigam
+ * uma entrada nova no dia seguinte.
+ */
+const SESSION_MAX_AGE = 8 * 60 * 60;
+
+/** De quanto em quanto tempo o token é renovado enquanto a pessoa trabalha. */
+const SESSION_UPDATE_AGE = 30 * 60;
+
 /** Mostrada a quem entrou com Google mas ainda não foi liberado pela direção. */
 export const PENDING_APPROVAL = "AGUARDANDO_APROVACAO";
 
@@ -36,7 +49,7 @@ const providers: NextAuthOptions["providers"] = [
 
       pruneLoginAttempts();
 
-      const guard = checkLogin(email);
+      const guard = checkLogin(email, ip);
       if (!guard.allowed) {
         logAccessRaw({
           action: "LOGIN_BLOQUEADO",
@@ -60,7 +73,7 @@ const providers: NextAuthOptions["providers"] = [
           : false;
 
       if (!valid) {
-        recordAttempt(email, false);
+        recordAttempt(email, false, ip);
         const left = Math.max(0, guard.attemptsLeft - 1);
         logAccessRaw({
           action: "LOGIN_FALHA",
@@ -87,7 +100,7 @@ const providers: NextAuthOptions["providers"] = [
         throw new Error("Esta conta está desativada. Fale com a administração.");
       }
 
-      recordAttempt(email, true);
+      recordAttempt(email, true, ip);
       updateRow("User", user.id, { lastLoginAt: new Date().toISOString() });
 
       logAccessRaw({
@@ -119,7 +132,12 @@ if (googleEnabled) {
 }
 
 export const authOptions: NextAuthOptions = {
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: SESSION_MAX_AGE,
+    updateAge: SESSION_UPDATE_AGE,
+  },
+  jwt: { maxAge: SESSION_MAX_AGE },
   pages: { signIn: "/login", error: "/login" },
   providers,
   callbacks: {

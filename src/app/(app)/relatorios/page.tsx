@@ -25,7 +25,7 @@ function Stat({
       </span>
       <p className="mt-3 text-2xl font-bold text-slate-800">{value}</p>
       <p className="text-sm text-slate-500">{label}</p>
-      {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
     </div>
   );
 }
@@ -111,7 +111,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Atendimento */}
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">
         Atendimento
       </h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -129,7 +129,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Pacientes */}
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400">Pacientes</h2>
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">Pacientes</h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat icon={Users} label="Pacientes ativos" value={String(t.pacientesAtivos)} tone="bg-navy-600 text-white" />
         <Stat icon={UserPlus} label="Novos no mês" value={String(t.novosPacientes)} tone="bg-teal-500 text-white" />
@@ -144,7 +144,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Financeiro */}
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400">Financeiro</h2>
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">Financeiro</h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-3">
         <Stat icon={Wallet} label="Recebido" value={brl(t.receitaRecebida)} tone="bg-teal-500 text-white" />
         <Stat icon={Clock} label="A receber" value={brl(t.receitaPendente)} tone="bg-gold-500 text-navy-900" />
@@ -159,7 +159,7 @@ export default async function RelatoriosPage({
             Atendimentos por especialidade
           </h2>
           {especialidades.length === 0 ? (
-            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-400">
+            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
               Nenhum atendimento neste mês.
             </p>
           ) : (
@@ -178,7 +178,7 @@ export default async function RelatoriosPage({
             De onde vieram os contatos
           </h2>
           {origens.length === 0 ? (
-            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-400">
+            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
               Nenhum contato registrado neste mês.
             </p>
           ) : (
@@ -201,13 +201,13 @@ export default async function RelatoriosPage({
         <div className="mt-5 overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="text-xs uppercase tracking-wide text-slate-400">
-                <th className="pb-2 pr-4">Unidade</th>
-                <th className="pb-2 pr-4 text-right">Pacientes ativos</th>
-                <th className="pb-2 pr-4 text-right">Atendimentos</th>
-                <th className="pb-2 pr-4 text-right">Cancelados</th>
-                <th className="pb-2 pr-4 text-right">Faltas</th>
-                <th className="pb-2 text-right">Recebido</th>
+              <tr className="text-xs uppercase tracking-wide text-slate-500">
+                <th scope="col" className="pb-2 pr-4">Unidade</th>
+                <th scope="col" className="pb-2 pr-4 text-right">Pacientes ativos</th>
+                <th scope="col" className="pb-2 pr-4 text-right">Atendimentos</th>
+                <th scope="col" className="pb-2 pr-4 text-right">Cancelados</th>
+                <th scope="col" className="pb-2 pr-4 text-right">Faltas</th>
+                <th scope="col" className="pb-2 text-right">Recebido</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

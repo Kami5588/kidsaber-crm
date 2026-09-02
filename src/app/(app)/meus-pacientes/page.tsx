@@ -130,7 +130,7 @@ export default async function MeusPacientesPage() {
                   <div
                     key={stage}
                     className={`rounded-xl border px-4 py-3 ${
-                      total > 0 ? stageClass(stage) : "border-slate-200 bg-slate-50 text-slate-400"
+                      total > 0 ? stageClass(stage) : "border-slate-200 bg-slate-50 text-slate-500"
                     }`}
                     title={STAGE_META[stage]?.description}
                   >
@@ -167,13 +167,13 @@ export default async function MeusPacientesPage() {
 
                 <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 text-xs">
                   <div>
-                    <dt className="text-slate-400">Última sessão</dt>
+                    <dt className="text-slate-500">Última sessão</dt>
                     <dd className="mt-0.5 font-medium text-slate-700">
                       {fmtDate(p.ultimaSessao, true) ?? "—"}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-400">Próxima sessão</dt>
+                    <dt className="text-slate-500">Próxima sessão</dt>
                     <dd className="mt-0.5 font-medium text-slate-700">
                       {fmtDate(p.proximaSessao, true) ?? "não agendada"}
                     </dd>

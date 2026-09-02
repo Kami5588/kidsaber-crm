@@ -7,12 +7,19 @@
  * `frame-ancestors`, `form-action` e `base-uri`, que fecham clickjacking e
  * sequestro de formulário.
  */
+// O 'unsafe-eval' só é necessário para o recarregamento a quente do Next em
+// desenvolvimento. Mantê-lo em produção abriria eval() para qualquer script
+// injetado, sem nenhum ganho.
+const emDesenvolvimento = process.env.NODE_ENV !== "production";
+
 const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      emDesenvolvimento
+        ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+        : "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
@@ -21,6 +28,11 @@ const securityHeaders = [
       "base-uri 'self'",
       "form-action 'self'",
       "object-src 'none'",
+      // Nenhuma página de terceiro embutida e nenhum plugin: o sistema não usa
+      // nem um nem outro, e prontuário não deveria carregar conteúdo de fora.
+      "frame-src 'none'",
+      "worker-src 'self' blob:",
+      "manifest-src 'self'",
     ].join("; "),
   },
   // Força HTTPS nas visitas seguintes. O Railway e a Hostinger já servem em

@@ -28,7 +28,7 @@ function Stat({ icon: Icon, label, value, tone, hint }: any) {
       </span>
       <p className="mt-3 text-2xl font-bold text-slate-800">{value}</p>
       <p className="text-sm text-slate-500">{label}</p>
-      {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
     </div>
   );
 }
@@ -150,13 +150,13 @@ export default async function FaltasPage({
             <div className="mt-5 overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="text-xs uppercase tracking-wide text-slate-400">
-                    <th className="pb-2 pr-4">Paciente</th>
-                    <th className="pb-2 pr-4 text-right">Faltas</th>
-                    <th className="pb-2 pr-4 text-right">Realizadas</th>
-                    <th className="pb-2 pr-4 text-right">Taxa</th>
-                    <th className="pb-2 pr-4">Última falta</th>
-                    <th className="pb-2">Contato</th>
+                  <tr className="text-xs uppercase tracking-wide text-slate-500">
+                    <th scope="col" className="pb-2 pr-4">Paciente</th>
+                    <th scope="col" className="pb-2 pr-4 text-right">Faltas</th>
+                    <th scope="col" className="pb-2 pr-4 text-right">Realizadas</th>
+                    <th scope="col" className="pb-2 pr-4 text-right">Taxa</th>
+                    <th scope="col" className="pb-2 pr-4">Última falta</th>
+                    <th scope="col" className="pb-2">Contato</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -203,10 +203,10 @@ export default async function FaltasPage({
                             {r.telefoneResponsavel}
                           </span>
                         ) : (
-                          <span className="text-xs text-slate-400">—</span>
+                          <span className="text-xs text-slate-500">—</span>
                         )}
                         {r.responsavel && (
-                          <span className="block text-[11px] text-slate-400">{r.responsavel}</span>
+                          <span className="block text-[11px] text-slate-500">{r.responsavel}</span>
                         )}
                       </td>
                     </tr>

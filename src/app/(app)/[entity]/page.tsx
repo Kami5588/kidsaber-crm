@@ -122,7 +122,7 @@ return (
 <div className="flex items-center gap-3">
 {entity.searchFields.length > 0 && (
 <form className="relative">
-<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
 <input type="text" name="q" defaultValue={q} placeholder="Buscar..." className="input input-with-icon w-56" />
 </form>
 )}
@@ -135,17 +135,17 @@ return (
 <div className="card overflow-x-auto">
 <table className="w-full text-left text-sm">
 <thead className="border-b border-slate-100 bg-slate-50/60">
-<tr className="text-xs uppercase tracking-wide text-slate-400">
+<tr className="text-xs uppercase tracking-wide text-slate-500">
 {columns.map((c) => (
-<th key={c.name} className="whitespace-nowrap px-4 py-3">{c.label}</th>
+<th scope="col" key={c.name} className="whitespace-nowrap px-4 py-3">{c.label}</th>
 ))}
-<th className="px-4 py-3 text-right">Ações</th>
+<th scope="col" className="px-4 py-3 text-right">Ações</th>
 </tr>
 </thead>
 <tbody className="divide-y divide-slate-100">
 {rows.length === 0 && (
 <tr>
-<td colSpan={columns.length + 1} className="px-4 py-10 text-center text-sm text-slate-400">
+<td colSpan={columns.length + 1} className="px-4 py-10 text-center text-sm text-slate-500">
 Nenhum registro encontrado.
 </td>
 </tr>

@@ -221,12 +221,12 @@ export default function UsersPanel({
       <section className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 bg-slate-50/60">
-            <tr className="text-xs uppercase tracking-wide text-slate-400">
-              <th className="px-4 py-3">Pessoa</th>
-              <th className="px-4 py-3">Perfil</th>
-              <th className="px-4 py-3">Vínculo</th>
-              <th className="px-4 py-3">Situação</th>
-              <th className="px-4 py-3 text-right">Ações</th>
+            <tr className="text-xs uppercase tracking-wide text-slate-500">
+              <th scope="col" className="px-4 py-3">Pessoa</th>
+              <th scope="col" className="px-4 py-3">Perfil</th>
+              <th scope="col" className="px-4 py-3">Vínculo</th>
+              <th scope="col" className="px-4 py-3">Situação</th>
+              <th scope="col" className="px-4 py-3 text-right">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -242,7 +242,7 @@ export default function UsersPanel({
                   </span>
                 </td>
                 <td className="px-4 py-3 text-slate-600">
-                  {u.professionalName ?? <span className="text-slate-400">—</span>}
+                  {u.professionalName ?? <span className="text-slate-500">—</span>}
                 </td>
                 <td className="px-4 py-3">
                   {u.active ? (

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { LogIn, Mail, Lock, Loader2, AlertTriangle, Clock } from "lucide-react";
+import { LogIn, Mail, Lock, Loader2, AlertTriangle, Clock, Eye, EyeOff } from "lucide-react";
 
 /** Ícone do Google, desenhado aqui porque o lucide não traz logotipos de marca. */
 function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -49,6 +49,7 @@ export default function LoginForm({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const notice = initialError ? ERROR_MESSAGES[initialError] : undefined;
 
@@ -81,6 +82,7 @@ export default function LoginForm({
 
         {notice && (
           <div
+            role="status"
             className={`mt-6 flex gap-3 rounded-2xl border p-4 ${
               notice.tone === "warning"
                 ? "border-gold-200 bg-gold-50"
@@ -132,7 +134,7 @@ export default function LoginForm({
 
             <div className="my-6 flex items-center gap-4">
               <span className="h-px flex-1 bg-slate-200" />
-              <span className="text-xs font-medium uppercase tracking-wide text-slate-400">ou</span>
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-500">ou</span>
               <span className="h-px flex-1 bg-slate-200" />
             </div>
           </>
@@ -142,7 +144,7 @@ export default function LoginForm({
           <div>
             <label htmlFor="email" className="label">E-mail</label>
             <div className="relative">
-              <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Mail aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <input
                 id="email"
                 type="email"
@@ -151,6 +153,8 @@ export default function LoginForm({
                 required
                 autoComplete="email"
                 placeholder="voce@exemplo.com"
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "erro-login" : undefined}
                 className="input input-with-icon"
               />
             </div>
@@ -159,29 +163,62 @@ export default function LoginForm({
           <div>
             <label htmlFor="password" className="label">Senha</label>
             <div className="relative">
-              <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Lock aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <input
                 id="password"
-                type="password"
+                type={mostrarSenha ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="input input-with-icon"
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "erro-login" : undefined}
+                className="input input-with-icon pr-11"
               />
+              {/*
+                Digitar às cegas numa senha de doze caracteres gerada pela
+                administração é a causa mais comum de bloqueio por tentativas.
+              */}
+              <button
+                type="button"
+                onClick={() => setMostrarSenha((v) => !v)}
+                aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+                aria-pressed={mostrarSenha}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                {mostrarSenha ? (
+                  <EyeOff aria-hidden className="h-4 w-4" />
+                ) : (
+                  <Eye aria-hidden className="h-4 w-4" />
+                )}
+              </button>
             </div>
           </div>
 
           {error && (
-            <p className="rounded-xl bg-coral-50 px-4 py-3 text-sm font-medium text-coral-700">
+            <p
+              id="erro-login"
+              role="alert"
+              className="flex items-start gap-2 rounded-xl bg-coral-50 px-4 py-3 text-sm font-medium text-coral-700"
+            >
+              <AlertTriangle aria-hidden className="mt-0.5 h-4 w-4 flex-shrink-0" />
               {error}
             </p>
           )}
 
-          <button type="submit" disabled={loading} className="btn-primary w-full py-3">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-            Entrar
+          <button
+            type="submit"
+            disabled={loading}
+            aria-busy={loading}
+            className="btn-primary w-full py-3"
+          >
+            {loading ? (
+              <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
+            ) : (
+              <LogIn aria-hidden className="h-4 w-4" />
+            )}
+            {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
       </div>

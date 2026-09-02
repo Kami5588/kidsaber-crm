@@ -89,7 +89,7 @@ export default function AccessRequestsPanel({
       )}
 
       {pending.length === 0 ? (
-        <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-400">
+        <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
           Nenhum pedido aguardando aprovação.
         </p>
       ) : (
@@ -219,7 +219,7 @@ export default function AccessRequestsPanel({
                 </span>
                 <span className="text-slate-700">{r.email}</span>
                 {r.reviewedByName && (
-                  <span className="text-xs text-slate-400">por {r.reviewedByName}</span>
+                  <span className="text-xs text-slate-500">por {r.reviewedByName}</span>
                 )}
               </li>
             ))}

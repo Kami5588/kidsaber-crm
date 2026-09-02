@@ -156,7 +156,7 @@ export default function DocumentsPanel({
 
       {documents.length === 0 ? (
         <div className="card flex items-start gap-3 p-6">
-          <Inbox className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-400" />
+          <Inbox className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500" />
           <div>
             <p className="font-semibold text-slate-800">Nenhum documento ainda</p>
             <p className="mt-1 text-sm text-slate-600">
