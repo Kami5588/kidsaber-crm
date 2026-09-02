@@ -89,7 +89,7 @@ export default function AccessRequestsPanel({
       )}
 
       {pending.length === 0 ? (
-        <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
+        <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
           Nenhum pedido aguardando aprovação.
         </p>
       ) : (
@@ -108,7 +108,7 @@ export default function AccessRequestsPanel({
 
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-slate-800">{r.name ?? "Sem nome informado"}</p>
-                  <p className="truncate text-xs text-slate-500">{r.email}</p>
+                  <p className="truncate text-xs text-slate-600">{r.email}</p>
                 </div>
 
                 <button
@@ -143,7 +143,7 @@ export default function AccessRequestsPanel({
                           <option key={x.value} value={x.value}>{x.label}</option>
                         ))}
                       </select>
-                      <p className="mt-1.5 text-xs text-slate-500">
+                      <p className="mt-1.5 text-xs text-slate-600">
                         {ROLES.find((x) => x.value === role)?.description}
                       </p>
                     </div>
@@ -219,7 +219,7 @@ export default function AccessRequestsPanel({
                 </span>
                 <span className="text-slate-700">{r.email}</span>
                 {r.reviewedByName && (
-                  <span className="text-xs text-slate-500">por {r.reviewedByName}</span>
+                  <span className="text-xs text-slate-600">por {r.reviewedByName}</span>
                 )}
               </li>
             ))}

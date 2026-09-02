@@ -34,7 +34,7 @@ function StatCard({
       </div>
       <div className="min-w-0">
         <p className="truncate text-2xl font-bold text-slate-800">{value}</p>
-        <p className="text-sm text-slate-500">{label}</p>
+        <p className="text-sm text-slate-600">{label}</p>
       </div>
     </div>
   );
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-slate-900">
             {isAll ? "Visão consolidada da rede" : `Unidade ${activeUnit?.name}`}
           </h1>
-          <p className="text-slate-500">
+          <p className="text-slate-600">
             {format(now, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
           </p>
         </div>
@@ -185,14 +185,14 @@ export default async function DashboardPage() {
         <div className="card mb-8 p-5">
           <div className="mb-4">
             <h2 className="font-semibold text-slate-800">Desempenho por unidade</h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-600">
               Compare as unidades lado a lado ou selecione uma no topo para ver só ela.
             </p>
           </div>
-          <div className="overflow-x-auto">
+          <div tabIndex={0} role="region" aria-label="Desempenho por unidade" className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-xs uppercase tracking-wide text-slate-500">
+                <tr className="text-xs uppercase tracking-wide text-slate-600">
                   <th scope="col" className="pb-2 pr-4">Unidade</th>
                   <th scope="col" className="pb-2 pr-4 text-right">Pacientes ativos</th>
                   <th scope="col" className="pb-2 pr-4 text-right">Sessões 7 dias</th>
@@ -207,12 +207,12 @@ export default async function DashboardPage() {
                       <span className="flex items-center gap-2 font-medium text-slate-800">
                         {u.name}
                         {u.isMain ? (
-                          <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gold-700">
+                          <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gold-900">
                             Matriz
                           </span>
                         ) : null}
                       </span>
-                      <span className="text-xs text-slate-500">{u.city}</span>
+                      <span className="text-xs text-slate-600">{u.city}</span>
                     </td>
                     <td className="py-3 pr-4 text-right font-medium text-slate-700">{u.activePatients}</td>
                     <td className="py-3 pr-4 text-right text-slate-700">{u.upcomingSessions}</td>
@@ -243,12 +243,12 @@ export default async function DashboardPage() {
             <Link href="/sessoes" className="text-sm font-medium text-navy-600 hover:underline">Ver todas</Link>
           </div>
           <div className="divide-y divide-slate-100">
-            {upcomingSessions.length === 0 && <p className="py-6 text-sm text-slate-500">Nenhuma sessão agendada.</p>}
+            {upcomingSessions.length === 0 && <p className="py-6 text-sm text-slate-600">Nenhuma sessão agendada.</p>}
             {upcomingSessions.map((s) => (
               <div key={s.id} className="flex items-center justify-between gap-4 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-slate-800">{s.patientName}</p>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-xs text-slate-600">
                     {s.specialty} · {s.professionalName}
                     {isAll && s.unitName ? ` · ${s.unitName}` : ""}
                   </p>
@@ -265,11 +265,11 @@ export default async function DashboardPage() {
             <Link href="/tarefas" className="text-sm font-medium text-navy-600 hover:underline">Ver todas</Link>
           </div>
           <div className="divide-y divide-slate-100">
-            {tasks.length === 0 && <p className="py-6 text-sm text-slate-500">Nenhuma tarefa pendente.</p>}
+            {tasks.length === 0 && <p className="py-6 text-sm text-slate-600">Nenhuma tarefa pendente.</p>}
             {tasks.map((t) => (
               <div key={t.id} className="py-3">
                 <p className="text-sm font-medium text-slate-800">{t.title}</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-600">
                   {t.patientName ? `${t.patientName} · ` : ""}
                   {t.dueDate ? fmtDate(t.dueDate) : "sem prazo"}
                 </p>
@@ -314,11 +314,11 @@ export default async function DashboardPage() {
                   >
                     {a.fullName}
                   </Link>
-                  <span className="block text-xs text-slate-500">
+                  <span className="block text-xs text-slate-600">
                     faz {a.idadeQueFaz} anos{a.ehHoje ? " · é hoje!" : ""}
                   </span>
                   {a.telefone && (
-                    <span className="flex items-center gap-1 text-[11px] text-slate-500">
+                    <span className="flex items-center gap-1 text-[11px] text-slate-600">
                       <Phone className="h-2.5 w-2.5" />
                       {a.telefone}
                     </span>
@@ -334,10 +334,10 @@ export default async function DashboardPage() {
           <h2 className="font-semibold text-slate-800">Leads recentes</h2>
           <Link href="/leads" className="text-sm font-medium text-navy-600 hover:underline">Ver funil completo</Link>
         </div>
-        <div className="overflow-x-auto">
+        <div tabIndex={0} role="region" aria-label="Leads recentes" className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="text-xs uppercase text-slate-500">
+              <tr className="text-xs uppercase text-slate-600">
                 <th scope="col" className="pb-2 pr-4">Nome</th>
                 <th scope="col" className="pb-2 pr-4">Origem</th>
                 <th scope="col" className="pb-2 pr-4">Especialidade</th>
@@ -348,7 +348,7 @@ export default async function DashboardPage() {
             <tbody className="divide-y divide-slate-100">
               {recentLeads.length === 0 && (
                 <tr>
-                  <td colSpan={isAll ? 5 : 4} className="py-6 text-center text-sm text-slate-500">
+                  <td colSpan={isAll ? 5 : 4} className="py-6 text-center text-sm text-slate-600">
                     Nenhum lead registrado.
                   </td>
                 </tr>
@@ -356,9 +356,9 @@ export default async function DashboardPage() {
               {recentLeads.map((l) => (
                 <tr key={l.id}>
                   <td className="py-2.5 pr-4 font-medium text-slate-800">{l.name}</td>
-                  <td className="py-2.5 pr-4 text-slate-500">{l.origin ?? "-"}</td>
-                  <td className="py-2.5 pr-4 text-slate-500">{l.interestedSpecialty ?? "-"}</td>
-                  {isAll && <td className="py-2.5 pr-4 text-slate-500">{l.unitName ?? "-"}</td>}
+                  <td className="py-2.5 pr-4 text-slate-600">{l.origin ?? "-"}</td>
+                  <td className="py-2.5 pr-4 text-slate-600">{l.interestedSpecialty ?? "-"}</td>
+                  {isAll && <td className="py-2.5 pr-4 text-slate-600">{l.unitName ?? "-"}</td>}
                   <td className="py-2.5">
                     <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700">{l.status}</span>
                   </td>

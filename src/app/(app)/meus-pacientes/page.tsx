@@ -61,7 +61,7 @@ export default async function MeusPacientesPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Meus pacientes</h1>
-        <p className="text-slate-500">
+        <p className="text-slate-600">
           {isProfissional
             ? "Apenas as crianças que você acompanha, com o andamento de cada uma."
             : "Pacientes vinculados ao seu cadastro de profissional."}
@@ -89,7 +89,7 @@ export default async function MeusPacientesPage() {
               </span>
               <div>
                 <p className="text-2xl font-bold text-slate-800">{patients.length}</p>
-                <p className="text-sm text-slate-500">Pacientes acompanhados</p>
+                <p className="text-sm text-slate-600">Pacientes acompanhados</p>
               </div>
             </div>
             <div className="card flex items-center gap-4 p-5">
@@ -98,7 +98,7 @@ export default async function MeusPacientesPage() {
               </span>
               <div>
                 <p className="text-2xl font-bold text-slate-800">{comSessao}</p>
-                <p className="text-sm text-slate-500">Com sessão agendada</p>
+                <p className="text-sm text-slate-600">Com sessão agendada</p>
               </div>
             </div>
             <div className="card flex items-center gap-4 p-5">
@@ -111,7 +111,7 @@ export default async function MeusPacientesPage() {
               </span>
               <div>
                 <p className="text-2xl font-bold text-slate-800">{pendentes}</p>
-                <p className="text-sm text-slate-500">Relatórios pendentes</p>
+                <p className="text-sm text-slate-600">Relatórios pendentes</p>
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default async function MeusPacientesPage() {
           {/* Andamento por etapa */}
           <section className="card mb-8 p-5">
             <h2 className="font-semibold text-slate-800">Andamento dos atendimentos</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-600">
               Em que ponto do processo cada criança está.
             </p>
 
@@ -130,7 +130,7 @@ export default async function MeusPacientesPage() {
                   <div
                     key={stage}
                     className={`rounded-xl border px-4 py-3 ${
-                      total > 0 ? stageClass(stage) : "border-slate-200 bg-slate-50 text-slate-500"
+                      total > 0 ? stageClass(stage) : "border-slate-200 bg-slate-50 text-slate-600"
                     }`}
                     title={STAGE_META[stage]?.description}
                   >
@@ -149,7 +149,7 @@ export default async function MeusPacientesPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="truncate text-base font-bold text-navy-800">{p.fullName}</h3>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-600">
                       {fmtDate(p.birthDate)}
                       {p.unidade ? ` · ${p.unidade}` : ""}
                     </p>
@@ -167,13 +167,13 @@ export default async function MeusPacientesPage() {
 
                 <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 text-xs">
                   <div>
-                    <dt className="text-slate-500">Última sessão</dt>
+                    <dt className="text-slate-600">Última sessão</dt>
                     <dd className="mt-0.5 font-medium text-slate-700">
                       {fmtDate(p.ultimaSessao, true) ?? "—"}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-500">Próxima sessão</dt>
+                    <dt className="text-slate-600">Próxima sessão</dt>
                     <dd className="mt-0.5 font-medium text-slate-700">
                       {fmtDate(p.proximaSessao, true) ?? "não agendada"}
                     </dd>
@@ -186,7 +186,7 @@ export default async function MeusPacientesPage() {
                       {p.relatoriosPendentes} relatório(s) pendente(s)
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-600">
                     <FileText className="h-3.5 w-3.5" />
                     {p.documentos} documento(s)
                   </span>

@@ -115,7 +115,7 @@ export default function DocumentsPanel({
                   accept={ACCEPT_ATTRIBUTE}
                   className="block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-700 file:mr-4 file:rounded-lg file:border-0 file:bg-navy-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-navy-700 hover:file:bg-navy-100"
                 />
-                <p className="mt-1.5 text-xs text-slate-500">
+                <p className="mt-1.5 text-xs text-slate-600">
                   PDF, imagem, Word, Excel ou texto. Até {humanSize(20 * 1024 * 1024)}.
                 </p>
               </div>
@@ -124,7 +124,7 @@ export default function DocumentsPanel({
                 <input type="checkbox" name="visibleToResponsible" className="mt-0.5 h-4 w-4 rounded border-slate-300 text-navy-700" />
                 <span className="text-sm text-slate-700">
                   Visível para o responsável
-                  <span className="block text-xs text-slate-500">
+                  <span className="block text-xs text-slate-600">
                     Marque apenas o que pode ser compartilhado com a família.
                   </span>
                 </span>
@@ -156,7 +156,7 @@ export default function DocumentsPanel({
 
       {documents.length === 0 ? (
         <div className="card flex items-start gap-3 p-6">
-          <Inbox className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500" />
+          <Inbox className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-600" />
           <div>
             <p className="font-semibold text-slate-800">Nenhum documento ainda</p>
             <p className="mt-1 text-sm text-slate-600">
@@ -174,18 +174,18 @@ export default function DocumentsPanel({
                 </span>
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate font-bold text-navy-800">{d.name}</h3>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-xs text-slate-600">
                     {d.patientName} · {d.type}
                   </p>
                 </div>
                 {d.sharedWithMe ? (
-                  <span className="flex-shrink-0 rounded-full bg-gold-50 px-2 py-1 text-[10px] font-bold uppercase text-gold-700">
+                  <span className="flex-shrink-0 rounded-full bg-gold-50 px-2 py-1 text-[10px] font-bold uppercase text-gold-900">
                     Encaminhado
                   </span>
                 ) : null}
               </div>
 
-              <p className="mt-3 truncate text-xs text-slate-500">
+              <p className="mt-3 truncate text-xs text-slate-600">
                 {d.originalName ?? "arquivo"} · {humanSize(d.sizeBytes)}
               </p>
 
@@ -210,7 +210,7 @@ export default function DocumentsPanel({
                 </button>
 
                 {(d.sharedCount ?? 0) > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                  <span className="inline-flex items-center gap-1 text-[11px] text-slate-600">
                     <Users className="h-3.5 w-3.5" /> {d.sharedCount}
                   </span>
                 )}

@@ -78,7 +78,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
     <div>
       <Link
         href={user.role === "PROFISSIONAL" ? "/meus-pacientes" : "/pacientes"}
-        className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-navy-700"
+        className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-navy-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Voltar
@@ -98,7 +98,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               </span>
             </div>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-600">
               {formatAge(patient.birthDate)} · nascido em {fmt(patient.birthDate)}
               {patient.unidade ? ` · ${patient.unidade}/${patient.unidadeUf}` : ""}
               {patient.convenio ? ` · ${patient.convenio}` : ""}
@@ -125,13 +125,13 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
 
         {patient.diagnoses && (
           <div className="mt-5 rounded-xl bg-slate-50 p-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Diagnósticos</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-600">Diagnósticos</p>
             <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{patient.diagnoses}</p>
           </div>
         )}
         {patient.notes && (
           <div className="mt-3 rounded-xl bg-slate-50 p-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Observações</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-600">Observações</p>
             <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{patient.notes}</p>
           </div>
         )}
@@ -156,7 +156,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
             </div>
 
             {documents.length === 0 ? (
-              <p className="rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
+              <p className="rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
                 Nenhum arquivo anexado a esta criança ainda.
               </p>
             ) : (
@@ -179,13 +179,13 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
                               <Eye className="h-3 w-3" /> visível ao responsável
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-600">
                               <EyeOff className="h-3 w-3" /> uso interno
                             </span>
                           )}
                         </div>
 
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-600">
                           {d.originalName ?? "arquivo"} · {humanSize(d.sizeBytes)} · anexado em{" "}
                           {fmt(d.createdAt, true)}
                           {d.enviadoPor ? ` por ${d.enviadoPor}` : ""}
@@ -200,7 +200,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
                                 Encaminhado para <strong>{e.paraProfissional}</strong>
                                 {e.specialty ? ` (${e.specialty})` : ""} em {fmt(e.createdAt, true)}
                                 {e.encaminhadoPor ? ` por ${e.encaminhadoPor}` : ""}
-                                {e.note && <span className="block pl-4 italic text-slate-500">“{e.note}”</span>}
+                                {e.note && <span className="block pl-4 italic text-slate-600">“{e.note}”</span>}
                               </li>
                             ))}
                           </ul>
@@ -237,7 +237,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
             </h2>
 
             {sessions.length === 0 ? (
-              <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
+              <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
                 Nenhuma sessão registrada.
               </p>
             ) : (
@@ -248,7 +248,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
                       <p className="font-semibold text-slate-800">{s.specialty}</p>
                       <span className="text-xs font-medium text-navy-700">{fmt(s.sessionDate, true)}</span>
                     </div>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-slate-600">
                       {s.profissional ?? "—"} · {s.status}
                     </p>
 
@@ -285,20 +285,20 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               </p>
 
               {activity.length === 0 ? (
-                <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
+                <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
                   Nenhum registro ainda.
                 </p>
               ) : (
                 <ul className="mt-5 space-y-2.5">
                   {activity.map((a) => (
                     <li key={a.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
-                      <span className="font-mono text-xs text-slate-500">{fmt(a.createdAt, true)}</span>
+                      <span className="font-mono text-xs text-slate-600">{fmt(a.createdAt, true)}</span>
                       <span className="font-medium text-slate-700">{a.userEmail ?? "—"}</span>
-                      <span className="text-slate-500">
+                      <span className="text-slate-600">
                         {ACTION_LABEL[a.action] ?? a.action}
                         {a.entity === "Document" ? " um arquivo" : ""}
                       </span>
-                      {a.detail && <span className="w-full text-xs text-slate-500">{a.detail}</span>}
+                      {a.detail && <span className="w-full text-xs text-slate-600">{a.detail}</span>}
                     </li>
                   ))}
                 </ul>
@@ -315,15 +315,15 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               Responsáveis
             </h2>
             {responsibles.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">Nenhum responsável vinculado.</p>
+              <p className="mt-3 text-sm text-slate-600">Nenhum responsável vinculado.</p>
             ) : (
               <ul className="mt-3 space-y-3">
                 {responsibles.map((r) => (
                   <li key={r.id} className="text-sm">
                     <p className="font-medium text-slate-800">{r.fullName}</p>
-                    <p className="text-xs text-slate-500">{r.relationship}</p>
-                    <p className="text-xs text-slate-500">{r.phone}</p>
-                    {r.email && <p className="break-all text-xs text-slate-500">{r.email}</p>}
+                    <p className="text-xs text-slate-600">{r.relationship}</p>
+                    <p className="text-xs text-slate-600">{r.phone}</p>
+                    {r.email && <p className="break-all text-xs text-slate-600">{r.email}</p>}
                   </li>
                 ))}
               </ul>
@@ -336,13 +336,13 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               Equipe que atende
             </h2>
             {team.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">Nenhum profissional vinculado.</p>
+              <p className="mt-3 text-sm text-slate-600">Nenhum profissional vinculado.</p>
             ) : (
               <ul className="mt-3 space-y-3">
                 {team.map((t) => (
                   <li key={t.id} className="text-sm">
                     <p className="font-medium text-slate-800">{t.fullName}</p>
-                    <p className="text-xs text-slate-500">{t.specialty}</p>
+                    <p className="text-xs text-slate-600">{t.specialty}</p>
                   </li>
                 ))}
               </ul>
@@ -355,7 +355,7 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
               Histórico de etapas
             </h2>
             {stages.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">
+              <p className="mt-3 text-sm text-slate-600">
                 Nenhuma mudança registrada. A etapa atual é{" "}
                 <strong>{patient.careStage ?? "sem etapa"}</strong>.
               </p>
@@ -367,11 +367,11 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
                     <p className="font-medium text-slate-800">
                       {h.fromStage ? `${h.fromStage} → ` : ""}{h.toStage}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-600">
                       {fmt(h.createdAt, true)}
                       {h.changedByName ? ` · ${h.changedByName}` : ""}
                     </p>
-                    {h.note && <p className="mt-1 text-xs italic text-slate-500">“{h.note}”</p>}
+                    {h.note && <p className="mt-1 text-xs italic text-slate-600">“{h.note}”</p>}
                   </li>
                 ))}
               </ol>

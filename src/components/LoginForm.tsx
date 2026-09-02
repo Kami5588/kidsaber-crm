@@ -90,7 +90,7 @@ export default function LoginForm({
             }`}
           >
             {notice.tone === "warning" ? (
-              <Clock className="mt-0.5 h-5 w-5 flex-shrink-0 text-gold-700" />
+              <Clock className="mt-0.5 h-5 w-5 flex-shrink-0 text-gold-900" />
             ) : (
               <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-coral-600" />
             )}
@@ -134,7 +134,7 @@ export default function LoginForm({
 
             <div className="my-6 flex items-center gap-4">
               <span className="h-px flex-1 bg-slate-200" />
-              <span className="text-xs font-medium uppercase tracking-wide text-slate-500">ou</span>
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-600">ou</span>
               <span className="h-px flex-1 bg-slate-200" />
             </div>
           </>
@@ -144,7 +144,7 @@ export default function LoginForm({
           <div>
             <label htmlFor="email" className="label">E-mail</label>
             <div className="relative">
-              <Mail aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+              <Mail aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
               <input
                 id="email"
                 type="email"
@@ -163,7 +163,7 @@ export default function LoginForm({
           <div>
             <label htmlFor="password" className="label">Senha</label>
             <div className="relative">
-              <Lock aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+              <Lock aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
               <input
                 id="password"
                 type={mostrarSenha ? "text" : "password"}
@@ -185,7 +185,7 @@ export default function LoginForm({
                 onClick={() => setMostrarSenha((v) => !v)}
                 aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
                 aria-pressed={mostrarSenha}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-700"
               >
                 {mostrarSenha ? (
                   <EyeOff aria-hidden className="h-4 w-4" />
@@ -223,7 +223,7 @@ export default function LoginForm({
         </form>
       </div>
 
-      <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">
+      <p className="mt-6 text-center text-xs leading-relaxed text-slate-600">
         Problemas para entrar? Fale com a administração da clínica.
       </p>
     </div>

@@ -37,7 +37,7 @@ export default async function TermosPage() {
               Ao navegar neste site ou utilizar o formulário de contato, você concorda com as
               condições descritas abaixo. Recomendamos a leitura atenta.
             </p>
-            <p className="mt-3 text-sm text-slate-500">Última atualização: {ATUALIZADO_EM}.</p>
+            <p className="mt-3 text-sm text-slate-600">Última atualização: {ATUALIZADO_EM}.</p>
           </div>
         </div>
 
@@ -149,7 +149,7 @@ export default async function TermosPage() {
             endereços das unidades estão na <Link href="/#unidades">página inicial</Link>.
           </p>
 
-          <p className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-500">
+          <p className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-600">
             Consulte também a nossa{" "}
             <Link href="/privacidade">Política de Privacidade</Link>.
           </p>

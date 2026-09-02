@@ -117,12 +117,12 @@ return (
 <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
 <div>
 <h1 className="text-2xl font-bold text-slate-900">{entity.label}</h1>
-<p className="text-sm text-slate-500">{rows.length} registro(s)</p>
+<p className="text-sm text-slate-600">{rows.length} registro(s)</p>
 </div>
 <div className="flex items-center gap-3">
 {entity.searchFields.length > 0 && (
 <form className="relative">
-<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+<Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
 <input type="text" name="q" defaultValue={q} placeholder="Buscar..." className="input input-with-icon w-56" />
 </form>
 )}
@@ -132,10 +132,10 @@ return (
 </div>
 </div>
 
-<div className="card overflow-x-auto">
+<div tabIndex={0} role="region" aria-label="Listagem" className="card overflow-x-auto">
 <table className="w-full text-left text-sm">
 <thead className="border-b border-slate-100 bg-slate-50/60">
-<tr className="text-xs uppercase tracking-wide text-slate-500">
+<tr className="text-xs uppercase tracking-wide text-slate-600">
 {columns.map((c) => (
 <th scope="col" key={c.name} className="whitespace-nowrap px-4 py-3">{c.label}</th>
 ))}
@@ -145,7 +145,7 @@ return (
 <tbody className="divide-y divide-slate-100">
 {rows.length === 0 && (
 <tr>
-<td colSpan={columns.length + 1} className="px-4 py-10 text-center text-sm text-slate-500">
+<td colSpan={columns.length + 1} className="px-4 py-10 text-center text-sm text-slate-600">
 Nenhum registro encontrado.
 </td>
 </tr>

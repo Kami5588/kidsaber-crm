@@ -36,7 +36,7 @@ function StatCard({
       </span>
       <div className="min-w-0">
         <p className="text-xl font-bold text-slate-800">{value}</p>
-        <p className="truncate text-xs text-slate-500">{label}</p>
+        <p className="truncate text-xs text-slate-600">{label}</p>
       </div>
     </div>
   );
@@ -71,7 +71,7 @@ export default async function AgendaPage({
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Agenda</h1>
-          <p className="text-slate-500">
+          <p className="text-slate-600">
             {user.role === "PROFISSIONAL"
               ? "Seus atendimentos da semana."
               : "Atendimentos da semana, por dia."}
@@ -114,7 +114,7 @@ export default async function AgendaPage({
       </div>
 
       {/* Grade da semana: rola na horizontal no celular, em vez de espremer */}
-      <div className="overflow-x-auto pb-2">
+      <div tabIndex={0} role="region" aria-label="Grade da semana" className="overflow-x-auto pb-2">
         <div className="grid min-w-[64rem] grid-cols-7 gap-3">
           {days.map((day) => {
             const key = toLocalDayKey(day.toISOString());
@@ -135,7 +135,7 @@ export default async function AgendaPage({
               >
                 <div className="mb-3 flex items-baseline justify-between gap-2">
                   <div>
-                    <p className={`text-xs font-bold uppercase ${isToday ? "text-navy-700" : "text-slate-500"}`}>
+                    <p className={`text-xs font-bold uppercase ${isToday ? "text-navy-700" : "text-slate-600"}`}>
                       {format(day, "EEE", { locale: ptBR })}
                     </p>
                     <p className={`text-lg font-bold ${isToday ? "text-navy-800" : "text-slate-700"}`}>
@@ -167,9 +167,9 @@ export default async function AgendaPage({
                           <p className="mt-0.5 truncate text-sm font-semibold text-slate-800">
                             {s.patientName}
                           </p>
-                          <p className="truncate text-[11px] text-slate-500">{s.specialty}</p>
+                          <p className="truncate text-[11px] text-slate-600">{s.specialty}</p>
                           {user.role !== "PROFISSIONAL" && s.professionalName && (
-                            <p className="truncate text-[11px] text-slate-500">{s.professionalName}</p>
+                            <p className="truncate text-[11px] text-slate-600">{s.professionalName}</p>
                           )}
                         </Link>
                       </li>
@@ -183,7 +183,7 @@ export default async function AgendaPage({
       </div>
 
       {/* Legenda */}
-      <div className="mt-6 flex flex-wrap gap-4 text-xs text-slate-500">
+      <div className="mt-6 flex flex-wrap gap-4 text-xs text-slate-600">
         {Object.keys(STATUS_DOT).map((status) => (
           <span key={status} className="flex items-center gap-1.5">
             <span className={`h-2.5 w-2.5 rounded-full ${STATUS_DOT[status]}`} />
@@ -194,7 +194,7 @@ export default async function AgendaPage({
 
       {totals.total === 0 && (
         <div className="card mt-6 flex items-start gap-3 p-6">
-          <CalendarDays className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500" />
+          <CalendarDays className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-600" />
           <div>
             <p className="font-semibold text-slate-800">Nenhuma sessão nesta semana</p>
             <p className="mt-1 text-sm text-slate-600">

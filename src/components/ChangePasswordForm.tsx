@@ -54,7 +54,7 @@ export default function ChangePasswordForm() {
             autoComplete="new-password"
             className="input"
           />
-          <p className="mt-1.5 text-xs text-slate-500">Mínimo de 8 caracteres.</p>
+          <p className="mt-1.5 text-xs text-slate-600">Mínimo de 8 caracteres.</p>
         </div>
 
         <div>

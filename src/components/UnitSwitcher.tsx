@@ -63,7 +63,7 @@ export default function UnitSwitcher({
           {isAll ? <Layers className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[11px] font-medium uppercase tracking-wide text-slate-500">
+          <span className="block text-[11px] font-medium uppercase tracking-wide text-slate-600">
             Unidade
           </span>
           <span className="block truncate font-semibold text-slate-800">
@@ -71,7 +71,7 @@ export default function UnitSwitcher({
           </span>
         </span>
         <ChevronDown
-          className={`h-4 w-4 flex-shrink-0 text-slate-500 transition ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 flex-shrink-0 text-slate-600 transition ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -90,9 +90,9 @@ export default function UnitSwitcher({
             <Layers className="h-4 w-4 flex-shrink-0 text-navy-600" />
             <span className="flex-1">
               <span className="block text-sm font-semibold text-slate-800">Todas as unidades</span>
-              <span className="block text-xs text-slate-500">Visão consolidada da rede</span>
+              <span className="block text-xs text-slate-600">Visão consolidada da rede</span>
             </span>
-            {isAll && <Check className="h-4 w-4 flex-shrink-0 text-teal-600" />}
+            {isAll && <Check className="h-4 w-4 flex-shrink-0 text-teal-700" />}
           </button>
 
           {units.map((u) => {
@@ -106,21 +106,21 @@ export default function UnitSwitcher({
                 onClick={() => choose(u.id)}
                 className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50"
               >
-                <Building2 className="h-4 w-4 flex-shrink-0 text-teal-600" />
+                <Building2 className="h-4 w-4 flex-shrink-0 text-teal-700" />
                 <span className="flex-1">
                   <span className="flex items-center gap-2 text-sm font-semibold text-slate-800">
                     {u.name}
                     {u.isMain ? (
-                      <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gold-700">
+                      <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gold-900">
                         Matriz
                       </span>
                     ) : null}
                   </span>
-                  <span className="block text-xs text-slate-500">
+                  <span className="block text-xs text-slate-600">
                     {u.city} · {u.state}
                   </span>
                 </span>
-                {selected && <Check className="h-4 w-4 flex-shrink-0 text-teal-600" />}
+                {selected && <Check className="h-4 w-4 flex-shrink-0 text-teal-700" />}
               </button>
             );
           })}

@@ -35,7 +35,7 @@ export default async function UsuariosPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Contas de acesso</h1>
-        <p className="text-slate-500">
+        <p className="text-slate-600">
           Crie logins para a equipe e defina o que cada pessoa enxerga no sistema.
         </p>
       </div>
@@ -44,7 +44,7 @@ export default async function UsuariosPage() {
         {ROLES.map((r) => (
           <div key={r.value} className="card p-5">
             <p className="text-sm font-bold text-navy-800">{r.label}</p>
-            <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{r.description}</p>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-600">{r.description}</p>
           </div>
         ))}
       </div>

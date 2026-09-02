@@ -72,7 +72,7 @@ export default async function AuditoriaPage({
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Auditoria de acesso</h1>
-        <p className="text-slate-500">
+        <p className="text-slate-600">
           Quem acessou ou alterou dados, quando e de onde. Registros mantidos por 180 dias.
         </p>
       </div>
@@ -84,7 +84,7 @@ export default async function AuditoriaPage({
           </span>
           <div>
             <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
-            <p className="text-sm text-slate-500">Registros na trilha</p>
+            <p className="text-sm text-slate-600">Registros na trilha</p>
           </div>
         </div>
         <div className="card flex items-center gap-4 p-5">
@@ -93,7 +93,7 @@ export default async function AuditoriaPage({
           </span>
           <div>
             <p className="text-2xl font-bold text-slate-800">{stats.last24h}</p>
-            <p className="text-sm text-slate-500">Acessos nas últimas 24h</p>
+            <p className="text-sm text-slate-600">Acessos nas últimas 24h</p>
           </div>
         </div>
         <div className="card flex items-center gap-4 p-5">
@@ -106,14 +106,14 @@ export default async function AuditoriaPage({
           </span>
           <div>
             <p className="text-2xl font-bold text-slate-800">{stats.failedLogins}</p>
-            <p className="text-sm text-slate-500">Logins falhos em 7 dias</p>
+            <p className="text-sm text-slate-600">Logins falhos em 7 dias</p>
           </div>
         </div>
       </div>
 
       <form className="mb-5 flex flex-wrap items-end gap-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
           <input
             type="text"
             name="q"
@@ -122,7 +122,17 @@ export default async function AuditoriaPage({
             className="input input-with-icon w-64"
           />
         </div>
-        <select name="acao" defaultValue={searchParams.acao ?? ""} className="input w-56">
+        {/*
+          A primeira opção diz "Todas as ações", mas isso é o valor, não o nome
+          do campo: sem o rótulo, o leitor de tela anuncia apenas "caixa de
+          combinação" e não diz o que ela filtra.
+        */}
+        <select
+          name="acao"
+          defaultValue={searchParams.acao ?? ""}
+          aria-label="Filtrar por tipo de ação"
+          className="input w-56"
+        >
           <option value="">Todas as ações</option>
           {Object.entries(ACTION_LABEL).map(([k, v]) => (
             <option key={k} value={k}>{v}</option>
@@ -131,10 +141,10 @@ export default async function AuditoriaPage({
         <button type="submit" className="btn-secondary">Filtrar</button>
       </form>
 
-      <div className="card overflow-x-auto">
+      <div tabIndex={0} role="region" aria-label="Registros de acesso" className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 bg-slate-50/60">
-            <tr className="text-xs uppercase tracking-wide text-slate-500">
+            <tr className="text-xs uppercase tracking-wide text-slate-600">
               <th scope="col" className="whitespace-nowrap px-4 py-3">Data e hora</th>
               <th scope="col" className="whitespace-nowrap px-4 py-3">Usuário</th>
               <th scope="col" className="whitespace-nowrap px-4 py-3">Ação</th>
@@ -146,7 +156,7 @@ export default async function AuditoriaPage({
           <tbody className="divide-y divide-slate-100">
             {rows.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-500">
+                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-600">
                   Nenhum registro encontrado.
                 </td>
               </tr>
@@ -166,11 +176,11 @@ export default async function AuditoriaPage({
                     {ACTION_LABEL[r.action] ?? r.action}
                   </span>
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-slate-500">
+                <td className="whitespace-nowrap px-4 py-3 text-slate-600">
                   {r.entity ? `${r.entity}${r.entityId ? ` · ${String(r.entityId).slice(0, 8)}` : ""}` : "-"}
                 </td>
-                <td className="max-w-md px-4 py-3 text-slate-500">{r.detail ?? "-"}</td>
-                <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
+                <td className="max-w-md px-4 py-3 text-slate-600">{r.detail ?? "-"}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-600">
                   {r.ip ?? "-"}
                 </td>
               </tr>

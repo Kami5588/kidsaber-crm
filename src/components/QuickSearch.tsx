@@ -116,7 +116,7 @@ export default function QuickSearch() {
 
   return (
     <div className="relative w-full" ref={boxRef}>
-      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
 
       <input
         ref={inputRef}
@@ -142,7 +142,7 @@ export default function QuickSearch() {
       />
 
       {loading ? (
-        <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-500" />
+        <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-600" />
       ) : term ? (
         <button
           type="button"
@@ -151,7 +151,7 @@ export default function QuickSearch() {
             inputRef.current?.focus();
           }}
           aria-label="Limpar busca"
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-slate-500 hover:bg-slate-100"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-slate-600 hover:bg-slate-100"
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -189,7 +189,7 @@ export default function QuickSearch() {
                       <span className="block truncate text-sm font-semibold text-slate-800">
                         {h.fullName}
                       </span>
-                      <span className="block truncate text-xs text-slate-500">
+                      <span className="block truncate text-xs text-slate-600">
                         {h.unidade ?? "sem unidade"}
                         {h.responsavel ? ` · resp. ${h.responsavel}` : ""}
                       </span>

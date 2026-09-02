@@ -18,7 +18,7 @@ export default async function LgpdPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Proteção de dados</h1>
-        <p className="text-slate-500">
+        <p className="text-slate-600">
           Ferramentas para atender pedidos de acesso, portabilidade e eliminação previstos na LGPD.
         </p>
       </div>
@@ -28,14 +28,14 @@ export default async function LgpdPage() {
         <div className="card flex items-start gap-3 p-5">
           <span
             className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${
-              encryption ? "bg-teal-50 text-teal-600" : "bg-gold-50 text-gold-700"
+              encryption ? "bg-teal-50 text-teal-700" : "bg-gold-50 text-gold-900"
             }`}
           >
             <Lock className="h-5 w-5" />
           </span>
           <div>
             <p className="text-sm font-bold text-slate-800">Criptografia em repouso</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
               {encryption
                 ? "Ativa. Diagnósticos, evoluções e notas são cifrados no banco."
                 : "Inativa. Defina ENCRYPTION_KEY para cifrar os dados sensíveis."}
@@ -49,7 +49,7 @@ export default async function LgpdPage() {
           </span>
           <div>
             <p className="text-sm font-bold text-slate-800">Trilha de auditoria</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
               Ativa.{" "}
               <Link href="/auditoria" className="font-medium text-navy-600 hover:underline">
                 Ver registros de acesso
@@ -65,7 +65,7 @@ export default async function LgpdPage() {
           </span>
           <div>
             <p className="text-sm font-bold text-slate-800">Proteção do login</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
               Ativa. Cinco tentativas erradas bloqueiam o acesso por 15 minutos.
             </p>
           </div>

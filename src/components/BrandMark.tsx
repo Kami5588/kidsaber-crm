@@ -54,7 +54,7 @@ export function BrandLockup({
   subtitle?: string;
 }) {
   const name = tone === "dark" ? "text-white" : "text-navy-800";
-  const sub = tone === "dark" ? "text-teal-200" : "text-teal-600";
+  const sub = tone === "dark" ? "text-teal-200" : "text-teal-700";
 
   return (
     <span className="flex items-center gap-3">

@@ -15,7 +15,7 @@ export default async function MinhaContaPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Minha conta</h1>
-        <p className="text-slate-500">Seus dados de acesso e a senha do sistema.</p>
+        <p className="text-slate-600">Seus dados de acesso e a senha do sistema.</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -27,20 +27,20 @@ export default async function MinhaContaPage() {
 
           <dl className="mt-5 space-y-3 text-sm">
             <div className="flex justify-between gap-4 border-b border-slate-100 pb-3">
-              <dt className="text-slate-500">Nome exibido</dt>
+              <dt className="text-slate-600">Nome exibido</dt>
               <dd className="text-right font-medium text-slate-800">{user.displayName}</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-slate-100 pb-3">
-              <dt className="text-slate-500">E-mail de acesso</dt>
+              <dt className="text-slate-600">E-mail de acesso</dt>
               <dd className="break-all text-right font-medium text-slate-800">{user.email}</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-slate-100 pb-3">
-              <dt className="text-slate-500">Perfil</dt>
+              <dt className="text-slate-600">Perfil</dt>
               <dd className="text-right font-medium text-slate-800">{role?.label ?? user.role}</dd>
             </div>
             {user.jobTitle && (
               <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Cargo</dt>
+                <dt className="text-slate-600">Cargo</dt>
                 <dd className="text-right font-medium text-slate-800">{user.jobTitle}</dd>
               </div>
             )}
@@ -51,7 +51,7 @@ export default async function MinhaContaPage() {
             {role?.description}
           </p>
 
-          <p className="mt-4 text-xs leading-relaxed text-slate-500">
+          <p className="mt-4 text-xs leading-relaxed text-slate-600">
             Nome, perfil e cargo são definidos pela administração. Para alterá-los, fale com quem
             administra o sistema.
           </p>

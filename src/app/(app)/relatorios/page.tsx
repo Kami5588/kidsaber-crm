@@ -24,8 +24,8 @@ function Stat({
         <Icon className="h-5 w-5" />
       </span>
       <p className="mt-3 text-2xl font-bold text-slate-800">{value}</p>
-      <p className="text-sm text-slate-500">{label}</p>
-      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+      <p className="text-sm text-slate-600">{label}</p>
+      {hint && <p className="mt-1 text-xs text-slate-600">{hint}</p>}
     </div>
   );
 }
@@ -85,7 +85,7 @@ export default async function RelatoriosPage({
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Relatório gerencial</h1>
-          <p className="text-slate-500">
+          <p className="text-slate-600">
             Fechamento de <span className="font-medium capitalize">{nomeMes}</span>
             {activeUnit ? ` · unidade ${activeUnit.name}` : " · rede completa"}
           </p>
@@ -111,7 +111,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Atendimento */}
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-600">
         Atendimento
       </h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -129,7 +129,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Pacientes */}
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">Pacientes</h2>
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-600">Pacientes</h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat icon={Users} label="Pacientes ativos" value={String(t.pacientesAtivos)} tone="bg-navy-600 text-white" />
         <Stat icon={UserPlus} label="Novos no mês" value={String(t.novosPacientes)} tone="bg-teal-500 text-white" />
@@ -144,7 +144,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Financeiro */}
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">Financeiro</h2>
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-600">Financeiro</h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-3">
         <Stat icon={Wallet} label="Recebido" value={brl(t.receitaRecebida)} tone="bg-teal-500 text-white" />
         <Stat icon={Clock} label="A receber" value={brl(t.receitaPendente)} tone="bg-gold-500 text-navy-900" />
@@ -159,7 +159,7 @@ export default async function RelatoriosPage({
             Atendimentos por especialidade
           </h2>
           {especialidades.length === 0 ? (
-            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
+            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
               Nenhum atendimento neste mês.
             </p>
           ) : (
@@ -178,7 +178,7 @@ export default async function RelatoriosPage({
             De onde vieram os contatos
           </h2>
           {origens.length === 0 ? (
-            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-500">
+            <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
               Nenhum contato registrado neste mês.
             </p>
           ) : (
@@ -194,14 +194,14 @@ export default async function RelatoriosPage({
       {/* Comparativo entre unidades */}
       <section className="card mt-6 p-6">
         <h2 className="font-bold text-navy-800">Comparativo entre unidades</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Números do mês inteiro, independentemente da unidade selecionada no topo.
         </p>
 
-        <div className="mt-5 overflow-x-auto">
+        <div tabIndex={0} role="region" aria-label="Comparativo entre unidades" className="mt-5 overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="text-xs uppercase tracking-wide text-slate-500">
+              <tr className="text-xs uppercase tracking-wide text-slate-600">
                 <th scope="col" className="pb-2 pr-4">Unidade</th>
                 <th scope="col" className="pb-2 pr-4 text-right">Pacientes ativos</th>
                 <th scope="col" className="pb-2 pr-4 text-right">Atendimentos</th>
@@ -217,12 +217,12 @@ export default async function RelatoriosPage({
                     <span className="flex items-center gap-2 font-medium text-slate-800">
                       {u.name}
                       {u.isMain ? (
-                        <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gold-700">
+                        <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gold-900">
                           Sede
                         </span>
                       ) : null}
                     </span>
-                    <span className="text-xs text-slate-500">{u.city}/{u.state}</span>
+                    <span className="text-xs text-slate-600">{u.city}/{u.state}</span>
                   </td>
                   <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{u.pacientesAtivos}</td>
                   <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{u.atendimentos}</td>

@@ -27,8 +27,8 @@ function Stat({ icon: Icon, label, value, tone, hint }: any) {
         <Icon className="h-5 w-5" />
       </span>
       <p className="mt-3 text-2xl font-bold text-slate-800">{value}</p>
-      <p className="text-sm text-slate-500">{label}</p>
-      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+      <p className="text-sm text-slate-600">{label}</p>
+      {hint && <p className="mt-1 text-xs text-slate-600">{hint}</p>}
     </div>
   );
 }
@@ -59,7 +59,7 @@ export default async function FaltasPage({
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Controle de faltas</h1>
-          <p className="text-slate-500">
+          <p className="text-slate-600">
             Quem não compareceu nos últimos {dias} dias, para a equipe agir antes de virar
             abandono do tratamento.
           </p>
@@ -110,7 +110,7 @@ export default async function FaltasPage({
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="card p-6 lg:col-span-2">
           <h2 className="font-bold text-navy-800">Pacientes com faltas</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-600">
             Ordenado por número de faltas. Quem tem menos de duas sessões no período fica de fora,
             para não destacar quem só começou.
           </p>
@@ -136,7 +136,7 @@ export default async function FaltasPage({
               </div>
             ) : (
               <div className="mt-6 flex items-start gap-3 rounded-xl bg-teal-50 p-5">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-teal-600" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-teal-700" />
                 <div>
                   <p className="font-semibold text-teal-900">Nenhuma falta registrada</p>
                   <p className="mt-1 text-sm text-teal-800/80">
@@ -147,10 +147,10 @@ export default async function FaltasPage({
               </div>
             )
           ) : (
-            <div className="mt-5 overflow-x-auto">
+            <div tabIndex={0} role="region" aria-label="Pacientes com faltas" className="mt-5 overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="text-xs uppercase tracking-wide text-slate-500">
+                  <tr className="text-xs uppercase tracking-wide text-slate-600">
                     <th scope="col" className="pb-2 pr-4">Paciente</th>
                     <th scope="col" className="pb-2 pr-4 text-right">Faltas</th>
                     <th scope="col" className="pb-2 pr-4 text-right">Realizadas</th>
@@ -170,7 +170,7 @@ export default async function FaltasPage({
                           {r.fullName}
                         </Link>
                         <span className="mt-0.5 flex flex-wrap items-center gap-2">
-                          <span className="text-xs text-slate-500">{r.unidade ?? "—"}</span>
+                          <span className="text-xs text-slate-600">{r.unidade ?? "—"}</span>
                           {r.careStage && (
                             <span className={`rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${stageClass(r.careStage)}`}>
                               {r.careStage}
@@ -187,13 +187,13 @@ export default async function FaltasPage({
                       <td className="py-3 pr-4 text-right">
                         <span
                           className={`font-semibold tabular-nums ${
-                            r.taxaFalta >= 40 ? "text-coral-700" : r.taxaFalta >= 20 ? "text-gold-700" : "text-slate-600"
+                            r.taxaFalta >= 40 ? "text-coral-700" : r.taxaFalta >= 20 ? "text-gold-900" : "text-slate-600"
                           }`}
                         >
                           {r.taxaFalta}%
                         </span>
                       </td>
-                      <td className="py-3 pr-4 text-xs text-slate-500">
+                      <td className="py-3 pr-4 text-xs text-slate-600">
                         {r.ultimaFalta ? format(parseISO(r.ultimaFalta), "dd/MM/yyyy", { locale: ptBR }) : "—"}
                       </td>
                       <td className="py-3">
@@ -203,10 +203,10 @@ export default async function FaltasPage({
                             {r.telefoneResponsavel}
                           </span>
                         ) : (
-                          <span className="text-xs text-slate-500">—</span>
+                          <span className="text-xs text-slate-600">—</span>
                         )}
                         {r.responsavel && (
-                          <span className="block text-[11px] text-slate-500">{r.responsavel}</span>
+                          <span className="block text-[11px] text-slate-600">{r.responsavel}</span>
                         )}
                       </td>
                     </tr>
@@ -219,7 +219,7 @@ export default async function FaltasPage({
 
         <section className="card p-6">
           <h2 className="font-bold text-navy-800">Faltas por dia da semana</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-600">
             Um dia que concentra faltas costuma indicar horário ruim para as famílias.
           </p>
 

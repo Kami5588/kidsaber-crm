@@ -60,7 +60,7 @@ function PasswordReveal({ password, message }: { password: string; message?: str
           }}
           className="btn-secondary"
         >
-          {copied ? <Check className="h-4 w-4 text-teal-600" /> : <Copy className="h-4 w-4" />}
+          {copied ? <Check className="h-4 w-4 text-teal-700" /> : <Copy className="h-4 w-4" />}
           {copied ? "Copiado" : "Copiar"}
         </button>
       </div>
@@ -144,7 +144,7 @@ export default function UsersPanel({
                   <option key={r.value} value={r.value}>{r.label}</option>
                 ))}
               </select>
-              <p className="mt-1.5 text-xs text-slate-500">
+              <p className="mt-1.5 text-xs text-slate-600">
                 {ROLES.find((r) => r.value === newRole)?.description}
               </p>
             </div>
@@ -161,7 +161,7 @@ export default function UsersPanel({
                   </option>
                 ))}
               </select>
-              <p className="mt-1.5 text-xs text-slate-500">
+              <p className="mt-1.5 text-xs text-slate-600">
                 É esse vínculo que define quais pacientes a pessoa vê.
               </p>
             </div>
@@ -183,7 +183,7 @@ export default function UsersPanel({
                 className="input"
                 placeholder="Fonoaudióloga, Psicopedagoga, Recepcionista..."
               />
-              <p className="mt-1.5 text-xs text-slate-500">
+              <p className="mt-1.5 text-xs text-slate-600">
                 Texto livre: escreva exatamente como a pessoa deve ser chamada.
               </p>
             </div>
@@ -218,10 +218,10 @@ export default function UsersPanel({
       )}
 
       {/* ---------- Lista ---------- */}
-      <section className="card overflow-x-auto">
+      <section tabIndex={0} role="region" aria-label="Contas de acesso" className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 bg-slate-50/60">
-            <tr className="text-xs uppercase tracking-wide text-slate-500">
+            <tr className="text-xs uppercase tracking-wide text-slate-600">
               <th scope="col" className="px-4 py-3">Pessoa</th>
               <th scope="col" className="px-4 py-3">Perfil</th>
               <th scope="col" className="px-4 py-3">Vínculo</th>
@@ -234,7 +234,7 @@ export default function UsersPanel({
               <tr key={u.id} className={u.active ? "" : "opacity-60"}>
                 <td className="px-4 py-3">
                   <p className="font-medium text-slate-800">{u.displayName ?? u.name}</p>
-                  <p className="text-xs text-slate-500">{u.email}</p>
+                  <p className="text-xs text-slate-600">{u.email}</p>
                 </td>
                 <td className="px-4 py-3">
                   <span className="rounded-full bg-navy-50 px-2.5 py-1 text-xs font-medium text-navy-700">
@@ -242,7 +242,7 @@ export default function UsersPanel({
                   </span>
                 </td>
                 <td className="px-4 py-3 text-slate-600">
-                  {u.professionalName ?? <span className="text-slate-500">—</span>}
+                  {u.professionalName ?? <span className="text-slate-600">—</span>}
                 </td>
                 <td className="px-4 py-3">
                   {u.active ? (
@@ -250,12 +250,12 @@ export default function UsersPanel({
                       <CircleCheck className="h-3.5 w-3.5" /> Ativa
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600">
                       <CircleSlash className="h-3.5 w-3.5" /> Desativada
                     </span>
                   )}
                   {u.mustChangePassword === 1 && (
-                    <span className="mt-1 block text-[11px] text-gold-700">senha inicial pendente</span>
+                    <span className="mt-1 block text-[11px] text-gold-900">senha inicial pendente</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -272,7 +272,7 @@ export default function UsersPanel({
                       <input type="hidden" name="id" value={u.id} />
                       <button
                         type="submit"
-                        className="rounded-lg p-1.5 text-gold-700 transition hover:bg-gold-50"
+                        className="rounded-lg p-1.5 text-gold-900 transition hover:bg-gold-50"
                         title="Redefinir senha"
                       >
                         <KeyRound className="h-4 w-4" />

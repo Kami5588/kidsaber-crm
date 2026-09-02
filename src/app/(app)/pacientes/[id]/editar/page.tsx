@@ -44,7 +44,7 @@ export default async function EditarPacientePage({ params }: { params: { id: str
     <div>
       <Link
         href={`/pacientes/${params.id}`}
-        className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-navy-700"
+        className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-navy-700"
       >
         <ArrowLeft className="h-4 w-4" /> Voltar para a ficha
       </Link>

@@ -64,7 +64,7 @@ const TONES = {
   yellow: {
     card: "border-gold-200 bg-gold-50/70 hover:border-gold-400",
     icon: "bg-gold-500 text-navy-900",
-    title: "text-gold-700",
+    title: "text-gold-900",
   },
   red: {
     card: "border-coral-100 bg-coral-50/60 hover:border-coral-300",
@@ -176,7 +176,7 @@ export default async function LandingPage() {
                 >
                   <d.icon className="h-5 w-5 text-teal-500" />
                   <p className="mt-2 text-sm font-bold text-navy-800">{d.title}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-500">{d.text}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">{d.text}</p>
                 </div>
               ))}
             </div>
@@ -225,7 +225,7 @@ export default async function LandingPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-bold text-navy-700 shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <MessageCircle className="h-5 w-5 text-teal-600" />
+              <MessageCircle className="h-5 w-5 text-teal-700" />
               Falar no WhatsApp
             </a>
           </div>
@@ -235,7 +235,7 @@ export default async function LandingPage() {
       {/* ---------- Dois caminhos: família ou equipe ---------- */}
       <section id="acesso" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-bold uppercase tracking-wider text-teal-600">
+          <span className="text-sm font-bold uppercase tracking-wider text-teal-700">
             Por onde você entra
           </span>
           <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
@@ -308,15 +308,15 @@ export default async function LandingPage() {
 
             <ul className="mt-6 space-y-2.5 text-sm text-slate-600">
               <li className="flex items-start gap-2.5">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-700" />
                 Agenda e registro de evolução das sessões
               </li>
               <li className="flex items-start gap-2.5">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-700" />
                 Laudos e encaminhamentos entre especialidades
               </li>
               <li className="flex items-start gap-2.5">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-600" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-700" />
                 Cada profissional vê apenas os próprios pacientes
               </li>
             </ul>
@@ -331,7 +331,7 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-slate-500">
+            <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-slate-600">
               <ShieldCheck className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-teal-500" />
               Primeiro acesso? Entre com a conta Google da clínica: a direção libera o seu perfil
               antes do primeiro uso.
@@ -343,7 +343,7 @@ export default async function LandingPage() {
       {/* ---------- Especialidades ---------- */}
       <section id="especialidades" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-bold uppercase tracking-wider text-teal-600">
+          <span className="text-sm font-bold uppercase tracking-wider text-teal-700">
             Nossas especialidades
           </span>
           <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
@@ -382,7 +382,7 @@ export default async function LandingPage() {
       <section id="como-funciona" className="scroll-mt-20 bg-navy-50/50 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-bold uppercase tracking-wider text-teal-600">
+            <span className="text-sm font-bold uppercase tracking-wider text-teal-700">
               Como funciona
             </span>
             <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
@@ -413,7 +413,7 @@ export default async function LandingPage() {
       {/* ---------- Unidades ---------- */}
       <section id="unidades" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-bold uppercase tracking-wider text-teal-600">Unidades</span>
+          <span className="text-sm font-bold uppercase tracking-wider text-teal-700">Unidades</span>
           <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">Perto de você</h2>
           <p className="mt-4 text-slate-600">
             Atendemos em {units.length} cidades, com a mesma equipe e o mesmo padrão de cuidado.
@@ -431,12 +431,12 @@ export default async function LandingPage() {
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-lg font-extrabold text-navy-800">{u.name}</h3>
                   {u.isMain ? (
-                    <span className="rounded-full bg-gold-100 px-2.5 py-1 text-[10px] font-extrabold uppercase text-gold-700">
+                    <span className="rounded-full bg-gold-100 px-2.5 py-1 text-[10px] font-extrabold uppercase text-gold-900">
                       Sede
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-1 text-sm font-medium text-teal-600">
+                <p className="mt-1 text-sm font-medium text-teal-700">
                   {u.city} · {u.state}
                 </p>
 
@@ -477,7 +477,7 @@ export default async function LandingPage() {
       <section id="contato" className="scroll-mt-20 bg-navy-50/50 py-20">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[.9fr_1.1fr]">
           <div>
-            <span className="text-sm font-bold uppercase tracking-wider text-teal-600">Contato</span>
+            <span className="text-sm font-bold uppercase tracking-wider text-teal-700">Contato</span>
             <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
               Vamos conversar sobre o seu filho
             </h2>
@@ -511,7 +511,7 @@ export default async function LandingPage() {
               </p>
             </div>
 
-            <p className="mt-6 flex items-start gap-2.5 text-xs leading-relaxed text-slate-500">
+            <p className="mt-6 flex items-start gap-2.5 text-xs leading-relaxed text-slate-600">
               <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0 text-teal-500" />
               Seus dados são tratados conforme a LGPD e usados apenas para retornar este contato.
             </p>

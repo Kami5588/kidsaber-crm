@@ -38,7 +38,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                     : "Rede KidSaber"
                   : "Área do profissional"}
               </p>
-              <p className="truncate text-xs text-slate-500">
+              <p className="truncate text-xs text-slate-600">
                 {showUnitSwitcher
                   ? activeUnit
                     ? `${activeUnit.city} · ${activeUnit.state}`

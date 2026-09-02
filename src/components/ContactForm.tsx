@@ -35,7 +35,7 @@ export default function ContactForm({
   if (state.ok) {
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl bg-teal-50 px-6 py-12 text-center">
-        <CheckCircle2 className="h-12 w-12 text-teal-600" />
+        <CheckCircle2 className="h-12 w-12 text-teal-700" />
         <h3 className="text-xl font-bold text-navy-800">Recebemos seu contato!</h3>
         <p className="max-w-md text-sm text-slate-600">
           Nossa equipe vai retornar em breve pelo telefone ou e-mail informado. Obrigado por
@@ -136,7 +136,7 @@ export default function ContactForm({
 
       <div className="sm:col-span-2">
         <SubmitButton />
-        <p className="mt-3 text-xs text-slate-500">
+        <p className="mt-3 text-xs text-slate-600">
           Não envie dados de saúde detalhados por aqui. Este canal não é monitorado em tempo
           integral e não substitui atendimento de urgência.
         </p>

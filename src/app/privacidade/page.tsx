@@ -40,7 +40,7 @@ export default async function PrivacidadePage() {
               utiliza e quais são os seus direitos, em conformidade com a Lei n.º 13.709/2018
               (Lei Geral de Proteção de Dados Pessoais — LGPD).
             </p>
-            <p className="mt-3 text-sm text-slate-500">Última atualização: {ATUALIZADO_EM}.</p>
+            <p className="mt-3 text-sm text-slate-600">Última atualização: {ATUALIZADO_EM}.</p>
           </div>
         </div>
 
@@ -224,7 +224,7 @@ export default async function PrivacidadePage() {
             relevantes serão comunicadas pelos canais de atendimento.
           </p>
 
-          <p className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-500">
+          <p className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-600">
             Consulte também os nossos{" "}
             <Link href="/termos">Termos de Uso</Link>.
           </p>

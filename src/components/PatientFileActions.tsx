@@ -67,7 +67,7 @@ export function AttachFileForm({ patientId }: { patientId: string }) {
               accept={ACCEPT_ATTRIBUTE}
               className="block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-700 file:mr-4 file:rounded-lg file:border-0 file:bg-navy-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-navy-700 hover:file:bg-navy-100"
             />
-            <p className="mt-1.5 text-xs text-slate-500">
+            <p className="mt-1.5 text-xs text-slate-600">
               PDF, imagem, Word, Excel ou texto. Até {humanSize(MAX_FILE_BYTES)}.
             </p>
           </div>
@@ -76,7 +76,7 @@ export function AttachFileForm({ patientId }: { patientId: string }) {
             <input type="checkbox" name="visibleToResponsible" className="mt-0.5 h-4 w-4 rounded border-slate-300 text-navy-700" />
             <span className="text-sm text-slate-700">
               Visível para o responsável
-              <span className="block text-xs text-slate-500">
+              <span className="block text-xs text-slate-600">
                 Marque apenas o que pode ser compartilhado com a família.
               </span>
             </span>
@@ -186,7 +186,7 @@ export function ChangeStageForm({
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
-            <p className="mt-1.5 text-xs text-slate-500">
+            <p className="mt-1.5 text-xs text-slate-600">
               Etapa atual: <strong>{currentStage ?? "sem etapa"}</strong>
             </p>
           </div>
