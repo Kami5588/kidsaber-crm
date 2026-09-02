@@ -18,7 +18,7 @@ const HIGHLIGHTS = [
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: { error?: string; motivo?: string };
 }) {
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
@@ -73,7 +73,11 @@ export default function LoginPage({
 
       {/* ---------- Formulário ---------- */}
       <main className="flex flex-1 items-center justify-center bg-slate-50 px-6 py-12">
-        <LoginForm googleEnabled={googleEnabled} initialError={searchParams.error} />
+        <LoginForm
+          googleEnabled={googleEnabled}
+          initialError={searchParams.error}
+          motivo={searchParams.motivo}
+        />
       </main>
     </div>
   );

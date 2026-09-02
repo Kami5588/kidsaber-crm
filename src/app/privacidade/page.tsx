@@ -173,7 +173,11 @@ export default async function PrivacidadePage() {
             <li>As senhas são armazenadas de forma criptografada e não podem ser lidas por ninguém</li>
             <li>O acesso às informações clínicas é limitado aos profissionais envolvidos no atendimento e à direção</li>
             <li>A comunicação com o site é protegida por conexão criptografada (HTTPS)</li>
-            <li>Os dados são armazenados em ambiente com rotina de backup</li>
+            <li>
+              O sistema gera uma <strong>cópia diária do banco de dados</strong>, mantendo as
+              cópias das duas últimas semanas, de modo que uma exclusão acidental ou uma falha
+              técnica possa ser revertida
+            </li>
           </ul>
 
           <h2>8. Por quanto tempo guardamos</h2>

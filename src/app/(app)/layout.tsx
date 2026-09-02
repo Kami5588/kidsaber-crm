@@ -4,6 +4,7 @@ import { KeyRound } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import UnitSwitcher from "@/components/UnitSwitcher";
 import QuickSearch from "@/components/QuickSearch";
+import BloqueioPorInatividade from "@/components/BloqueioPorInatividade";
 import { getActiveUnit, getActiveUnitId, listUnits } from "@/lib/units";
 import { getCurrentUser } from "@/lib/permissions";
 import { getUserById } from "@/lib/users";
@@ -25,6 +26,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
+      <BloqueioPorInatividade />
+
       <Sidebar userName={user.displayName} role={user.role} jobTitle={user.jobTitle} />
 
       <div className="flex min-w-0 flex-1 flex-col">

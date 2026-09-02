@@ -15,5 +15,9 @@ export async function register() {
       console.log("Historico de demonstracao verificado.");
       console.log("Remova SEED_DEMO_HISTORY das variaveis depois de conferir.");
     }
+
+    // Cópia de segurança do dia e descarte do que passou do prazo declarado.
+    const { agendarManutencao } = await import("./lib/rotinas");
+    agendarManutencao();
   }
 }

@@ -58,6 +58,7 @@ const PAGE_ACCESS: Record<string, Role[]> = {
   "/auditoria": ["ADMIN"],
   "/lgpd": ["ADMIN"],
   "/unidades": ["ADMIN"],
+  "/backup": ["ADMIN"],
 };
 
 export function canAccessEntity(role: Role, entityKey: string): boolean {

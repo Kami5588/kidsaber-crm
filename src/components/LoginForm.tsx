@@ -39,9 +39,12 @@ const ERROR_MESSAGES: Record<string, { title: string; body: string; tone: "warni
 export default function LoginForm({
   googleEnabled,
   initialError,
+  motivo,
 }: {
   googleEnabled: boolean;
   initialError?: string;
+  /** Por que a pessoa voltou para cá, quando não foi por escolha dela. */
+  motivo?: string;
 }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -52,6 +55,10 @@ export default function LoginForm({
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const notice = initialError ? ERROR_MESSAGES[initialError] : undefined;
+
+  // Sem esta explicação, quem volta do bloqueio por inatividade acha que o
+  // sistema caiu ou que perdeu o acesso.
+  const porInatividade = motivo === "inatividade";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -79,6 +86,19 @@ export default function LoginForm({
         <p className="mt-1.5 text-sm text-slate-600">
           Acesso restrito à equipe da Clínica KidSaber.
         </p>
+
+        {porInatividade && !notice && (
+          <div role="status" className="mt-6 flex gap-3 rounded-2xl border border-navy-200 bg-navy-50 p-4">
+            <Clock aria-hidden className="mt-0.5 h-5 w-5 flex-shrink-0 text-navy-700" />
+            <div>
+              <p className="text-sm font-bold text-navy-900">Sessão encerrada por inatividade</p>
+              <p className="mt-1 text-xs leading-relaxed text-navy-900/80">
+                O sistema ficou um tempo sem uso e encerrou o acesso para proteger os dados dos
+                pacientes. Entre de novo para continuar de onde parou.
+              </p>
+            </div>
+          </div>
+        )}
 
         {notice && (
           <div
