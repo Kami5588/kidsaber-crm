@@ -7,6 +7,7 @@ export async function POST(request: Request) {
     const candidateName = formData.get("candidateName");
     const candidateEmail = formData.get("candidateEmail");
     const candidatePhone = formData.get("candidatePhone");
+    const interestedUnits = formData.get("interestedUnits");
     const resumeFile = formData.get("resume") as File;
 
     if (!candidateName || !candidateEmail || !candidatePhone || !resumeFile) {
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
       candidateName: String(candidateName),
       candidateEmail: String(candidateEmail),
       candidatePhone: String(candidatePhone),
+      interestedUnits: interestedUnits ? String(interestedUnits) : null,
       resumeFileName: resumeFile.name,
       resumeData,
       status: "Novo",

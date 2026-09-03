@@ -95,8 +95,17 @@ export default async function VagasPage() {
               <ul className="mt-5 space-y-3">
                 {aplicacoes.slice(0, 10).map((a) => (
                   <li key={a.id} className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs">
-                    <p className="font-bold text-slate-800">{a.candidateName}</p>
-                    <p className="mt-0.5 text-slate-600">{a.title}</p>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-slate-800">{a.candidateName}</p>
+                        <p className="mt-0.5 text-slate-600">{a.title}</p>
+                        {a.interestedUnits && (
+                          <p className="mt-1 text-[11px] text-teal-700 font-medium">
+                            📍 {a.interestedUnits}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                     <p className="mt-1 text-[11px] text-slate-500">
                       {format(parseISO(a.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                     </p>

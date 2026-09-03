@@ -335,6 +335,7 @@ CREATE TABLE IF NOT EXISTS JobApplication (
   candidateName TEXT NOT NULL,
   candidateEmail TEXT NOT NULL,
   candidatePhone TEXT NOT NULL,
+  interestedUnits TEXT,
   resumeFileName TEXT,
   resumeData BLOB,
   notes TEXT,

@@ -541,6 +541,24 @@ export default async function LandingPage() {
               </div>
 
               <div>
+                <label className="label text-xs">Regiões de interesse</label>
+                <div className="space-y-2.5 mt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="unidades" value="Mundo Novo" className="rounded" />
+                    <span className="text-sm text-slate-700">Mundo Novo (MS)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="unidades" value="Guaíra" className="rounded" />
+                    <span className="text-sm text-slate-700">Guaíra (PR)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="unidades" value="Terra Roxa" className="rounded" />
+                    <span className="text-sm text-slate-700">Terra Roxa (PR)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
                 <label htmlFor="cand-file" className="label text-xs">
                   Currículo (PDF, DOC ou DOCX)
                 </label>
@@ -665,9 +683,15 @@ export default async function LandingPage() {
           const form = e.target;
           const button = form.querySelector('button[type=submit]');
           const file = document.getElementById('cand-file').files[0];
+          const unidades = Array.from(form.querySelectorAll('input[name="unidades"]:checked')).map(el => el.value);
 
           if (!file || file.size > 10 * 1024 * 1024) {
             alert('Arquivo deve ser menor que 10MB');
+            return;
+          }
+
+          if (unidades.length === 0) {
+            alert('Selecione pelo menos uma região de interesse');
             return;
           }
 
@@ -675,6 +699,7 @@ export default async function LandingPage() {
           formData.append('candidateName', document.getElementById('cand-name').value);
           formData.append('candidateEmail', document.getElementById('cand-email').value);
           formData.append('candidatePhone', document.getElementById('cand-phone').value);
+          formData.append('interestedUnits', unidades.join(', '));
           formData.append('resume', file);
 
           button.disabled = true;
