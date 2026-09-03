@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake,
-  KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3, UserX, DatabaseBackup,
+  KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3, UserX, DatabaseBackup, Briefcase,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
@@ -28,6 +28,7 @@ const EXTRA_LINKS = [
   { href: "/lgpd", label: "Direitos do titular", icon: ShieldCheck },
   { href: "/auditoria", label: "Auditoria de acesso", icon: ScrollText },
   { href: "/backup", label: "Cópias de segurança", icon: DatabaseBackup },
+  { href: "/vagas", label: "Recrutamento", icon: Briefcase },
 ];
 
 export default function Sidebar({

@@ -310,3 +310,38 @@ CREATE TABLE IF NOT EXISTS AccessRequest (
 );
 
 CREATE INDEX IF NOT EXISTS idx_access_status ON AccessRequest(status, createdAt DESC);
+
+-- ============================================================
+-- Vagas de trabalho e candidaturas
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS JobOpening (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  specialties TEXT,
+  unitIds TEXT,
+  status TEXT NOT NULL DEFAULT 'Aberta',
+  expiresAt TEXT,
+  createdAt TEXT NOT NULL,
+  updatedAt TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_job_status ON JobOpening(status, expiresAt DESC);
+
+CREATE TABLE IF NOT EXISTS JobApplication (
+  id TEXT PRIMARY KEY,
+  jobId TEXT NOT NULL,
+  candidateName TEXT NOT NULL,
+  candidateEmail TEXT NOT NULL,
+  candidatePhone TEXT NOT NULL,
+  resumeFileName TEXT,
+  resumeData BLOB,
+  notes TEXT,
+  status TEXT NOT NULL DEFAULT 'Novo',
+  createdAt TEXT NOT NULL,
+  FOREIGN KEY(jobId) REFERENCES JobOpening(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_app_job ON JobApplication(jobId, createdAt DESC);
+CREATE INDEX IF NOT EXISTS idx_app_email ON JobApplication(candidateEmail);

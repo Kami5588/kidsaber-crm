@@ -473,6 +473,101 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ---------- Vagas ---------- */}
+      <section id="vagas" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="text-sm font-bold uppercase tracking-wider text-teal-700">Junte-se à equipe</span>
+          <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
+            Recrutamento e Oportunidades
+          </h2>
+          <p className="mt-4 text-slate-600">
+            Se você é profissional de saúde ou educação e acredita no desenvolvimento infantil,
+            queremos conhecer você. Envie seu currículo e fique atento às oportunidades.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr]">
+          <div>
+            <h3 className="text-lg font-extrabold text-navy-800">Vagas abertas</h3>
+            <div id="vagas-list" className="mt-6 space-y-4">
+              <p className="text-sm text-slate-600">Carregando vagas...</p>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-navy-100 bg-white p-6 shadow-lg sm:p-8">
+            <h3 className="text-lg font-extrabold text-navy-800">Envie seu currículo</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Profissional interessado? Preencha o formulário com seus dados e currículo.
+            </p>
+
+            <form id="candidature-form" className="mt-6 space-y-4">
+              <div>
+                <label htmlFor="cand-name" className="label text-xs">
+                  Nome completo
+                </label>
+                <input
+                  id="cand-name"
+                  type="text"
+                  required
+                  placeholder="Seu nome"
+                  className="input w-full"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="cand-email" className="label text-xs">
+                  Email
+                </label>
+                <input
+                  id="cand-email"
+                  type="email"
+                  required
+                  placeholder="seu@email.com"
+                  className="input w-full"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="cand-phone" className="label text-xs">
+                  Telefone
+                </label>
+                <input
+                  id="cand-phone"
+                  type="tel"
+                  required
+                  placeholder="(xx) xxxxx-xxxx"
+                  className="input w-full"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="cand-file" className="label text-xs">
+                  Currículo (PDF, DOC ou DOCX)
+                </label>
+                <input
+                  id="cand-file"
+                  type="file"
+                  required
+                  accept=".pdf,.doc,.docx"
+                  className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-teal-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-teal-700"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-brand-sky px-6 py-3.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5"
+              >
+                Enviar candidatura
+              </button>
+
+              <p className="text-xs text-slate-600">
+                Seus dados são tratados conforme a LGPD. Responderemos em breve.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+
       {/* ---------- Contato ---------- */}
       <section id="contato" className="scroll-mt-20 bg-navy-50/50 py-20">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[.9fr_1.1fr]">
@@ -538,6 +633,69 @@ export default async function LandingPage() {
       >
         <MessageCircle className="h-7 w-7" />
       </a>
+
+      <script suppressHydrationWarning>{`
+        async function loadVagas() {
+          try {
+            const res = await fetch('/api/vagas-publicas');
+            const vagas = await res.json();
+            const list = document.getElementById('vagas-list');
+            if (!list) return;
+
+            if (vagas.length === 0) {
+              list.innerHTML = '<p class="text-sm text-slate-600">Nenhuma vaga aberta no momento. Envie seu currículo para ficarmos atentos!</p>';
+              return;
+            }
+
+            list.innerHTML = vagas.map(v => \`
+              <div class="rounded-xl border border-navy-100 bg-navy-50 p-4">
+                <h4 class="font-bold text-navy-800">\${v.title}</h4>
+                <p class="mt-1 text-sm text-slate-600">\${v.description.slice(0, 100)}...</p>
+                <p class="mt-2 text-xs text-teal-700 font-medium">Clique no formulário ao lado e mencione o cargo desejado</p>
+              </div>
+            \`).join('');
+          } catch (err) {
+            const list = document.getElementById('vagas-list');
+            if (list) list.innerHTML = '<p class="text-sm text-slate-600">Erro ao carregar vagas. Envie seu currículo mesmo assim!</p>';
+          }
+        }
+
+        document.getElementById('candidature-form')?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const button = form.querySelector('button[type=submit]');
+          const file = document.getElementById('cand-file').files[0];
+
+          if (!file || file.size > 10 * 1024 * 1024) {
+            alert('Arquivo deve ser menor que 10MB');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('candidateName', document.getElementById('cand-name').value);
+          formData.append('candidateEmail', document.getElementById('cand-email').value);
+          formData.append('candidatePhone', document.getElementById('cand-phone').value);
+          formData.append('resume', file);
+
+          button.disabled = true;
+          button.textContent = 'Enviando...';
+
+          try {
+            const res = await fetch('/api/candidaturas', { method: 'POST', body: formData });
+            if (res.ok) {
+              alert('Obrigado! Sua candidatura foi recebida. Entraremos em contato em breve.');
+              form.reset();
+            } else {
+              alert('Erro ao enviar. Tente novamente.');
+            }
+          } finally {
+            button.disabled = false;
+            button.textContent = 'Enviar candidatura';
+          }
+        });
+
+        loadVagas();
+      `}</script>
     </div>
   );
 }
