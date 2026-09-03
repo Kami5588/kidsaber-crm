@@ -3,11 +3,15 @@ import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   BarChart3, CalendarCheck, XCircle, UserX, Percent, Users, UserPlus,
-  Wallet, Clock, AlertTriangle, Megaphone, TrendingUp,
+  Wallet, Clock, AlertTriangle, Megaphone, TrendingUp, Building2, AlertCircle,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/permissions";
 import { getActiveUnit, getActiveUnitId, ALL_UNITS } from "@/lib/units";
-import { availableMonths, byLeadOrigin, bySpecialty, byUnit, monthTotals } from "@/lib/reports";
+import { rawAll } from "@/lib/orm";
+import {
+  availableMonths, byLeadOrigin, bySpecialty, byUnit, monthTotals,
+  byInsurancePlan, defaultersReport, financialSummary,
+} from "@/lib/reports";
 import ReportExport from "@/components/ReportExport";
 
 export const metadata = { title: "Relatórios · KidSaber Connect" };
@@ -49,7 +53,7 @@ function Bar({ label, value, max }: { label: string; value: number; max: number 
 export default async function RelatoriosPage({
   searchParams,
 }: {
-  searchParams: { mes?: string };
+  searchParams: { mes?: string; unitIds?: string };
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
@@ -58,32 +62,40 @@ export default async function RelatoriosPage({
   if (user.role === "PROFISSIONAL") notFound();
 
   const meses = availableMonths();
+  const allUnits = rawAll("SELECT id, name FROM Unit WHERE status = 'Ativo' ORDER BY isMain DESC, name ASC");
 
-  // O padrão é o mês corrente, e não o mais recente da lista: como existem
-  // sessões agendadas para o futuro, abrir no mais recente mostraria um
-  // relatório zerado de um mês que ainda nem começou.
   const mes = searchParams.mes && /^\d{4}-\d{2}$/.test(searchParams.mes)
     ? searchParams.mes
     : new Date().toISOString().slice(0, 7);
 
+  // Suporte a múltiplas unidades: se nenhuma selecionada, assume a ativa ou null (todas).
+  const selectedUnitIds = searchParams.unitIds
+    ? searchParams.unitIds.split(",").filter(Boolean)
+    : [getActiveUnitId()];
+
   const activeUnitId = getActiveUnitId();
   const activeUnit = getActiveUnit();
+
+  // Para queries: null = todas, string específica = uma unidade.
   const unitFilter = activeUnitId === ALL_UNITS ? null : activeUnitId;
 
   const t = monthTotals(mes, unitFilter);
   const unidades = byUnit(mes);
   const especialidades = bySpecialty(mes, unitFilter);
   const origens = byLeadOrigin(mes, unitFilter);
+  const planosSeguro = byInsurancePlan(mes, unitFilter);
+  const inadimplentes = defaultersReport(unitFilter);
 
   const maxEsp = Math.max(1, ...especialidades.map((e) => Number(e.atendimentos)));
   const maxOrig = Math.max(1, ...origens.map((o) => Number(o.total)));
+  const maxPlano = Math.max(1, ...planosSeguro.map((p) => Number(p.recebida)));
 
   const nomeMes = format(parseISO(`${mes}-01`), "MMMM 'de' yyyy", { locale: ptBR });
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-slate-900">Relatório gerencial</h1>
           <p className="text-slate-600">
             Fechamento de <span className="font-medium capitalize">{nomeMes}</span>
@@ -91,23 +103,43 @@ export default async function RelatoriosPage({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-end gap-3">
-          <form className="flex items-end gap-2">
-            <div>
-              <label htmlFor="mes" className="label text-xs">Competência</label>
-              <select id="mes" name="mes" defaultValue={mes} className="input w-44">
-                {meses.map((m) => (
-                  <option key={m} value={m}>
-                    {format(parseISO(`${m}-01`), "MMMM/yyyy", { locale: ptBR })}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="btn-secondary">Ver</button>
-          </form>
+        <form className="flex flex-wrap items-end gap-3">
+          <div>
+            <label htmlFor="mes" className="label text-xs">Competência</label>
+            <select id="mes" name="mes" defaultValue={mes} className="input w-40">
+              {meses.map((m) => (
+                <option key={m} value={m}>
+                  {format(parseISO(`${m}-01`), "MMMM/yyyy", { locale: ptBR })}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <ReportExport month={mes} unitId={unitFilter} />
-        </div>
+          <div>
+            <label htmlFor="unitIds" className="label text-xs">Unidades</label>
+            <select
+              id="unitIds"
+              name="unitIds"
+              multiple
+              defaultValue={selectedUnitIds}
+              className="input h-10"
+              style={{ minWidth: "200px" }}
+            >
+              <option value={ALL_UNITS}>Todas as unidades</option>
+              {allUnits.map((u: any) => (
+                <option key={u.id} value={u.id}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-slate-500">Segure Ctrl/Cmd para selecionar múltiplas</p>
+          </div>
+
+          <div className="flex items-end gap-2">
+            <button type="submit" className="btn-secondary">Filtrar</button>
+            <ReportExport month={mes} unitId={unitFilter} />
+          </div>
+        </form>
       </div>
 
       {/* Atendimento */}
@@ -148,8 +180,98 @@ export default async function RelatoriosPage({
       <div className="mb-8 grid gap-4 sm:grid-cols-3">
         <Stat icon={Wallet} label="Recebido" value={brl(t.receitaRecebida)} tone="bg-teal-500 text-white" />
         <Stat icon={Clock} label="A receber" value={brl(t.receitaPendente)} tone="bg-gold-500 text-navy-900" />
-        <Stat icon={AlertTriangle} label="Em atraso" value={brl(t.receitaAtrasada)} tone="bg-coral-500 text-white" />
+        <Stat icon={AlertTriangle} label="Em atraso" value={brl(t.receitaAtrasada)} tone="bg-coral-500 text-white" hint={`${inadimplentes.length} paciente(s)`} />
       </div>
+
+      {/* Receita por convênio */}
+      <section className="card mb-6 p-6">
+        <h2 className="flex items-center gap-2 font-bold text-navy-800">
+          <Building2 className="h-4 w-4 text-navy-600" />
+          Receita por convênio
+        </h2>
+        {planosSeguro.length === 0 ? (
+          <p className="mt-5 rounded-xl bg-slate-50 py-8 text-center text-sm text-slate-600">
+            Nenhuma fatura registrada neste período.
+          </p>
+        ) : (
+          <div tabIndex={0} role="region" aria-label="Receita por convênio" className="mt-5 overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="text-xs uppercase tracking-wide text-slate-600">
+                  <th scope="col" className="pb-2 pr-4">Convênio</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Faturas</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Recebida</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Pendente</th>
+                  <th scope="col" className="pb-2 text-right">Em atraso</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {planosSeguro.map((p) => (
+                  <tr key={p.plano} className="hover:bg-slate-50/60">
+                    <td className="py-3 pr-4 font-medium text-slate-800">{p.plano}</td>
+                    <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{p.faturas}</td>
+                    <td className="py-3 pr-4 text-right tabular-nums font-semibold text-teal-700">
+                      {brl(Number(p.recebida ?? 0))}
+                    </td>
+                    <td className="py-3 pr-4 text-right tabular-nums text-gold-700">
+                      {brl(Number(p.pendente ?? 0))}
+                    </td>
+                    <td className="py-3 text-right tabular-nums font-semibold text-coral-700">
+                      {brl(Number(p.atrasada ?? 0))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Inadimplência */}
+      {inadimplentes.length > 0 && (
+        <section className="card mb-6 p-6 border-l-4 border-coral-500">
+          <h2 className="flex items-center gap-2 font-bold text-coral-900">
+            <AlertCircle className="h-4 w-4 text-coral-600" />
+            Pacientes inadimplentes
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            {inadimplentes.length} paciente(s) com faturas em atraso
+          </p>
+          <div tabIndex={0} role="region" aria-label="Pacientes inadimplentes" className="mt-5 overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="text-xs uppercase tracking-wide text-slate-600">
+                  <th scope="col" className="pb-2 pr-4">Paciente</th>
+                  <th scope="col" className="pb-2 pr-4">Estágio</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Faturas</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Valor em atraso</th>
+                  <th scope="col" className="pb-2 text-right">Último vencimento</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {inadimplentes.slice(0, 10).map((p) => (
+                  <tr key={p.id} className="hover:bg-slate-50/60">
+                    <td className="py-3 pr-4 font-medium text-slate-800">{p.fullName}</td>
+                    <td className="py-3 pr-4 text-sm text-slate-600">{p.careStage}</td>
+                    <td className="py-3 pr-4 text-right tabular-nums text-slate-700">{p.totalAtraso}</td>
+                    <td className="py-3 pr-4 text-right tabular-nums font-semibold text-coral-700">
+                      {brl(Number(p.valorAtraso ?? 0))}
+                    </td>
+                    <td className="py-3 text-right text-xs text-slate-600">
+                      {format(parseISO(p.ultimoVencimento as string), "dd/MM/yyyy", { locale: ptBR })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {inadimplentes.length > 10 && (
+            <p className="mt-3 text-xs text-slate-600">
+              ... e mais {inadimplentes.length - 10} paciente(s) inadimplente(s).
+            </p>
+          )}
+        </section>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Por especialidade */}

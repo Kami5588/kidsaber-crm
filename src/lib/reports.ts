@@ -186,6 +186,63 @@ export function availableMonths(): string[] {
   return meses.slice(0, 24);
 }
 
+/** Receita por convênio, para ver qual gera mais. */
+export function byInsurancePlan(month: string, unitId?: string | null) {
+  const i = unitClause("i", unitId);
+
+  return rawAll(
+    `SELECT COALESCE(ip.name, 'Sem convênio') AS plano,
+      COUNT(DISTINCT i.id) AS faturas,
+      COALESCE(SUM(CASE WHEN i.status = 'Pago' THEN i.amount - i.discount ELSE 0 END), 0) AS recebida,
+      COALESCE(SUM(CASE WHEN i.status IN ('Pendente','Atrasado') THEN i.amount - i.discount ELSE 0 END), 0) AS pendente,
+      COALESCE(SUM(CASE WHEN i.status = 'Atrasado' THEN i.amount - i.discount ELSE 0 END), 0) AS atrasada
+     FROM Invoice i
+     LEFT JOIN InsurancePlan ip ON i.insurancePlanId = ip.id
+     WHERE i.referenceMonth = ? AND ${i.sql}
+     GROUP BY COALESCE(ip.id, 'sem-convênio')
+     ORDER BY recebida DESC`,
+    [month, ...i.params]
+  );
+}
+
+/** Pacientes com faturas em atraso (inadimplência). */
+export function defaultersReport(unitId?: string | null) {
+  const p = unitClause("p", unitId);
+
+  return rawAll(
+    `SELECT DISTINCT
+      p.id, p.fullName, p.careStage,
+      COUNT(DISTINCT i.id) AS totalAtraso,
+      COALESCE(SUM(i.amount - i.discount), 0) AS valorAtraso,
+      MAX(i.dueDate) AS ultimoVencimento
+     FROM Patient p
+     INNER JOIN Invoice i ON p.id = i.patientId AND i.status = 'Atrasado'
+     WHERE ${p.sql}
+     GROUP BY p.id
+     ORDER BY valorAtraso DESC`,
+    p.params
+  );
+}
+
+/** Resumo financeiro com período customizável (not just monthly). */
+export function financialSummary(startDate: string, endDate: string, unitId?: string | null) {
+  const i = unitClause("i", unitId);
+
+  return rawGet(
+    `SELECT
+      COUNT(DISTINCT i.id) AS totalFaturas,
+      COALESCE(SUM(i.amount - i.discount), 0) AS totalFaturado,
+      COALESCE(SUM(CASE WHEN i.status = 'Pago' THEN i.amount - i.discount ELSE 0 END), 0) AS recebida,
+      COALESCE(SUM(CASE WHEN i.status = 'Pendente' THEN i.amount - i.discount ELSE 0 END), 0) AS pendente,
+      COALESCE(SUM(CASE WHEN i.status = 'Atrasado' THEN i.amount - i.discount ELSE 0 END), 0) AS atrasada,
+      COUNT(DISTINCT CASE WHEN i.status = 'Pago' THEN i.id END) AS faturasRecebidas,
+      COUNT(DISTINCT CASE WHEN i.status IN ('Pendente','Atrasado') THEN i.id END) AS faturasEmAberto
+     FROM Invoice i
+     WHERE i.dueDate >= ? AND i.dueDate <= ? AND ${i.sql}`,
+    [startDate, endDate, ...i.params]
+  );
+}
+
 /**
  * Monta o CSV do relatório.
  *
