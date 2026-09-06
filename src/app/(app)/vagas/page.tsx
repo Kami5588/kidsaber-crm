@@ -11,6 +11,8 @@ import { listUnits } from "@/lib/units";
 import { humanSize } from "@/lib/file-constants";
 import { MESES_GUARDA_CURRICULO } from "@/lib/recrutamento-constants";
 import NovaVaga from "@/components/NovaVaga";
+import AcaoVaga from "@/components/AcaoVaga";
+import AcoesCandidatura from "@/components/AcoesCandidatura";
 
 export const metadata = { title: "Recrutamento · KidSaber Connect" };
 
@@ -103,7 +105,8 @@ export default async function VagasPage() {
                   <th scope="col" className="pb-2 pr-4">Vaga</th>
                   <th scope="col" className="pb-2 pr-4">Situação</th>
                   <th scope="col" className="pb-2 pr-4">Aberta até</th>
-                  <th scope="col" className="pb-2 text-right">Candidatos</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Candidatos</th>
+                  <th scope="col" className="pb-2 text-right">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -136,8 +139,11 @@ export default async function VagasPage() {
                           ? format(parseISO(String(v.expiresAt)), "dd/MM/yyyy", { locale: ptBR })
                           : "Sem prazo"}
                       </td>
-                      <td className="py-3 text-right tabular-nums font-semibold text-slate-700">
+                      <td className="py-3 pr-4 text-right tabular-nums font-semibold text-slate-700">
                         {String(v.candidatos ?? 0)}
+                      </td>
+                      <td className="py-3 text-right">
+                        <AcaoVaga id={v.id as string} aberta={v.status === "Aberta"} />
                       </td>
                     </tr>
                   );
@@ -216,6 +222,14 @@ export default async function VagasPage() {
                       <span className="truncate">{c.interestedUnits}</span>
                     </span>
                   ) : null}
+                </div>
+
+                <div className="mt-3 border-t border-slate-200 pt-3">
+                  <AcoesCandidatura
+                    id={c.id as string}
+                    nome={String(c.candidateName)}
+                    situacao={String(c.status ?? "Novo")}
+                  />
                 </div>
               </li>
             ))}
