@@ -5,17 +5,10 @@ import { logAccess } from "./audit";
 import { deleteStoredFile } from "./files";
 import { deleteRow, rawGet, updateRow } from "./orm";
 import { getCurrentUser } from "./permissions";
+import { SITUACOES_CANDIDATURA } from "./recrutamento-constants";
 
 export type AcaoState = { ok: boolean; error?: string; message?: string };
 
-/** Situações que uma candidatura pode ter no processo seletivo. */
-export const SITUACOES_CANDIDATURA = [
-  "Novo",
-  "Em análise",
-  "Entrevista",
-  "Contratado",
-  "Não selecionado",
-] as const;
 
 /**
  * Apaga uma candidatura e o currículo junto.

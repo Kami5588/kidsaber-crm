@@ -19,3 +19,18 @@ export const ACCEPT_CURRICULO = ".pdf,.doc,.docx";
  * vagas que surgirem logo depois.
  */
 export const MESES_GUARDA_CURRICULO = 12;
+
+/**
+ * Etapas do processo seletivo.
+ *
+ * Mora aqui, e não junto das ações, porque num arquivo "use server" todo
+ * export vira referência de server action: a lista chegaria ao componente como
+ * função, e o .map quebraria a tela inteira em produção.
+ */
+export const SITUACOES_CANDIDATURA = [
+  "Novo",
+  "Em análise",
+  "Entrevista",
+  "Contratado",
+  "Não selecionado",
+] as const;

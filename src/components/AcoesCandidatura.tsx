@@ -3,11 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
-import {
-  excluirCandidaturaAction,
-  mudarSituacaoAction,
-  SITUACOES_CANDIDATURA,
-} from "@/lib/recrutamento-actions";
+import { excluirCandidaturaAction, mudarSituacaoAction } from "@/lib/recrutamento-actions";
+import { SITUACOES_CANDIDATURA } from "@/lib/recrutamento-constants";
 
 /**
  * Situação e exclusão de uma candidatura.
