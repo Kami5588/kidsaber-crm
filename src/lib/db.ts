@@ -90,6 +90,79 @@ function runMigrations(database: DatabaseSync) {
   addColumn("Document", "mimeType", "TEXT");
   addColumn("Document", "sizeBytes", "INTEGER");
   addColumn("Document", "unitId", "TEXT");
+
+  // Recrutamento
+  addColumn("JobApplication", "interestedUnits", "TEXT");
+  addColumn("JobApplication", "resumeStoredName", "TEXT");
+  addColumn("JobApplication", "resumeOriginalName", "TEXT");
+  addColumn("JobApplication", "resumeMimeType", "TEXT");
+  addColumn("JobApplication", "resumeSizeBytes", "INTEGER");
+
+  corrigirJobIdObrigatorio(database);
+}
+
+/**
+ * Torna JobApplication.jobId opcional em bancos criados com ele obrigatório.
+ *
+ * A primeira versão da tabela exigia jobId, mas a candidatura espontânea — o
+ * currículo mandado ao banco de talentos, sem vaga aberta — não tem vaga a
+ * apontar. Com a coluna obrigatória, toda candidatura era recusada pelo banco.
+ *
+ * SQLite não remove um NOT NULL com ALTER TABLE: é preciso recriar a tabela e
+ * copiar as linhas. Feito dentro de uma transação, para que uma falha no meio
+ * não deixe a tabela pela metade.
+ */
+function corrigirJobIdObrigatorio(database: DatabaseSync) {
+  const cols = database.prepare("PRAGMA table_info(JobApplication)").all() as Array<{
+    name: string;
+    notnull: number;
+  }>;
+  if (cols.length === 0) return; // tabela ainda não existe
+  if (!cols.some((c) => c.name === "jobId" && c.notnull === 1)) return; // já corrigida
+
+  // Só copia colunas presentes nos dois lados; um banco antigo pode não ter as
+  // colunas de currículo em arquivo, e nomear uma coluna inexistente aborta tudo.
+  const nomes = new Set(cols.map((c) => c.name));
+  const comuns = [
+    "id", "jobId", "candidateName", "candidateEmail", "candidatePhone",
+    "interestedUnits", "resumeStoredName", "resumeOriginalName",
+    "resumeMimeType", "resumeSizeBytes", "notes", "status", "createdAt",
+  ].filter((c) => nomes.has(c));
+
+  database.exec("BEGIN");
+  try {
+    database.exec(`
+      CREATE TABLE JobApplication_novo (
+        id TEXT PRIMARY KEY,
+        jobId TEXT,
+        candidateName TEXT NOT NULL,
+        candidateEmail TEXT NOT NULL,
+        candidatePhone TEXT NOT NULL,
+        interestedUnits TEXT,
+        resumeStoredName TEXT,
+        resumeOriginalName TEXT,
+        resumeMimeType TEXT,
+        resumeSizeBytes INTEGER,
+        notes TEXT,
+        status TEXT NOT NULL DEFAULT 'Novo',
+        createdAt TEXT NOT NULL,
+        FOREIGN KEY(jobId) REFERENCES JobOpening(id)
+      )
+    `);
+    database.exec(
+      `INSERT INTO JobApplication_novo (${comuns.join(",")})
+       SELECT ${comuns.join(",")} FROM JobApplication`
+    );
+    database.exec("DROP TABLE JobApplication");
+    database.exec("ALTER TABLE JobApplication_novo RENAME TO JobApplication");
+    database.exec("CREATE INDEX IF NOT EXISTS idx_app_job ON JobApplication(jobId, createdAt DESC)");
+    database.exec("CREATE INDEX IF NOT EXISTS idx_app_email ON JobApplication(candidateEmail)");
+    database.exec("COMMIT");
+    console.log("JobApplication migrada: jobId passou a ser opcional.");
+  } catch (err) {
+    database.exec("ROLLBACK");
+    throw err;
+  }
 }
 
 /** Tabelas cujos registros pertencem a uma unidade da clínica. */

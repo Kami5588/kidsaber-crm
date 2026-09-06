@@ -1,65 +1,44 @@
 import { NextResponse } from "next/server";
-import { insertRow } from "@/lib/orm";
+import { ErroCandidatura, registrarCandidatura } from "@/lib/recrutamento";
 
+/**
+ * Recebe a candidatura enviada pelo site.
+ *
+ * A rota é pública, então a validação inteira mora no servidor: o que o
+ * formulário confere no navegador é conveniência, não barreira.
+ */
 export async function POST(request: Request) {
+  const encaminhado = request.headers.get("x-forwarded-for");
+  const ip = encaminhado ? encaminhado.split(",")[0]!.trim() : null;
+
   try {
-    const formData = await request.formData();
-    const candidateName = formData.get("candidateName");
-    const candidateEmail = formData.get("candidateEmail");
-    const candidatePhone = formData.get("candidatePhone");
-    const interestedUnits = formData.get("interestedUnits");
-    const resumeFile = formData.get("resume") as File;
+    const form = await request.formData();
 
-    if (!candidateName || !candidateEmail || !candidatePhone || !resumeFile) {
-      return NextResponse.json(
-        { erro: "Campos obrigatórios faltando" },
-        { status: 400 }
-      );
-    }
+    const unidades = form
+      .getAll("unidades")
+      .map((u) => String(u).trim())
+      .filter(Boolean);
 
-    // Limita o tamanho do arquivo
-    if (resumeFile.size > 10 * 1024 * 1024) {
-      return NextResponse.json(
-        { erro: "Arquivo muito grande (máximo 10MB)" },
-        { status: 400 }
-      );
-    }
-
-    // Converte o arquivo para buffer
-    const buffer = await resumeFile.arrayBuffer();
-    const resumeData = Buffer.from(buffer);
-
-    insertRow("JobApplication", {
-      jobId: null, // Não está vinculado a uma vaga específica, é candidatura aberta
-      candidateName: String(candidateName),
-      candidateEmail: String(candidateEmail),
-      candidatePhone: String(candidatePhone),
-      interestedUnits: interestedUnits ? String(interestedUnits) : null,
-      resumeFileName: resumeFile.name,
-      resumeData,
-      status: "Novo",
+    await registrarCandidatura({
+      nome: String(form.get("nome") ?? ""),
+      email: String(form.get("email") ?? ""),
+      telefone: String(form.get("telefone") ?? ""),
+      unidades,
+      vagaId: form.get("vagaId") ? String(form.get("vagaId")) : null,
+      curriculo: form.get("curriculo") as File,
+      ip,
     });
 
-    // Envia email de confirmação
-    const message = `
-Nova candidatura recebida:
-- Nome: ${candidateName}
-- Email: ${candidateEmail}
-- Telefone: ${candidatePhone}
-- Arquivo: ${resumeFile.name}
-
-Acesse o painel de vagas no KidSaber Connect para revisar.
-    `;
-
-    // Aqui você poderia integrar com um serviço de email
-    // Por enquanto, apenas registra no banco
-    console.log("Candidatura recebida:", { candidateName, candidateEmail });
-
-    return NextResponse.json({ sucesso: true }, { status: 201 });
+    return NextResponse.json({ ok: true }, { status: 201 });
   } catch (err) {
-    console.error("Erro ao processar candidatura:", err);
+    // Erro de preenchimento volta explicado; qualquer outro vira mensagem
+    // genérica, para não expor detalhe interno a uma rota pública.
+    if (err instanceof ErroCandidatura) {
+      return NextResponse.json({ erro: err.message }, { status: 400 });
+    }
+    console.error("Falha ao registrar candidatura:", err);
     return NextResponse.json(
-      { erro: "Erro ao processar candidatura" },
+      { erro: "Não foi possível enviar agora. Tente novamente em alguns minutos." },
       { status: 500 }
     );
   }

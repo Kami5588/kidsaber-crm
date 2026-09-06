@@ -1,6 +1,7 @@
 import { gerarCopiaDoDia } from "./backup";
 import { pruneAuditLog } from "./audit";
 import { pruneLoginAttempts } from "./login-guard";
+import { descartarCurriculosVencidos } from "./recrutamento";
 
 /**
  * Manutenção diária.
@@ -12,6 +13,10 @@ import { pruneLoginAttempts } from "./login-guard";
  *   - trilha de auditoria "mantida por 180 dias" — pruneAuditLog existia, mas
  *     nunca era executada, e a trilha crescia para sempre. Guardar registro de
  *     acesso a prontuário além do prazo declarado contraria a própria política.
+ *
+ * Depois entrou também o descarte dos currículos vencidos: quem manda currículo
+ * é titular de dados como qualquer outro, e guardar o documento para sempre
+ * seria reter dado pessoal sem finalidade nem prazo.
  *
  * Roda na subida do processo e depois uma vez por dia. Não há agendador no
  * Railway; o container reinicia de tempos em tempos, e a execução na subida
@@ -45,6 +50,13 @@ export function executarManutencao(): void {
     pruneLoginAttempts();
   } catch (err) {
     console.error("[manutencao] falha ao limpar tentativas de login:", err);
+  }
+
+  try {
+    const descartados = descartarCurriculosVencidos();
+    if (descartados > 0) console.log(`[manutencao] curriculos descartados: ${descartados}`);
+  } catch (err) {
+    console.error("[manutencao] falha ao descartar curriculos vencidos:", err);
   }
 }
 

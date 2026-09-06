@@ -94,6 +94,22 @@ export default async function PrivacidadePage() {
             recebem proteção reforçada, conforme descrito nos itens 6 e 7 desta política.
           </p>
 
+          <h3>2.3. Candidatos a vagas</h3>
+          <p>
+            Quem se candidata a uma vaga pelo site nos envia:
+          </p>
+          <ul>
+            <li>Nome, e-mail e telefone</li>
+            <li>As unidades em que teria disponibilidade para trabalhar</li>
+            <li>
+              O currículo anexado, com o conteúdo que a própria pessoa decidiu incluir nele
+            </li>
+          </ul>
+          <p>
+            Esses dados são usados apenas no processo seletivo. O currículo fica acessível somente
+            à direção da clínica, e cada abertura do arquivo é registrada na trilha de auditoria.
+          </p>
+
           <h2>3. Para que usamos os dados</h2>
           <ul>
             <li>Responder às solicitações de contato e orientar sobre o próximo passo do atendimento</li>
@@ -189,6 +205,11 @@ export default async function PrivacidadePage() {
             Os registros de pacientes, incluindo prontuários e relatórios de evolução, são mantidos
             pelo prazo exigido pela legislação e pelas normas dos conselhos profissionais das
             respectivas especialidades, ainda que o tratamento tenha sido encerrado.
+          </p>
+          <p>
+            Os currículos recebidos são guardados por <strong>até 12 meses</strong>. Passado esse
+            prazo, o arquivo é apagado automaticamente pelo sistema; permanece apenas o registro de
+            que houve uma candidatura, sem o documento.
           </p>
 
           <h2>9. Seus direitos</h2>

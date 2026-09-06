@@ -329,15 +329,22 @@ CREATE TABLE IF NOT EXISTS JobOpening (
 
 CREATE INDEX IF NOT EXISTS idx_job_status ON JobOpening(status, expiresAt DESC);
 
+-- Candidatura. jobId é opcional: currículo enviado ao banco de talentos,
+-- sem vaga específica, é candidatura legítima e não pode ser recusada pelo banco.
+-- O currículo vai para arquivo no volume, como já se faz em Document: manter o
+-- PDF dentro do SQLite faria cada cópia diária de segurança carregar todos os
+-- currículos já enviados, e o volume estouraria em poucas semanas.
 CREATE TABLE IF NOT EXISTS JobApplication (
   id TEXT PRIMARY KEY,
-  jobId TEXT NOT NULL,
+  jobId TEXT,
   candidateName TEXT NOT NULL,
   candidateEmail TEXT NOT NULL,
   candidatePhone TEXT NOT NULL,
   interestedUnits TEXT,
-  resumeFileName TEXT,
-  resumeData BLOB,
+  resumeStoredName TEXT,
+  resumeOriginalName TEXT,
+  resumeMimeType TEXT,
+  resumeSizeBytes INTEGER,
   notes TEXT,
   status TEXT NOT NULL DEFAULT 'Novo',
   createdAt TEXT NOT NULL,

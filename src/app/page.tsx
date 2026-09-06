@@ -9,7 +9,9 @@ import {
 import { authOptions } from "@/lib/auth";
 import { listUnits } from "@/lib/units";
 import { SPECIALTIES } from "@/lib/entities";
+import { vagasAbertas } from "@/lib/recrutamento";
 import ContactForm from "@/components/ContactForm";
+import FormularioCandidatura from "@/components/FormularioCandidatura";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { BrandLogo } from "@/components/BrandMark";
@@ -112,6 +114,7 @@ const DIFFERENTIALS = [
 export default async function LandingPage() {
   const session = await getServerSession(authOptions);
   const units = listUnits();
+  const vagas = vagasAbertas();
 
   return (
     <div className="bg-white">
@@ -473,115 +476,72 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- Vagas ---------- */}
+      {/* ---------- Trabalhe na KidSaber ---------- */}
       <section id="vagas" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-bold uppercase tracking-wider text-teal-700">Junte-se à equipe</span>
+          <span className="text-sm font-bold uppercase tracking-wider text-teal-700">
+            Trabalhe conosco
+          </span>
           <h2 className="mt-3 text-3xl font-extrabold text-navy-800 sm:text-4xl">
-            Recrutamento e Oportunidades
+            Faça parte da equipe
           </h2>
           <p className="mt-4 text-slate-600">
-            Se você é profissional de saúde ou educação e acredita no desenvolvimento infantil,
-            queremos conhecer você. Envie seu currículo e fique atento às oportunidades.
+            Procuramos profissionais que gostem de trabalhar em equipe e acreditem no
+            desenvolvimento de cada criança. Envie seu currículo, mesmo que não haja vaga aberta
+            para a sua área agora.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr]">
+        <div className="mt-12 grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div>
-            <h3 className="text-lg font-extrabold text-navy-800">Vagas abertas</h3>
-            <div id="vagas-list" className="mt-6 space-y-4">
-              <p className="text-sm text-slate-600">Carregando vagas...</p>
-            </div>
+            <h3 className="text-lg font-extrabold text-navy-800">
+              {vagas.length > 0 ? "Vagas abertas" : "Nenhuma vaga aberta agora"}
+            </h3>
+
+            {vagas.length === 0 ? (
+              <p className="mt-4 rounded-2xl border border-navy-100 bg-navy-50/60 p-5 text-sm leading-relaxed text-slate-600">
+                No momento não há vaga divulgada. Ainda assim, vale enviar o currículo: quando
+                abrir uma posição, a coordenação procura primeiro quem já está no banco de
+                talentos.
+              </p>
+            ) : (
+              <ul className="mt-4 space-y-4">
+                {vagas.map((v) => (
+                  <li
+                    key={v.id}
+                    className="rounded-2xl border border-navy-100 bg-white p-5 shadow-sm"
+                  >
+                    <h4 className="font-extrabold text-navy-800">{v.title}</h4>
+                    <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                      {v.description}
+                    </p>
+                    {v.specialties && (
+                      <p className="mt-3 text-xs font-medium text-teal-700">{v.specialties}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="rounded-3xl border border-navy-100 bg-white p-6 shadow-lg sm:p-8">
             <h3 className="text-lg font-extrabold text-navy-800">Envie seu currículo</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Profissional interessado? Preencha o formulário com seus dados e currículo.
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Preencha os dados abaixo e anexe o currículo. Se houver vaga aberta para a sua área,
+              você pode indicá-la no formulário.
             </p>
 
-            <form id="candidature-form" className="mt-6 space-y-4">
-              <div>
-                <label htmlFor="cand-name" className="label text-xs">
-                  Nome completo
-                </label>
-                <input
-                  id="cand-name"
-                  type="text"
-                  required
-                  placeholder="Seu nome"
-                  className="input w-full"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="cand-email" className="label text-xs">
-                  Email
-                </label>
-                <input
-                  id="cand-email"
-                  type="email"
-                  required
-                  placeholder="seu@email.com"
-                  className="input w-full"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="cand-phone" className="label text-xs">
-                  Telefone
-                </label>
-                <input
-                  id="cand-phone"
-                  type="tel"
-                  required
-                  placeholder="(xx) xxxxx-xxxx"
-                  className="input w-full"
-                />
-              </div>
-
-              <div>
-                <label className="label text-xs">Regiões de interesse</label>
-                <div className="space-y-2.5 mt-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" name="unidades" value="Mundo Novo" className="rounded" />
-                    <span className="text-sm text-slate-700">Mundo Novo (MS)</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" name="unidades" value="Guaíra" className="rounded" />
-                    <span className="text-sm text-slate-700">Guaíra (PR)</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" name="unidades" value="Terra Roxa" className="rounded" />
-                    <span className="text-sm text-slate-700">Terra Roxa (PR)</span>
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="cand-file" className="label text-xs">
-                  Currículo (PDF, DOC ou DOCX)
-                </label>
-                <input
-                  id="cand-file"
-                  type="file"
-                  required
-                  accept=".pdf,.doc,.docx"
-                  className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-teal-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-teal-700"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-brand-sky px-6 py-3.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5"
-              >
-                Enviar candidatura
-              </button>
-
-              <p className="text-xs text-slate-600">
-                Seus dados são tratados conforme a LGPD. Responderemos em breve.
-              </p>
-            </form>
+            <div className="mt-6">
+              <FormularioCandidatura
+                unidades={units.map((u) => ({
+                  id: u.id,
+                  name: u.name,
+                  city: u.city,
+                  state: u.state,
+                }))}
+                vagas={vagas.map((v) => ({ id: v.id, title: v.title }))}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -652,75 +612,6 @@ export default async function LandingPage() {
         <MessageCircle className="h-7 w-7" />
       </a>
 
-      <script suppressHydrationWarning>{`
-        async function loadVagas() {
-          try {
-            const res = await fetch('/api/vagas-publicas');
-            const vagas = await res.json();
-            const list = document.getElementById('vagas-list');
-            if (!list) return;
-
-            if (vagas.length === 0) {
-              list.innerHTML = '<p class="text-sm text-slate-600">Nenhuma vaga aberta no momento. Envie seu currículo para ficarmos atentos!</p>';
-              return;
-            }
-
-            list.innerHTML = vagas.map(v => \`
-              <div class="rounded-xl border border-navy-100 bg-navy-50 p-4">
-                <h4 class="font-bold text-navy-800">\${v.title}</h4>
-                <p class="mt-1 text-sm text-slate-600">\${v.description.slice(0, 100)}...</p>
-                <p class="mt-2 text-xs text-teal-700 font-medium">Clique no formulário ao lado e mencione o cargo desejado</p>
-              </div>
-            \`).join('');
-          } catch (err) {
-            const list = document.getElementById('vagas-list');
-            if (list) list.innerHTML = '<p class="text-sm text-slate-600">Erro ao carregar vagas. Envie seu currículo mesmo assim!</p>';
-          }
-        }
-
-        document.getElementById('candidature-form')?.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const form = e.target;
-          const button = form.querySelector('button[type=submit]');
-          const file = document.getElementById('cand-file').files[0];
-          const unidades = Array.from(form.querySelectorAll('input[name="unidades"]:checked')).map(el => el.value);
-
-          if (!file || file.size > 10 * 1024 * 1024) {
-            alert('Arquivo deve ser menor que 10MB');
-            return;
-          }
-
-          if (unidades.length === 0) {
-            alert('Selecione pelo menos uma região de interesse');
-            return;
-          }
-
-          const formData = new FormData();
-          formData.append('candidateName', document.getElementById('cand-name').value);
-          formData.append('candidateEmail', document.getElementById('cand-email').value);
-          formData.append('candidatePhone', document.getElementById('cand-phone').value);
-          formData.append('interestedUnits', unidades.join(', '));
-          formData.append('resume', file);
-
-          button.disabled = true;
-          button.textContent = 'Enviando...';
-
-          try {
-            const res = await fetch('/api/candidaturas', { method: 'POST', body: formData });
-            if (res.ok) {
-              alert('Obrigado! Sua candidatura foi recebida. Entraremos em contato em breve.');
-              form.reset();
-            } else {
-              alert('Erro ao enviar. Tente novamente.');
-            }
-          } finally {
-            button.disabled = false;
-            button.textContent = 'Enviar candidatura';
-          }
-        });
-
-        loadVagas();
-      `}</script>
     </div>
   );
 }

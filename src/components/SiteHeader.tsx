@@ -10,6 +10,7 @@ const LINKS = [
   { hash: "#especialidades", label: "Especialidades" },
   { hash: "#como-funciona", label: "Como funciona" },
   { hash: "#unidades", label: "Unidades" },
+  { hash: "#vagas", label: "Trabalhe conosco" },
   { hash: "#contato", label: "Contato" },
   { hash: "#acesso", label: "Acesso" },
 ];
