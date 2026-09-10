@@ -265,6 +265,7 @@ export default function UsersPanel({
                       onClick={() => setEditing(editing?.id === u.id ? null : u)}
                       className="rounded-lg p-1.5 text-navy-600 transition hover:bg-navy-50"
                       title="Editar"
+                      aria-label={`Editar a conta de ${u.name}`}
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
@@ -274,6 +275,7 @@ export default function UsersPanel({
                         type="submit"
                         className="rounded-lg p-1.5 text-gold-900 transition hover:bg-gold-50"
                         title="Redefinir senha"
+                        aria-label={`Redefinir a senha de ${u.name}`}
                       >
                         <KeyRound className="h-4 w-4" />
                       </button>

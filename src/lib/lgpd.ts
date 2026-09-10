@@ -1,5 +1,6 @@
 import { rawAll, rawGet } from "./orm";
 import { db } from "./db";
+import { deleteStoredFile } from "./files";
 
 /**
  * Direitos do titular previstos na LGPD (art. 18).
@@ -83,6 +84,10 @@ export interface DeletionSummary {
  * Roda em transação: uma exclusão pela metade deixaria registros órfãos
  * apontando para um paciente que não existe mais.
  *
+ * Os laudos anexados saem do volume junto com as linhas. Antes eles ficavam:
+ * o sistema respondia "dados eliminados" enquanto o arquivo com o diagnóstico
+ * da criança seguia no disco, fora do alcance de qualquer tela.
+ *
  * Atenção: a legislação de saúde exige guarda do prontuário por prazo próprio,
  * que pode se sobrepor ao pedido de eliminação. A decisão de atender ou recusar
  * é da clínica; a função apenas executa.
@@ -101,6 +106,16 @@ export function deletePatientData(patientId: string): DeletionSummary {
       count("SELECT COUNT(*) as c FROM PatientResponsible WHERE patientId = ?") +
       count("SELECT COUNT(*) as c FROM PatientProfessional WHERE patientId = ?"),
   };
+
+  // Os nomes dos arquivos precisam ser lidos antes do DELETE: depois dele não
+  // há mais como saber quais laudos pertenciam a esta criança, e eles ficariam
+  // no volume para sempre — invisíveis, sem nenhuma tela que os alcance.
+  const arquivos = rawAll(
+    "SELECT storedName FROM Document WHERE patientId = ? AND storedName IS NOT NULL",
+    [patientId]
+  )
+    .map((d) => d.storedName as string)
+    .filter(Boolean);
 
   db.exec("BEGIN");
   try {
@@ -122,6 +137,13 @@ export function deletePatientData(patientId: string): DeletionSummary {
     db.exec("ROLLBACK");
     throw err;
   }
+
+  // Só depois do COMMIT: se a transação tivesse voltado atrás, os laudos
+  // continuariam sendo do paciente e apagá-los teria destruído dado válido.
+  //
+  // Aqui é `deleteStoredFile`, e não a lixeira: o titular pediu eliminação, e
+  // guardar o laudo mais trinta dias contrariaria exatamente o que ele pediu.
+  for (const storedName of arquivos) deleteStoredFile(storedName);
 
   return summary;
 }

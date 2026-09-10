@@ -221,6 +221,7 @@ export default function DocumentsPanel({
                     type="submit"
                     className="rounded-lg p-1.5 text-coral-600 transition hover:bg-coral-50"
                     title="Excluir documento"
+                    aria-label={`Excluir o documento ${d.name}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

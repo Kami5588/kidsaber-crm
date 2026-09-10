@@ -2,6 +2,8 @@ import { gerarCopiaDoDia } from "./backup";
 import { pruneAuditLog } from "./audit";
 import { pruneLoginAttempts } from "./login-guard";
 import { descartarCurriculosVencidos } from "./recrutamento";
+import { esvaziarLixeiraVencida } from "./files";
+import { recolherArquivosOrfaos } from "./manutencao-arquivos";
 
 /**
  * Manutenção diária.
@@ -17,6 +19,10 @@ import { descartarCurriculosVencidos } from "./recrutamento";
  * Depois entrou também o descarte dos currículos vencidos: quem manda currículo
  * é titular de dados como qualquer outro, e guardar o documento para sempre
  * seria reter dado pessoal sem finalidade nem prazo.
+ *
+ * E, por fim, o cuidado com o volume, que a cópia do banco não alcança: apagar
+ * o que já passou do prazo na lixeira e recolher arquivo que nenhum registro
+ * aponta mais.
  *
  * Roda na subida do processo e depois uma vez por dia. Não há agendador no
  * Railway; o container reinicia de tempos em tempos, e a execução na subida
@@ -57,6 +63,23 @@ export function executarManutencao(): void {
     if (descartados > 0) console.log(`[manutencao] curriculos descartados: ${descartados}`);
   } catch (err) {
     console.error("[manutencao] falha ao descartar curriculos vencidos:", err);
+  }
+
+  try {
+    const apagados = esvaziarLixeiraVencida();
+    if (apagados > 0) console.log(`[manutencao] arquivos apagados da lixeira: ${apagados}`);
+  } catch (err) {
+    console.error("[manutencao] falha ao esvaziar a lixeira:", err);
+  }
+
+  try {
+    const { recolhidos } = recolherArquivosOrfaos();
+    if (recolhidos > 0) console.log(`[manutencao] arquivos orfaos recolhidos: ${recolhidos}`);
+  } catch (err) {
+    // A varredura desiste inteira se qualquer consulta falhar. É de propósito:
+    // continuar com uma lista incompleta de arquivos em uso faria a rotina
+    // recolher laudo que está sendo usado.
+    console.error("[manutencao] falha ao varrer arquivos orfaos:", err);
   }
 }
 

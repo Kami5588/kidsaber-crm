@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { logAccess } from "./audit";
-import { deleteStoredFile } from "./files";
+import { DIAS_NA_LIXEIRA, moverParaLixeira } from "./files";
 import { deleteRow, rawGet, updateRow } from "./orm";
 import { getCurrentUser } from "./permissions";
 import { SITUACOES_CANDIDATURA } from "./recrutamento-constants";
@@ -11,12 +11,15 @@ export type AcaoState = { ok: boolean; error?: string; message?: string };
 
 
 /**
- * Apaga uma candidatura e o currículo junto.
+ * Apaga uma candidatura e recolhe o currículo.
  *
  * A LGPD dá ao titular o direito de pedir a eliminação dos seus dados, e a
  * clínica precisa poder atender isso sem depender de quem cuida do servidor.
- * O arquivo sai do volume antes da linha: se a ordem fosse a inversa, uma
- * falha no meio deixaria o documento no disco sem nada que o aponte.
+ *
+ * O arquivo vai para a lixeira em vez de sumir: esta ação também é usada para
+ * limpar a lista, e ali o clique errado é fácil. Se um dia a exclusão precisar
+ * ser imediata por pedido expresso do candidato, é `deleteStoredFile` que
+ * atende — é o que a eliminação de paciente usa.
  */
 export async function excluirCandidaturaAction(id: string): Promise<AcaoState> {
   const user = await getCurrentUser();
@@ -31,14 +34,19 @@ export async function excluirCandidaturaAction(id: string): Promise<AcaoState> {
   );
   if (!linha) return { ok: false, error: "Candidatura não encontrada." };
 
-  deleteStoredFile(linha.resumeStoredName as string | null);
+  // Como na exclusão de documento: o currículo vai para a lixeira, porque
+  // apagar a candidatura errada na lista é um clique de distância. O descarte
+  // pelo prazo de guarda, esse sim, apaga de vez.
+  const naLixeira = moverParaLixeira(linha.resumeStoredName as string | null);
   deleteRow("JobApplication", id);
 
   await logAccess({
     action: "EXCLUIR",
     entity: "JobApplication",
     entityId: id,
-    detail: `Excluiu a candidatura de ${linha.candidateName} e o currículo anexado.`,
+    detail: naLixeira
+      ? `Excluiu a candidatura de ${linha.candidateName}. Currículo recuperável por ${DIAS_NA_LIXEIRA} dias como "${naLixeira}".`
+      : `Excluiu a candidatura de ${linha.candidateName} (sem currículo anexado).`,
   });
 
   revalidatePath("/vagas");

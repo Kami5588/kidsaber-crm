@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
-  DatabaseBackup, Download, ShieldAlert, CheckCircle2, Clock, HardDrive, Info,
+  DatabaseBackup, Download, ShieldAlert, CheckCircle2, Clock, HardDrive, Info, Undo2,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/permissions";
 import { estadoBackup, tamanhoLegivel, MANTER_COPIAS } from "@/lib/backup";
+import { DIAS_NA_LIXEIRA, estadoLixeira } from "@/lib/files";
 
 export const metadata = { title: "Cópias de segurança · KidSaber Connect" };
 
@@ -14,6 +15,7 @@ export default async function BackupPage() {
   if (!user || user.role !== "ADMIN") notFound();
 
   const { copias, ultima, horasDesdeUltima, totalBytes } = estadoBackup();
+  const lixeira = estadoLixeira();
 
   // Mais de 36 horas sem cópia indica que a rotina parou: ela roda na subida do
   // processo e uma vez por dia.
@@ -76,8 +78,9 @@ export default async function BackupPage() {
       </div>
 
       {/*
-        O aviso mais importante da tela. As cópias moram no mesmo volume do
-        banco: elas salvam de uma exclusão errada, não da perda do volume.
+        Os dois limites da cópia, ditos com todas as letras. Ela mora no mesmo
+        volume do banco, e leva o banco — não os arquivos anexados. Uma tela que
+        promete mais do que a rotina faz é pior que nenhuma tela.
       */}
       <div className="mb-6 flex gap-3 rounded-2xl border border-gold-200 bg-gold-50 p-5">
         <Info aria-hidden className="mt-0.5 h-5 w-5 flex-shrink-0 text-gold-800" />
@@ -90,11 +93,48 @@ export default async function BackupPage() {
             que fecha esse risco.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-slate-700">
+            A cópia leva o <strong>banco de dados</strong>: cadastros, sessões, evoluções e
+            financeiro. Os <strong>arquivos anexados</strong> — laudos, relatórios e currículos —
+            ficam guardados à parte e não entram nela. Para eles a proteção é outra, explicada
+            abaixo.
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-700">
             O arquivo contém dados de pacientes. Os campos clínicos seguem criptografados, mas nomes
             e contatos não: trate o download como documento sigiloso.
           </p>
         </div>
       </div>
+
+      {/* Contrapartida do aviso acima: o que protege os anexos, já que a cópia
+          do banco não os alcança. */}
+      <section className="card mb-6 p-6">
+        <h2 className="flex items-center gap-2 font-bold text-navy-800">
+          <Undo2 aria-hidden className="h-4 w-4 text-navy-600" />
+          Arquivos excluídos por engano
+        </h2>
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+          Quando alguém exclui um laudo ou um currículo pela tela, o arquivo não é apagado na hora:
+          ele fica guardado por {DIAS_NA_LIXEIRA} dias e só então some de vez. Se um documento foi
+          removido sem querer, dá para recuperá-lo dentro desse prazo — procure quem cuida da parte
+          técnica, levando a data e o nome do documento. A trilha de auditoria registra a exclusão e
+          guarda a referência do arquivo.
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-2 rounded-xl bg-slate-50 px-4 py-3 text-sm">
+          <span className="text-slate-700">
+            <strong className="tabular-nums">{lixeira.arquivos}</strong>{" "}
+            {lixeira.arquivos === 1 ? "arquivo recuperável" : "arquivos recuperáveis"}
+          </span>
+          <span className="text-slate-600">
+            ocupando {tamanhoLegivel(lixeira.bytes)}
+          </span>
+        </div>
+
+        <p className="mt-3 text-xs leading-relaxed text-slate-600">
+          A eliminação pedida pelo titular dos dados é a exceção: ali o arquivo sai na hora, sem
+          passar por esse prazo, porque guardá-lo mais trinta dias contrariaria o próprio pedido.
+        </p>
+      </section>
 
       <section className="card p-6">
         <h2 className="font-bold text-navy-800">Cópias disponíveis</h2>

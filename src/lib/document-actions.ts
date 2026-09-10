@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { logAccess } from "./audit";
 import { canAccessDocument, documentShares, getDocument } from "./documents";
-import { deleteStoredFile, saveUploadedFile } from "./files";
+import { DIAS_NA_LIXEIRA, moverParaLixeira, saveUploadedFile } from "./files";
 import { canAccessPatient, getCurrentUser } from "./permissions";
 import { deleteRow, insertRow, rawGet } from "./orm";
 
@@ -161,7 +161,7 @@ export async function revokeShareAction(
   }
 }
 
-/** Exclui o documento e apaga o arquivo do disco. */
+/** Exclui o documento; o arquivo fica recuperável na lixeira pelo prazo. */
 export async function deleteDocumentAction(
   _prev: DocumentFormState,
   formData: FormData
@@ -183,13 +183,20 @@ export async function deleteDocumentAction(
     for (const share of documentShares(documentId)) deleteRow("DocumentShare", share.id);
 
     deleteRow("Document", documentId);
-    deleteStoredFile(doc.storedName);
+
+    // O arquivo vai para a lixeira, não para o vazio: a cópia diária leva o
+    // banco, não o volume, e um laudo apagado por engano não voltaria por ela.
+    // O nome na lixeira fica na auditoria porque é por ele que o arquivo é
+    // reencontrado dentro do prazo.
+    const naLixeira = moverParaLixeira(doc.storedName);
 
     await logAccess({
       action: "EXCLUIR",
       entity: "Document",
       entityId: documentId,
-      detail: `Documento "${doc.name}" excluído junto com o arquivo.`,
+      detail: naLixeira
+        ? `Documento "${doc.name}" excluído. Arquivo recuperável por ${DIAS_NA_LIXEIRA} dias como "${naLixeira}".`
+        : `Documento "${doc.name}" excluído (sem arquivo anexado).`,
     });
 
     revalidatePath("/documentos");
