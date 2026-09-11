@@ -5,14 +5,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard, LogOut, ScrollText, ShieldCheck, UserCog, HeartHandshake,
-  KeyRound, LifeBuoy, CalendarDays, Menu, X, BarChart3, UserX, DatabaseBackup, Briefcase,
+  KeyRound, CalendarDays, Menu, X, BarChart3, UserX, DatabaseBackup, Briefcase,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ENTITIES } from "@/lib/entities";
 import { getIcon } from "@/lib/icon-map";
-import { canAccessEntity, canAccessPage, type Role } from "@/lib/roles";
+import { ROLES, canAccessEntity, canAccessPage, type Role } from "@/lib/roles";
 import { SUPPORT_EMAIL } from "@/lib/clinic";
 import { BrandMascot } from "./BrandMark";
+import PainelSuporte from "./PainelSuporte";
 
 const GROUPS: { label: string; items: string[] }[] = [
   { label: "Atendimento", items: ["pacientes", "responsaveis", "profissionais", "sessoes"] },
@@ -87,6 +88,10 @@ export default function Sidebar({
     ...g,
     items: g.items.filter((key) => ENTITIES[key] && canAccessEntity(role, key)),
   })).filter((g) => g.items.length > 0);
+
+  // Vai junto no pedido de suporte: saber se quem escreveu é da recepção ou da
+  // direção muda a primeira pergunta de quem responde.
+  const rotuloPerfil = ROLES.find((r) => r.value === role)?.label ?? role;
 
   const visibleExtras = EXTRA_LINKS.filter((l) => canAccessPage(role, l.href));
   const showDashboard = canAccessPage(role, "/dashboard");
@@ -238,13 +243,7 @@ export default function Sidebar({
             <KeyRound className="h-4 w-4" />
             Minha conta
           </Link>
-          <a
-            href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Suporte KidSaber Connect")}`}
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-teal-50 transition hover:bg-white/10"
-          >
-            <LifeBuoy className="h-4 w-4" />
-            Suporte
-          </a>
+          <PainelSuporte email={SUPPORT_EMAIL} userName={userName} perfil={rotuloPerfil} />
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-coral-200 transition hover:bg-white/10"
