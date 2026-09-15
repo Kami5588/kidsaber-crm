@@ -165,7 +165,10 @@ export default function PainelSuporte({
               <label htmlFor="email-suporte" className="label text-xs">
                 E-mail do suporte
               </label>
-              <div className="flex gap-2">
+              {/* Empilha no celular: dividindo a linha com o botão, o campo fica
+                  estreito demais e corta o endereço no meio, o que dá a impressão
+                  de que o e-mail cadastrado está errado. */}
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <input
                   id="email-suporte"
                   type="text"
@@ -177,7 +180,7 @@ export default function PainelSuporte({
                 <button
                   type="button"
                   onClick={copiar}
-                  className="flex flex-shrink-0 items-center gap-1.5 rounded-xl border-2 border-navy-200 px-3 text-sm font-bold text-navy-700 transition hover:border-navy-400"
+                  className="flex flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border-2 border-navy-200 px-3 py-2.5 text-sm font-bold text-navy-700 transition hover:border-navy-400 sm:py-0"
                 >
                   {copiado ? (
                     <>
