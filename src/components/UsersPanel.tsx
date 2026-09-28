@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import {
-  UserPlus, Loader2, KeyRound, Copy, Check, CircleSlash, CircleCheck, Pencil, X,
+  UserPlus, Loader2, KeyRound, Copy, Check, CircleSlash, CircleCheck, Pencil, X, Trash2,
 } from "lucide-react";
 import {
-  createUserAction, resetPasswordAction, updateUserAction, type UserFormState,
+  createUserAction, deleteUserAction, resetPasswordAction, updateUserAction, type UserFormState,
 } from "@/lib/user-actions";
 import { ROLES, type Role } from "@/lib/roles";
 
@@ -85,6 +85,7 @@ export default function UsersPanel({
   const [createState, createAction] = useFormState<UserFormState, FormData>(createUserAction, { ok: false });
   const [updateState, updateAction] = useFormState<UserFormState, FormData>(updateUserAction, { ok: false });
   const [resetState, resetAction] = useFormState<UserFormState, FormData>(resetPasswordAction, { ok: false });
+  const [deleteState, deleteAction] = useFormState<UserFormState, FormData>(deleteUserAction, { ok: false });
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<UserRow | null>(null);
@@ -210,6 +211,12 @@ export default function UsersPanel({
       {resetState.error && (
         <p className="rounded-xl bg-coral-50 px-4 py-3 text-sm font-medium text-coral-700">{resetState.error}</p>
       )}
+      {deleteState.error && (
+        <p role="alert" className="rounded-xl bg-coral-50 px-4 py-3 text-sm font-medium text-coral-700">{deleteState.error}</p>
+      )}
+      {deleteState.ok && deleteState.message && (
+        <p role="status" className="rounded-xl bg-teal-50 px-4 py-3 text-sm font-medium text-teal-800">{deleteState.message}</p>
+      )}
       {updateState.error && (
         <p className="rounded-xl bg-coral-50 px-4 py-3 text-sm font-medium text-coral-700">{updateState.error}</p>
       )}
@@ -280,6 +287,37 @@ export default function UsersPanel({
                         <KeyRound className="h-4 w-4" />
                       </button>
                     </form>
+
+                    {/* A própria conta não aparece com opção de apagar: quem se
+                        apaga fica do lado de fora e precisa de outra pessoa
+                        para voltar. O servidor recusa de qualquer forma. */}
+                    {u.id !== currentUserId && (
+                      <form
+                        action={deleteAction}
+                        onSubmit={(e) => {
+                          if (
+                            !confirm(
+                              `Apagar a conta de ${u.name} (${u.email})?\n\n` +
+                                "A pessoa perde o acesso imediatamente. O registro do que ela fez " +
+                                "continua na auditoria.\n\n" +
+                                "Se ela apenas saiu da equipe, prefira desativar pelo lápis."
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                      >
+                        <input type="hidden" name="id" value={u.id} />
+                        <button
+                          type="submit"
+                          className="rounded-lg p-1.5 text-coral-600 transition hover:bg-coral-50"
+                          title="Apagar conta"
+                          aria-label={`Apagar a conta de ${u.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </form>
+                    )}
                   </div>
                 </td>
               </tr>

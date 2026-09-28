@@ -8,6 +8,7 @@ import { getAccessRequest, markReviewed } from "./access-requests";
 import {
   countActiveAdmins,
   createUser,
+  deleteUser,
   generatePassword,
   getUserByEmail,
   getUserById,
@@ -151,6 +152,63 @@ export async function updateUserAction(
     return { ok: true, message: "Conta atualizada." };
   } catch (err: any) {
     return { ok: false, error: err?.message ?? "Não foi possível atualizar a conta." };
+  }
+}
+
+/**
+ * Apaga uma conta de acesso.
+ *
+ * Três portas fechadas, cada uma por um motivo diferente:
+ *
+ *   - a própria conta, porque quem apaga a si mesmo fica do lado de fora e
+ *     precisa de alguém com acesso para voltar;
+ *   - a última administração ativa, que deixaria a clínica sem quem gerencie
+ *     contas, e sem caminho de volta pela tela;
+ *   - quem não é administração, que nem chega aqui.
+ *
+ * Desativar continua sendo o caminho normal para quem saiu da equipe: preserva
+ * o vínculo com o que a pessoa fez. Apagar serve para conta criada por engano
+ * ou que nunca chegou a ser usada.
+ */
+export async function deleteUserAction(
+  _prev: UserFormState,
+  formData: FormData
+): Promise<UserFormState> {
+  try {
+    const admin = await requireAdmin();
+    const id = String(formData.get("id") ?? "");
+    const target = getUserById(id);
+    if (!target) return { ok: false, error: "Conta não encontrada." };
+
+    if (id === admin.id) {
+      return {
+        ok: false,
+        error: "Você não pode apagar a sua própria conta. Peça a outra administração.",
+      };
+    }
+
+    if (target.role === "ADMIN" && target.active && countActiveAdmins(id) === 0) {
+      return {
+        ok: false,
+        error: "Esta é a única conta de administrador ativa. Promova outra antes de apagar esta.",
+      };
+    }
+
+    deleteUser(id);
+
+    // O e-mail vai no detalhe porque, sem a conta, o entityId sozinho não diz
+    // mais de quem era.
+    await logAccess({
+      action: "EXCLUIR",
+      entity: "User",
+      entityId: id,
+      detail: `Conta ${target.email} (${target.role}) apagada por ${admin.email}.`,
+    });
+
+    revalidatePath("/usuarios");
+    return { ok: true, message: `Conta de ${target.email} apagada.` };
+  } catch (err: any) {
+    return { ok: false, error: err?.message ?? "Não foi possível apagar a conta." };
   }
 }
 

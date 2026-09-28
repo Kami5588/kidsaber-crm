@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { insertRow, rawAll, rawGet, updateRow } from "./orm";
+import { deleteRow, insertRow, rawAll, rawGet, updateRow } from "./orm";
 import { buildDisplayName, type Role } from "./roles";
 
 /**
@@ -159,6 +159,18 @@ export function verifyPassword(id: string, password: string): boolean {
 }
 
 /** Quantidade de administradores ativos, usada para impedir ficar sem nenhum. */
+/**
+ * Apaga a conta de acesso.
+ *
+ * O que a pessoa fez enquanto usava o sistema não é apagado junto: a trilha de
+ * auditoria guarda o e-mail como texto, e não só a referência, justamente para
+ * continuar legível depois que a conta deixa de existir. Quem abriu qual
+ * prontuário continua registrado — apagar isso seria apagar a prova.
+ */
+export function deleteUser(id: string): void {
+  deleteRow("User", id);
+}
+
 export function countActiveAdmins(excludeId?: string): number {
   return (rawGet(
     `SELECT COUNT(*) as c FROM User WHERE role = 'ADMIN' AND active = 1 AND id != ?`,
